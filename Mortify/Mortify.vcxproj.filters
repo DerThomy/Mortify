@@ -30,9 +30,15 @@
     <ClInclude Include="src\Mortify\EntryPoint.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Log.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Log.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

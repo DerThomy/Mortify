@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Mortify\Log.h" />
     <ClInclude Include="src\Mortify\Application.h" />
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Core.h" />
@@ -18,6 +19,7 @@
     <ClInclude Include="src\Mortify\EntryPoint.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Mortify\Log.cpp" />
     <ClCompile Include="src\Mortify\Application.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -68,8 +70,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>MT_PLATFORM_WINDOWS;MT_BUILD_DLL;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Mortify\vendor\spdlog\include;</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -81,8 +82,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>MT_PLATFORM_WINDOWS;MT_BUILD_DLL;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Mortify\vendor\spdlog\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
