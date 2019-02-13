@@ -1,0 +1,3 @@
+[submodule "Mortify/vendor/spdlog"]
+	path = Mortify/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
