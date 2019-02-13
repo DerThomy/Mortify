@@ -1,3 +1,4 @@
 ﻿  Application.cpp
+  LINK : C:\Dev\Mortify\\bin\Debug-x64\Mortify\Mortify.dll wurde nicht gefunden oder beim letzten inkrementellen Linkvorgang nicht erstellt; vollständiger Link wird durchgeführt.
      Bibliothek "C:\Dev\Mortify\\bin\Debug-x64\Mortify\Mortify.lib" und Objekt "C:\Dev\Mortify\\bin\Debug-x64\Mortify\Mortify.exp" werden erstellt.
   Mortify.vcxproj -> C:\Dev\Mortify\\bin\Debug-x64\Mortify\Mortify.dll

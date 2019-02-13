@@ -10,9 +10,8 @@ public:
 	{}
 };
 
-int main(void)
+
+Mortify::Application* Mortify::CreateApplication()
 {
-	Sandbox* sandbox = new Sandbox();
-	sandbox->Run();
-	delete sandbox;
+	return new Sandbox();
 }

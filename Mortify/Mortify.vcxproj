@@ -15,6 +15,7 @@
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Core.h" />
     <ClInclude Include="src\Mortify\Define.h" />
+    <ClInclude Include="src\Mortify\EntryPoint.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp" />

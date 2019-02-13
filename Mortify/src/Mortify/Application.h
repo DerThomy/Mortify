@@ -12,7 +12,9 @@ namespace Mortify
 		virtual ~Application();
 
 		void Run();
+
 	};
 
+	Application* CreateApplication();
 }
 
