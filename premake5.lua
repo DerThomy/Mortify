@@ -5,10 +5,18 @@ workspace "Mortify"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution dir)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Mortify/vendor/GLFW/include"
+
+include "Mortify/vendor/GLFW"
+
 project "Mortify"
     location "Mortify"
     kind "SharedLib"
     language "C++"
+	staticruntime "off"
+
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -22,8 +30,13 @@ project "Mortify"
 
     includedirs {
 		"%{prj.name}/src",
-        "%{prj.name}/vendor/spdlog/include"
+        "%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
     }
+
+	links {
+		"GLFW"
+	}
 
     filter "system:windows"
         cppdialect "C++17"
@@ -32,12 +45,13 @@ project "Mortify"
 
         defines {
             "MT_PLATFORM_WINDOWS",
-            "MT_BUILD_DLL"
+            "MT_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
         }
 
         postbuildcommands
         {
-            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .."/Sandbox")
+            ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .."/Sandbox/\"")
         }
 
     filter "configurations:Debug"
@@ -56,9 +70,10 @@ project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
+	staticruntime "off"
+
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-    links "Mortify"
 
     files {
         "%{prj.name}/src/**.h",
@@ -69,6 +84,10 @@ project "Sandbox"
         "Mortify/src",
         "Mortify/vendor/spdlog/include"
     }
+
+	links {
+		"Mortify"
+	}
 
     filter "system:windows"
         cppdialect "C++17"

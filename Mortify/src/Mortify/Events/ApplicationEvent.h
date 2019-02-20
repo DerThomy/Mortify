@@ -7,16 +7,16 @@ namespace Mortify
 	class MT_API WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(unsigned int height, unsigned int width)
-			: m_Height(height), m_Width(width) {}
+		WindowResizeEvent(unsigned int width, unsigned int height)
+			: m_Width(width), m_Height(height) {}
 
-		inline unsigned int GetHeight() const { return m_Height; }
 		inline unsigned int GetWidth() const { return m_Width; }
+		inline unsigned int GetHeight() const { return m_Height; }
 
 		std::string ToString() const override
 		{
 			std::stringstream sstream;
-			sstream << "WindowResizeEvent: " << m_Height << " (h), " << m_Width << " (w)";
+			sstream << "WindowResizeEvent: " << m_Width << "(w), " << m_Height << "(h)";
 			return sstream.str();
 		}
 

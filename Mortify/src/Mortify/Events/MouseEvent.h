@@ -15,7 +15,7 @@ namespace Mortify
 
 		std::string ToString() const override {
 			std::stringstream sstream;
-			sstream << "Mouse moved: " << m_MouseX << " (x), " << m_MouseY << " (y)";
+			sstream << "Mouse moved: " << m_MouseX << "(x), " << m_MouseY << "(y)";
 			return sstream.str();
 		}
 
@@ -37,7 +37,7 @@ namespace Mortify
 
 		std::string ToString() const override {
 			std::stringstream sstream;
-			sstream << "Mouse scrolled: " << m_XOffset << " (x), " << m_YOffset << " (y)";
+			sstream << "Mouse scrolled: " << m_XOffset << "(x), " << m_YOffset << "(y)";
 			return sstream.str();
 		}
 

@@ -7,6 +7,12 @@
     <Filter Include="Mortify\Events">
       <UniqueIdentifier>{F3FBCB0B-DFC9-BF11-C85D-3038B4CA9B76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Windows">
+      <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Mortify.h" />
@@ -37,6 +43,12 @@
     <ClInclude Include="src\Mortify\Log.h">
       <Filter>Mortify</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Window.h">
+      <Filter>Mortify</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="src\mtpch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +57,9 @@
     </ClCompile>
     <ClCompile Include="src\Mortify\Log.cpp">
       <Filter>Mortify</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
+      <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\mtpch.cpp" />
   </ItemGroup>
