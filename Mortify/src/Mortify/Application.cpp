@@ -4,7 +4,7 @@
 
 #include "Mortify/Log.h"
 
-#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Mortify
 {
@@ -36,18 +36,20 @@ namespace Mortify
 		}
 	}
 
-	void Application::Run()
+	void Application::Run()	
 	{
 		while (m_Running)
 		{
+			glClearColor(1, 0, 1, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+
 			for (Layer* layer : m_Layerstack)
 				layer->OnUpdate();
 
-			
 			m_Window->OnUpdate();
 		}
 	}
-
+	
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;
@@ -57,10 +59,12 @@ namespace Mortify
 	void Application::PushLayer(Layer* layer)
 	{
 		m_Layerstack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
 		m_Layerstack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 }

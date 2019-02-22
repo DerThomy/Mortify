@@ -9,18 +9,20 @@
 
 namespace Mortify
 {
-
 	class MT_API Application
 	{
 	public:
 		Application();
 		virtual ~Application();
 
-		void OnEvent(Event& e);
 		void Run();
+
+		void OnEvent(Event& e);
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
+	
+		inline Window& GetWindow() { return *m_Window; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 

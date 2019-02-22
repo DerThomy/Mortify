@@ -6,13 +6,15 @@
 #include "Mortify/Events/MouseEvent.h"
 #include "Mortify/Events/KeyEvent.h"
 
+#include <glad/glad.h>
+
 namespace Mortify
 {
 	static bool s_GLFWInitialized = false;
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
-		MT_CORE_ERROR("GLFW Error ({0}): {1}", error, description)
+		MT_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
 	Window* Window::Create(const WindowProps& props)
@@ -49,9 +51,12 @@ namespace Mortify
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		MT_CORE_ASSERT(status, "Failed to initizalize Glad!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
+		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
