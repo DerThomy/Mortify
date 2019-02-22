@@ -1,15 +1,22 @@
 workspace "Mortify"
-    architecture "x86_64"
-    configurations { "Debug", "Release", "Dist" }
+    architecture "x64"
     startproject "Sandbox"
+
+    configurations { 
+		"Debug",
+		"Release",
+		"Dist" 
+	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution dir)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Mortify/vendor/GLFW/include"
+IncludeDir["Glad"] = "Mortify/vendor/Glad/include"
 
 include "Mortify/vendor/GLFW"
+include "Mortify/vendor/Glad"
 
 project "Mortify"
     location "Mortify"
@@ -31,16 +38,18 @@ project "Mortify"
     includedirs {
 		"%{prj.name}/src",
         "%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
     }
 
 	links {
-		"GLFW"
+		"GLFW",
+		"Glad",
+		"opengl32.lib"
 	}
 
     filter "system:windows"
         cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
 
         defines {
@@ -49,22 +58,24 @@ project "Mortify"
 			"GLFW_INCLUDE_NONE"
         }
 
-        postbuildcommands
-        {
+        postbuildcommands {
             ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .."/Sandbox/\"")
         }
 
     filter "configurations:Debug"
         defines "MT_DEBUG"
+		runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "MT_RELEASE"
-        symbols "On"
+		runtime "Release"
+        optimize "On"
 
     filter "configurations:Dist"
         defines "MT_DIST"
-        symbols "On"
+		runtime "Release"
+        optimize "On"
 
 project "Sandbox"
     location "Sandbox"
@@ -91,7 +102,6 @@ project "Sandbox"
 
     filter "system:windows"
         cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
     
         defines {
@@ -100,13 +110,15 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "MT_DEBUG"
+		runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "MT_RELEASE"
-        symbols "On"
+		runtime "Release"
+        optimize "On"
 
     filter "configurations:Dist"
         defines "MT_DIST"
-        symbols "On"
-
+		runtime "Release"
+        optimize "On"

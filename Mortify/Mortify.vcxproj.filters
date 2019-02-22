@@ -40,6 +40,12 @@
     <ClInclude Include="src\Mortify\Events\MouseEvent.h">
       <Filter>Mortify\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Layer.h">
+      <Filter>Mortify</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\LayerStack.h">
+      <Filter>Mortify</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\Log.h">
       <Filter>Mortify</Filter>
     </ClInclude>
@@ -53,6 +59,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
+      <Filter>Mortify</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Layer.cpp">
+      <Filter>Mortify</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\LayerStack.cpp">
       <Filter>Mortify</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Log.cpp">

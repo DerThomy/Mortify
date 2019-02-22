@@ -26,10 +26,10 @@ namespace Mortify
 		float m_MouseY;
 	};
 
-	class MT_API MouseButtonScrolledEvent : public Event
+	class MT_API MouseScrolledEvent : public Event
 	{
 	public:
-		MouseButtonScrolledEvent(float xOffset, float yOffset)
+		MouseScrolledEvent(float xOffset, float yOffset)
 			: m_XOffset(xOffset), m_YOffset(yOffset) {}
 
 		inline float GetXOffset() const { return m_XOffset; }
