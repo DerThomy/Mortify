@@ -13,7 +13,7 @@ namespace Mortify
 		None = 0,
 		WindowClose, WindowResize, WindowMove, WindowFocus, WindowLostFocus,
 		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased,	
+		KeyPressed, KeyReleased, KeyTyped,
 		MouseMoved, MouseButtonClicked, MouseButtonReleased, MouseScrolled
 	};
 

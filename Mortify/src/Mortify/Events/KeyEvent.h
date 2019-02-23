@@ -52,4 +52,20 @@ namespace Mortify
 
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
+
+	class MT_API KeyTypedEvent : public KeyEvent
+	{
+	public:
+		KeyTypedEvent(int keyCode)
+			: KeyEvent(keyCode) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream sstream;
+			sstream << "KeyTypedEvent: " << m_KeyCode;
+			return sstream.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyTyped)
+	};
 }
