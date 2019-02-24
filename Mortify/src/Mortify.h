@@ -6,6 +6,8 @@
 #include "Mortify/Layer.h"
 #include "Mortify/Log.h"
 
+#include "Mortify/Input.h"
+
 #include "Mortify/ImGui/ImGuiLayer.h"
 
 //-----------EntryPoint-----------

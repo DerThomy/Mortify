@@ -134,8 +134,6 @@ namespace Mortify
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.getKeyCode()] = true;
-		if (e.getKeyCode() == 259)
-			MT_CORE_INFO("Backspace pressed {0}", io.KeysDown[e.getKeyCode()]);
 
 		io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
 		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];

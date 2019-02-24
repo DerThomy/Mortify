@@ -49,6 +49,9 @@
     <ClInclude Include="src\Mortify\ImGui\ImGuiLayer.h">
       <Filter>Mortify\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Input.h">
+      <Filter>Mortify</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\Layer.h">
       <Filter>Mortify</Filter>
     </ClInclude>
@@ -63,6 +66,9 @@
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h">
       <Filter>Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsInput.h">
+      <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
@@ -87,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp">
       <Filter>Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
+      <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>Platform\Windows</Filter>

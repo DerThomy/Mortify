@@ -4,7 +4,10 @@
 
 #include "Mortify/Log.h"
 
+#include "Mortify/Input.h"
+
 #include <glad/glad.h>
+
 
 namespace Mortify
 {
@@ -31,7 +34,7 @@ namespace Mortify
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
-		MT_CORE_INFO("{0}", e);
+		//MT_CORE_INFO("{0}", e);
 
 		for (auto it = m_Layerstack.end(); it != m_Layerstack.begin(); )
 		{
@@ -50,6 +53,9 @@ namespace Mortify
 
 			for (Layer* layer : m_Layerstack)
 				layer->OnUpdate();
+
+			auto[x, y] = Input::GetMousePosition();
+			//MT_CORE_TRACE("{0}, {1}", x, y);
 
 			m_Window->OnUpdate();
 		}
