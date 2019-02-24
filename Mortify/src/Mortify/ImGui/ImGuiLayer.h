@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mortify/Layer.h"
+
 #include "Mortify/Events/ApplicationEvent.h"
 #include "Mortify/Events/MouseEvent.h"
 #include "Mortify/Events/KeyEvent.h"
