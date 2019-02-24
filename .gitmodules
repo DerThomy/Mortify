@@ -6,4 +6,4 @@
 	url = https://github.com/DerThomy/glfw.git
 [submodule "Mortify/vendor/ImGui"]
 	path = Mortify/vendor/ImGui
-	url = https://github.com/DerThomy/imgui
+	url = https://github.com/DerThomy/imgui.git
