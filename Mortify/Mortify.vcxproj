@@ -160,9 +160,11 @@
     <ClInclude Include="src\Mortify\Events\MouseEvent.h" />
     <ClInclude Include="src\Mortify\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Mortify\Input.h" />
+    <ClInclude Include="src\Mortify\KeyCodes.h" />
     <ClInclude Include="src\Mortify\Layer.h" />
     <ClInclude Include="src\Mortify\LayerStack.h" />
     <ClInclude Include="src\Mortify\Log.h" />
+    <ClInclude Include="src\Mortify\MouseCodes.h" />
     <ClInclude Include="src\Mortify\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
@@ -196,4 +198,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>

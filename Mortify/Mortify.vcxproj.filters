@@ -52,6 +52,9 @@
     <ClInclude Include="src\Mortify\Input.h">
       <Filter>Mortify</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\KeyCodes.h">
+      <Filter>Mortify</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\Layer.h">
       <Filter>Mortify</Filter>
     </ClInclude>
@@ -59,6 +62,9 @@
       <Filter>Mortify</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Log.h">
+      <Filter>Mortify</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\MouseCodes.h">
       <Filter>Mortify</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Window.h">

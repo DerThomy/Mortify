@@ -4,8 +4,8 @@
 
 #include "imgui.h"
 #include "Platform/OpenGL/ImGuiOpenGLRenderer.h"
-
 #include "Mortify/Application.h"
+#include "Mortify/KeyCodes.h"
 
 // Temporary
 #include <GLFW/glfw3.h>
@@ -34,27 +34,27 @@ namespace Mortify
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
 		// Temporary. To be replaced by Mortify Key Codes
-		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
-		io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
-		io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
-		io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
-		io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
-		io.KeyMap[ImGuiKey_PageUp] = GLFW_KEY_PAGE_UP;
-		io.KeyMap[ImGuiKey_PageDown] = GLFW_KEY_PAGE_DOWN;
-		io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
-		io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
-		io.KeyMap[ImGuiKey_Insert] = GLFW_KEY_INSERT;
-		io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
-		io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
-		io.KeyMap[ImGuiKey_Space] = GLFW_KEY_SPACE;
-		io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
-		io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
-		io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
-		io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
-		io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
-		io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
-		io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
-		io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
+		io.KeyMap[ImGuiKey_Tab] = MT_KEY_TAB;
+		io.KeyMap[ImGuiKey_LeftArrow] = MT_KEY_LEFT;
+		io.KeyMap[ImGuiKey_RightArrow] = MT_KEY_RIGHT;
+		io.KeyMap[ImGuiKey_UpArrow] = MT_KEY_UP;
+		io.KeyMap[ImGuiKey_DownArrow] = MT_KEY_DOWN;
+		io.KeyMap[ImGuiKey_PageUp] = MT_KEY_PAGE_UP;
+		io.KeyMap[ImGuiKey_PageDown] = MT_KEY_PAGE_DOWN;
+		io.KeyMap[ImGuiKey_Home] = MT_KEY_HOME;
+		io.KeyMap[ImGuiKey_End] = MT_KEY_END;
+		io.KeyMap[ImGuiKey_Insert] = MT_KEY_INSERT;
+		io.KeyMap[ImGuiKey_Delete] = MT_KEY_DELETE;
+		io.KeyMap[ImGuiKey_Backspace] = MT_KEY_BACKSPACE;
+		io.KeyMap[ImGuiKey_Space] = MT_KEY_SPACE;
+		io.KeyMap[ImGuiKey_Enter] = MT_KEY_ENTER;
+		io.KeyMap[ImGuiKey_Escape] = MT_KEY_ESCAPE;
+		io.KeyMap[ImGuiKey_A] = MT_KEY_A;
+		io.KeyMap[ImGuiKey_C] = MT_KEY_C;
+		io.KeyMap[ImGuiKey_V] = MT_KEY_V;
+		io.KeyMap[ImGuiKey_X] = MT_KEY_X;
+		io.KeyMap[ImGuiKey_Y] = MT_KEY_Y;
+		io.KeyMap[ImGuiKey_Z] = MT_KEY_Z;
 
 		ImGui_ImplOpenGL3_Init("#version 410 core");
 	}
@@ -135,10 +135,10 @@ namespace Mortify
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.getKeyCode()] = true;
 
-		io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
-		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+		io.KeyCtrl = io.KeysDown[MT_KEY_LEFT_CONTROL] || io.KeysDown[MT_KEY_RIGHT_CONTROL];
+		io.KeyShift = io.KeysDown[MT_KEY_LEFT_SHIFT] || io.KeysDown[MT_KEY_RIGHT_SHIFT];
+		io.KeyAlt = io.KeysDown[MT_KEY_LEFT_ALT] || io.KeysDown[MT_KEY_RIGHT_ALT];
+		io.KeySuper = io.KeysDown[MT_KEY_LEFT_SUPER] || io.KeysDown[MT_KEY_RIGHT_SUPER];
 
 		return false;
 	}
