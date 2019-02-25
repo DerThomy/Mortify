@@ -15,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Mortify/vendor/GLFW/include"
 IncludeDir["Glad"] = "Mortify/vendor/Glad/include"
 IncludeDir["ImGui"] = "Mortify/vendor/ImGui"
+IncludeDir["glm"] = "Mortify/vendor/glm"
 
 include "Mortify/vendor/GLFW"
 include "Mortify/vendor/Glad"
@@ -34,7 +35,9 @@ project "Mortify"
 
     files {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl"
     }
 
     includedirs {
@@ -42,7 +45,8 @@ project "Mortify"
         "%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
     }
 
 	links {
