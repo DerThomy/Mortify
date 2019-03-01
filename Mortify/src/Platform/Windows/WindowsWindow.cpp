@@ -44,7 +44,7 @@ namespace Mortify
 		{
 			// TODO: glfwTerminate on sytem shutdown
 			int success = glfwInit();
-			MT_ASSERT(success, "Could not initialize GLFW!");
+			MT_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}

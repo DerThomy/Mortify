@@ -26,7 +26,6 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Mortify::ImGuiLayer());
 	}
 
 	~Sandbox()

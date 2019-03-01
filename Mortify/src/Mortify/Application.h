@@ -7,6 +7,8 @@
 #include "Mortify/Events/Event.h"
 #include "Mortify/Events/ApplicationEvent.h"
 
+#include "Mortify/ImGui/ImGuiLayer.h"
+
 namespace Mortify
 {
 	class MT_API Application
@@ -28,8 +30,9 @@ namespace Mortify
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
+		LayerStack m_LayerStack;
 		bool m_Running = true;
-		LayerStack m_Layerstack;
 	private:
 		static Application* s_Instance;
 	};

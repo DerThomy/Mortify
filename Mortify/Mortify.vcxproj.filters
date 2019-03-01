@@ -16,9 +16,6 @@
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Platform\OpenGL">
-      <UniqueIdentifier>{35A49437-A105-7245-2A73-B8F796D3A804}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Platform\Windows">
       <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
     </Filter>
@@ -95,9 +92,6 @@
     </ClInclude>
     <ClInclude Include="src\Mortify\Window.h">
       <Filter>src\Mortify</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h">
-      <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>src\Platform\Windows</Filter>
@@ -1199,6 +1193,9 @@
     <ClCompile Include="src\Mortify\Application.cpp">
       <Filter>src\Mortify</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp">
+      <Filter>src\Mortify\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp">
       <Filter>src\Mortify\ImGui</Filter>
     </ClCompile>
@@ -1210,9 +1207,6 @@
     </ClCompile>
     <ClCompile Include="src\Mortify\Log.cpp">
       <Filter>src\Mortify</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp">
-      <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>

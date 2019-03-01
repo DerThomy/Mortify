@@ -166,7 +166,6 @@
     <ClInclude Include="src\Mortify\Log.h" />
     <ClInclude Include="src\Mortify\MouseCodes.h" />
     <ClInclude Include="src\Mortify\Window.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\mtpch.h" />
@@ -535,11 +534,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp" />
+    <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mortify\Layer.cpp" />
     <ClCompile Include="src\Mortify\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Log.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\mtpch.cpp">
