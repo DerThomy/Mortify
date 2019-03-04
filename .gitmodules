@@ -1,12 +1,12 @@
 [submodule "Mortify/vendor/spdlog"]
 	path = Mortify/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "Mortify\\vendor\\GLFW"]
-	path = Mortify\\vendor\\GLFW
-	url = https://github.com/DerThomy/glfw.git
 [submodule "Mortify/vendor/ImGui"]
 	path = Mortify/vendor/ImGui
 	url = https://github.com/DerThomy/imgui.git
 [submodule "Mortify/vendor/glm"]
 	path = Mortify/vendor/glm
 	url = https://github.com/g-truc/glm
+[submodule "Mortify/vendor/GLFW"]
+	path = Mortify/vendor/GLFW
+	url = https://github.com/DerThomy/glfw
