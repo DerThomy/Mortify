@@ -165,6 +165,7 @@
     <ClInclude Include="src\Mortify\LayerStack.h" />
     <ClInclude Include="src\Mortify\Log.h" />
     <ClInclude Include="src\Mortify\MouseCodes.h" />
+    <ClInclude Include="src\Mortify\Rendering\Color.h" />
     <ClInclude Include="src\Mortify\Window.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />

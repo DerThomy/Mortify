@@ -2,8 +2,6 @@
 
 #ifdef MT_PLATFORM_WINDOWS
 
-extern Mortify::Application* Mortify::CreateApplication();
-
 int main(int argc, char** argv)
 {
 	Mortify::Log::Init();
