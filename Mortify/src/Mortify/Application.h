@@ -24,8 +24,9 @@ namespace Mortify
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 	
-		inline static Application& Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
+		
+		inline static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 
