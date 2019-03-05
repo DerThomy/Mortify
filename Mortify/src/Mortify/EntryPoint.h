@@ -1,5 +1,10 @@
 #pragma once
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+
 #ifdef MT_PLATFORM_WINDOWS
 
 int main(int argc, char** argv)
@@ -11,6 +16,7 @@ int main(int argc, char** argv)
 	auto app = Mortify::CreateApplication();
 	app->Run();
 	delete app;
+	_CrtDumpMemoryLeaks();
 }
 
 #endif

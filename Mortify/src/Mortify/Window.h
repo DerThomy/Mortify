@@ -14,8 +14,8 @@ namespace Mortify
 		unsigned int Height;
 
 		WindowProps(const std::string& title = "Mortify Engine", 
-					unsigned int width = 1920, 
-					unsigned int height = 1280)
+					unsigned int width = 800, 
+					unsigned int height = 700)
 			: Title(title), Width(width), Height(height) {}
 	};
 
