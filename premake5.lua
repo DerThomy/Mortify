@@ -101,7 +101,8 @@ project "Sandbox"
 
     includedirs {
         "Mortify/src",
-        "Mortify/vendor/spdlog/include"
+        "Mortify/vendor/spdlog/include",
+		"Mortify/vendor/ImGui"
     }
 
 	links {

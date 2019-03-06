@@ -13,6 +13,9 @@
     <Filter Include="src\Mortify\ImGui">
       <UniqueIdentifier>{B0F4F2F3-1C0B-F189-6582-7CABD1D7C111}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mortify\Rendering">
+      <UniqueIdentifier>{D39B7E31-3F08-3A2C-08FC-D18974275C94}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
     </Filter>
@@ -89,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="src\Mortify\MouseCodes.h">
       <Filter>src\Mortify</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\Color.h">
+      <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Window.h">
       <Filter>src\Mortify</Filter>
@@ -1188,7 +1194,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Rendering\Color.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
