@@ -4,10 +4,22 @@ namespace Mortify
 {
 	struct Color
 	{
+	private:
+		union
+		{
+			struct
+			{
+				float r;
+				float g;
+				float b;
+				float a;
+			};
+			float components[4];
+		};
 	public:
 		Color()
 		{
-			Set(0, 0, 0, 0);
+			Set(0, 0, 0, 1);
 		}
 
 		Color(float InR, float InG, float InB, float InA = 1)
@@ -17,17 +29,28 @@ namespace Mortify
 
 		void Set(float InR, float InG, float InB, float InA)
 		{
-			m_Data[0] = InR;
-			m_Data[1] = InG;
-			m_Data[2] = InB;
-			m_Data[3] = InA;
+			r = InR;
+			g = InG;
+			b = InB;
+			a = InA;
 		}
 
-		float GetRed() const { return m_Data[0]; }
-		float GetGreen() const { return m_Data[1]; }
-		float GetBlue() const { return m_Data[2]; }
-		float GetAlpha() const { return m_Data[3]; }
-	private:
-		float m_Data[4];
+		float GetRed() const { return r; }
+		float GetGreen() const { return g; }
+		float GetBlue() const { return b; }
+		float GetAlpha() const { return a; }
+
+		bool operator== (const Color& InColor) { return (r == InColor.r && g == InColor.g && b == InColor.b && a == InColor.a); }
+		bool operator!= (const Color& InColor) { return (r != InColor.r || g != InColor.g || b != InColor.b || a != InColor.a); }
+
+		float& operator[] (int idx)
+		{
+			return components[idx];
+		}
+
+		const float& operator[] (int idx) const
+		{
+			return components[idx];
+		}
 	};
 }

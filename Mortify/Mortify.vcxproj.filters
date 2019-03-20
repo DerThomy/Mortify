@@ -1194,6 +1194,8 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\Context\RenderContext.h" />
+    <ClInclude Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
