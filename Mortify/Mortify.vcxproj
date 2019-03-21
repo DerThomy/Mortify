@@ -149,6 +149,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Mortify\Rendering\CommandBuffer.h" />
+    <ClInclude Include="src\Mortify\Rendering\Feature\RenderComponent.h" />
+    <ClInclude Include="src\Mortify\Rendering\Feature\RenderingFeature.h" />
+    <ClInclude Include="src\Mortify\Rendering\FramePacket.h" />
+    <ClInclude Include="src\Mortify\Rendering\RenderCommand.h" />
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Application.h" />
     <ClInclude Include="src\Mortify\Core.h" />
@@ -168,6 +173,9 @@
     <ClInclude Include="src\Mortify\Rendering\Color.h" />
     <ClInclude Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.h" />
     <ClInclude Include="src\Mortify\Rendering\Context\RenderContext.h" />
+    <ClInclude Include="src\Mortify\Rendering\RenderNode.h" />
+    <ClInclude Include="src\Mortify\Rendering\RenderObject.h" />
+    <ClInclude Include="src\Mortify\Rendering\ViewPacket.h" />
     <ClInclude Include="src\Mortify\Window.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
@@ -542,6 +550,7 @@
     <ClCompile Include="src\Mortify\Layer.cpp" />
     <ClCompile Include="src\Mortify\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Log.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\mtpch.cpp">

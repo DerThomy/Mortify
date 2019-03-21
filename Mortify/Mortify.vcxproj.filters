@@ -1196,6 +1196,14 @@
     </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\Context\RenderContext.h" />
     <ClInclude Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.h" />
+    <ClInclude Include="src\Mortify\Rendering\RenderNode.h" />
+    <ClInclude Include="src\Mortify\Rendering\RenderCommand.h" />
+    <ClInclude Include="src\Mortify\Rendering\CommandBuffer.h" />
+    <ClInclude Include="src\Mortify\Rendering\ViewPacket.h" />
+    <ClInclude Include="src\Mortify\Rendering\RenderObject.h" />
+    <ClInclude Include="src\Mortify\Rendering\Feature\RenderComponent.h" />
+    <ClInclude Include="src\Mortify\Rendering\Feature\RenderingFeature.h" />
+    <ClInclude Include="src\Mortify\Rendering\FramePacket.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
@@ -1225,5 +1233,6 @@
     <ClCompile Include="src\mtpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.cpp" />
   </ItemGroup>
 </Project>

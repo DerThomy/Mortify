@@ -7,8 +7,8 @@ namespace Mortify
 	class RenderContext
 	{
 	public:
-		virtual bool Init() = 0;
-		virtual void Clear(Color& color) = 0;
+		virtual void Init() = 0;
+		virtual void ClearBuffer(const Color& color) = 0;
 		virtual void Present() = 0;
 	};
 }
