@@ -1234,5 +1234,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\ViewPacket.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\FramePacket.cpp" />
   </ItemGroup>
 </Project>

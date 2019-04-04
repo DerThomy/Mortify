@@ -551,6 +551,8 @@
     <ClCompile Include="src\Mortify\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Log.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\FramePacket.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\ViewPacket.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\mtpch.cpp">
