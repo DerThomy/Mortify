@@ -24,7 +24,8 @@ public:
 	virtual void OnImGuiRender() override
 	{
 		ImGui::Begin("Test");
-		ImGui::Text("Hello world");
+		ImGui::Text("Hello world 2");
+		ImGui::Button("test", ImVec2(20, 10));
 		ImGui::End();
 	}
 };
@@ -34,6 +35,7 @@ class Sandbox : public Mortify::Application
 public:
 	Sandbox()
 	{
+		MT_INFO("Creating test imgui layer");
 		PushLayer(new ExampleLayer());
 	}
 

@@ -16,6 +16,15 @@
     <Filter Include="src\Mortify\Rendering">
       <UniqueIdentifier>{D39B7E31-3F08-3A2C-08FC-D18974275C94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mortify\Rendering\Context">
+      <UniqueIdentifier>{673903BB-D351-EAE4-9CFE-797E08D67E7E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Mortify\Rendering\Context\GLFW">
+      <UniqueIdentifier>{06EDACFE-F228-B068-5B3B-C85F47965883}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Mortify\Rendering\Feature">
+      <UniqueIdentifier>{0E5EB389-7A76-9AB3-4323-2A4DAFFA2E4D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
     </Filter>
@@ -92,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="src\Mortify\MouseCodes.h">
       <Filter>src\Mortify</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mortify\Rendering\Color.h">
-      <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Window.h">
       <Filter>src\Mortify</Filter>
@@ -1194,16 +1200,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Rendering\Context\RenderContext.h" />
-    <ClInclude Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.h" />
-    <ClInclude Include="src\Mortify\Rendering\RenderNode.h" />
-    <ClInclude Include="src\Mortify\Rendering\RenderCommand.h" />
-    <ClInclude Include="src\Mortify\Rendering\CommandBuffer.h" />
-    <ClInclude Include="src\Mortify\Rendering\ViewPacket.h" />
-    <ClInclude Include="src\Mortify\Rendering\RenderObject.h" />
-    <ClInclude Include="src\Mortify\Rendering\Feature\RenderComponent.h" />
-    <ClInclude Include="src\Mortify\Rendering\Feature\RenderingFeature.h" />
-    <ClInclude Include="src\Mortify\Rendering\FramePacket.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
@@ -1233,8 +1229,5 @@
     <ClCompile Include="src\mtpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mortify\Rendering\Context\GLFW\GLFWRenderContext.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\ViewPacket.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\FramePacket.cpp" />
   </ItemGroup>
 </Project>
