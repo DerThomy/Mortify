@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Mortify/Window.h"
-#include "GLFW/glfw3.h"
+#include "Mortify/Rendering/RenderContext.h"
+
+#include <GLFW/glfw3.h>
 
 namespace Mortify
 {
@@ -27,6 +29,7 @@ namespace Mortify
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
+		RenderContext* m_Context;
 
 		struct WindowData
 		{

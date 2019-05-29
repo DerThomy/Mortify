@@ -1200,6 +1200,9 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\RenderContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRenderContext.h" />
+    <ClInclude Include="src\Mortify\Rendering\Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
@@ -1229,5 +1232,7 @@
     <ClCompile Include="src\mtpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRenderContext.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Shader.cpp" />
   </ItemGroup>
 </Project>

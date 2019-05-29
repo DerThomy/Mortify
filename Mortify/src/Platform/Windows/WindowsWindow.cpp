@@ -5,6 +5,7 @@
 #include "Mortify/Events/ApplicationEvent.h"
 #include "Mortify/Events/MouseEvent.h"
 #include "Mortify/Events/KeyEvent.h"
+#include "Platform/OpenGL/OpenGLRenderContext.h"
 
 #include <glad/glad.h>
 
@@ -50,9 +51,10 @@ namespace Mortify
 		}
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		MT_CORE_ASSERT(status, "Failed to initizalize Glad!");
+		
+		m_Context = new OpenGLRenderContext(m_Window);
+		m_Context->Init();
+
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
@@ -150,11 +152,12 @@ namespace Mortify
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffer();
 	}
 
 	void WindowsWindow::Shutdown()
 	{
+		delete m_Context;
 		glfwDestroyWindow(m_Window);
 	}
 

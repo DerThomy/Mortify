@@ -13,7 +13,6 @@
 #include <unordered_set>
 
 #include "Mortify/Log.h"
-#include "Mortify/Rendering/Color.h"
 
 #ifdef MT_PLATFORM_WINDOWS
 	#include <Windows.h>
