@@ -140,6 +140,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Mortify\Rendering\Buffer.h" />
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Application.h" />
     <ClInclude Include="src\Mortify\Core.h" />
@@ -157,8 +158,10 @@
     <ClInclude Include="src\Mortify\Log.h" />
     <ClInclude Include="src\Mortify\MouseCodes.h" />
     <ClInclude Include="src\Mortify\Rendering\RenderContext.h" />
+    <ClInclude Include="src\Mortify\Rendering\Renderer.h" />
     <ClInclude Include="src\Mortify\Rendering\Shader.h" />
     <ClInclude Include="src\Mortify\Window.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderContext.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
@@ -527,13 +530,16 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />
     <ClCompile Include="src\Mortify\Application.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mortify\Layer.cpp" />
     <ClCompile Include="src\Mortify\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Log.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Shader.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderContext.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />

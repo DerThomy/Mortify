@@ -1203,6 +1203,9 @@
     <ClInclude Include="src\Mortify\Rendering\RenderContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderContext.h" />
     <ClInclude Include="src\Mortify\Rendering\Shader.h" />
+    <ClInclude Include="src\Mortify\Rendering\Renderer.h" />
+    <ClInclude Include="src\Mortify\Rendering\Buffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
@@ -1234,5 +1237,8 @@
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderContext.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Shader.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Renderer.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
   </ItemGroup>
 </Project>
