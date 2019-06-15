@@ -11,8 +11,8 @@ namespace Mortify
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RenderAPI::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
-		case RenderAPI::OpenGL: return new OpenGLVertexBuffer(vertices, size);
+			case RenderAPI::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
+			case RenderAPI::OpenGL: return new OpenGLVertexBuffer(vertices, size);
 		}
 
 		MT_CORE_ASSERT(false, "RenderAPI is not supported");
@@ -23,8 +23,8 @@ namespace Mortify
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RenderAPI::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
-		case RenderAPI::OpenGL: return new OpenGLIndexBuffer(indices, count);
+			case RenderAPI::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
+			case RenderAPI::OpenGL: return new OpenGLIndexBuffer(indices, count);
 		}
 
 		MT_CORE_ASSERT(false, "RenderAPI is not supported");
