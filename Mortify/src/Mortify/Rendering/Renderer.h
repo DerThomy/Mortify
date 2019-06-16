@@ -1,17 +1,18 @@
 #pragma once
 
+#include "RendererAPI.h"
+#include "RenderCommand.h"
+
 namespace Mortify
 {
-	enum class RenderAPI
-	{
-		None = 0, OpenGL
-	};
-
 	class Renderer
 	{
 	public:
-		static inline RenderAPI GetAPI() { return m_Api; }
-	private:
-		static RenderAPI m_Api;
+		static void BeginScene();
+		static void EndScene();
+
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+
+		static inline RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	};
 }
