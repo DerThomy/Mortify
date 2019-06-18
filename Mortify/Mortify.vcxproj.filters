@@ -16,17 +16,11 @@
     <Filter Include="src\Mortify\Rendering">
       <UniqueIdentifier>{D39B7E31-3F08-3A2C-08FC-D18974275C94}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Mortify\Rendering\Context">
-      <UniqueIdentifier>{673903BB-D351-EAE4-9CFE-797E08D67E7E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Mortify\Rendering\Context\GLFW">
-      <UniqueIdentifier>{06EDACFE-F228-B068-5B3B-C85F47965883}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Mortify\Rendering\Feature">
-      <UniqueIdentifier>{0E5EB389-7A76-9AB3-4323-2A4DAFFA2E4D}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform\OpenGL">
+      <UniqueIdentifier>{35A49437-A105-7245-2A73-B8F796D3A804}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Platform\Windows">
       <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
@@ -102,8 +96,41 @@
     <ClInclude Include="src\Mortify\MouseCodes.h">
       <Filter>src\Mortify</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\Buffer.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\RenderCommand.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\RenderContext.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\Renderer.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\RendererAPI.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\Shader.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\VertexArray.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\Window.h">
       <Filter>src\Mortify</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRenderContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>src\Platform\Windows</Filter>
@@ -1200,17 +1227,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Rendering\RenderContext.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLRenderContext.h" />
-    <ClInclude Include="src\Mortify\Rendering\Shader.h" />
-    <ClInclude Include="src\Mortify\Rendering\Renderer.h" />
-    <ClInclude Include="src\Mortify\Rendering\Buffer.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
-    <ClInclude Include="src\Mortify\Rendering\VertexArray.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
-    <ClInclude Include="src\Mortify\Rendering\RendererAPI.h" />
-    <ClInclude Include="src\Mortify\Rendering\RenderCommand.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
@@ -1231,6 +1247,36 @@
     <ClCompile Include="src\Mortify\Log.cpp">
       <Filter>src\Mortify</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\Buffer.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\Renderer.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\RendererAPI.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\Shader.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\VertexArray.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRenderContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
@@ -1240,15 +1286,5 @@
     <ClCompile Include="src\mtpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLRenderContext.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\Shader.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\Renderer.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\VertexArray.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\RendererAPI.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
   </ItemGroup>
 </Project>

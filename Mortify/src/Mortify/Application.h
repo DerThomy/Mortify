@@ -10,7 +10,6 @@
 #include "Mortify/ImGui/ImGuiLayer.h"
 
 #include "Mortify/Rendering/Shader.h"
-
 #include "Mortify/Rendering/Buffer.h"
 #include "Mortify/Rendering/VertexArray.h"
 
@@ -23,6 +22,7 @@ namespace Mortify
 		virtual ~Application();
 
 		void Run();
+		virtual void RunImpl() {};
 
 		void OnEvent(Event& e);
 

@@ -103,7 +103,8 @@ project "Sandbox"
     includedirs {
         "Mortify/src",
         "Mortify/vendor/spdlog/include",
-		"Mortify/vendor/ImGui"
+        "Mortify/vendor/ImGui",
+        "%{IncludeDir.glm}"
     }
 
 	links {
