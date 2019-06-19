@@ -157,6 +157,7 @@
     <ClInclude Include="src\Mortify\Log.h" />
     <ClInclude Include="src\Mortify\MouseCodes.h" />
     <ClInclude Include="src\Mortify\Rendering\Buffer.h" />
+    <ClInclude Include="src\Mortify\Rendering\Camera.h" />
     <ClInclude Include="src\Mortify\Rendering\RenderCommand.h" />
     <ClInclude Include="src\Mortify\Rendering\RenderContext.h" />
     <ClInclude Include="src\Mortify\Rendering\Renderer.h" />
@@ -542,6 +543,7 @@
     <ClCompile Include="src\Mortify\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Log.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Camera.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RendererAPI.cpp" />
