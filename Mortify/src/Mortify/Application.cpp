@@ -37,6 +37,8 @@ namespace Mortify
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
+		m_Camera->OnEvent(e);
+
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
 			(*--it)->OnEvent(e);
@@ -67,12 +69,6 @@ namespace Mortify
 	{
 		m_Running = false;
 		return true;
-	}
-
-	void Application::PushLayer(Layer* layer)
-	{
-		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)

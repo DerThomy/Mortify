@@ -13,6 +13,8 @@
 #include "Mortify/Rendering/Buffer.h"
 #include "Mortify/Rendering/VertexArray.h"
 
+#include "Mortify/Rendering/Camera.h"
+
 namespace Mortify
 {
 	class MT_API Application
@@ -45,6 +47,8 @@ namespace Mortify
 
 		std::shared_ptr<Shader> m_SquareShader;
 		std::shared_ptr<VertexArray> m_SquareVA;
+
+		std::shared_ptr<Camera> m_Camera;
 	private:
 		static Application* s_Instance;
 	};

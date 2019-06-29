@@ -1,7 +1,15 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Mortify/Events/Event.h"
 
 namespace Mortify {
 	// Default camera values
@@ -14,53 +22,87 @@ namespace Mortify {
 	class Camera
 	{
 	public:
-		enum Camera_Movement {
+		enum CameraType {
+			ORTHO,
+			FREE
+		};
+		enum CameraDirection {
+			UP,
+			DOWN,
 			FORWARD,
-			BACKWARD,
+			BACK,
 			LEFT,
 			RIGHT
 		};
 
 	public:
-		Camera(glm::vec3 position = { 0.0f, 0.0f, 0.0f }, glm::vec3 up = { 0.0f, 1.0f, 0.0f }, float yaw = YAW, float pitch = PITCH)
-			: m_Front(0.0f, 0.0f, -1.0f), m_Position(position), m_WorldUp(up), m_Yaw(yaw),
-			m_Pitch(pitch), m_Speed(SPEED), m_Sensitivity(SENSITIVITY), m_Zoom(ZOOM)
-		{
-			updateCameraVectors();
-		}
+		Camera();
 
-		Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch)
-			: m_Front(0.0f, 0.0f, -1.0f), m_Position(posX, posY, posZ), m_WorldUp(upX, upY, upZ),
-			m_Pitch(pitch), m_Yaw(yaw), m_Speed(SPEED), m_Sensitivity(SENSITIVITY), m_Zoom(ZOOM)
-		{
-			updateCameraVectors();
-		}
+		~Camera();
 
-		inline glm::mat4 GetViewMatrix() const
-		{
-			return glm::lookAt(m_Position, m_Position + m_Front, m_Up);
-		}
+		void Reset();
 
-		void ProcessKeyboard(Camera_Movement direction, float deltaTime);
+		void Update();
 
-		void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
+		void ChangePitch(float degrees);
 
-		void ProcessMouseScroll(float yoffset);
+		void ChangeHeading(float degrees);
+
+		void SetMode(CameraType cam_mode);
+
+		void SetPosition(glm::vec3 pos);
+
+		void SetLookAt(glm::vec3 pos);
+
+		void SetFOV(double fov);
+
+		void SetViewport(int loc_x, int loc_y, int width, int height);
+
+		void SetClipping(double near_clip_distance, double far_clip_distance);
+
+		void OnEvent(Event& e);
+
+		inline CameraType GetMode() const { return m_CameraMode; }
+		inline int GetViewportX() const { return m_ViewportX; }
+		inline int GetViewportY() const { return m_ViewportY; }
+		inline glm::mat4 GetVP() const { return m_VP; }
 
 	private:
-		void updateCameraVectors();
+		void Move(CameraDirection dir);
+		void Move2D(int x, int y);
 
 	private:
-		glm::vec3 m_Position;
-		glm::vec3 m_Front;
-		glm::vec3 m_Up;
-		glm::vec3 m_Right;
-		glm::vec3 m_WorldUp;
+		CameraType m_CameraMode;
 
-		float m_Yaw;
-		float m_Pitch;
-		float m_Speed;
-		float m_Sensitivity;
-		float m_Zoom;
+		glm::vec3 m_CameraPosition;
+		glm::vec3 m_CameraPositionDelta;
+		glm::vec3 m_CameraLookAt;
+		glm::vec3 m_CameraDirection;
+
+		glm::vec3 m_CameraUp;
+		glm::vec3 m_MousePosition;
+
+		glm::mat4 m_Projection;
+		glm::mat4 m_View;
+		glm::mat4 m_VP;
+
+		int m_ViewportX;
+		int m_ViewportY;
+
+		int m_WindowWidth;
+		int m_WindowHeight;
+
+		double m_Aspect;
+		double m_FOV;
+		double m_NearClip;
+		double m_FarClip;
+
+		float m_CameraScale;
+		float m_CameraHeading;
+		float m_CameraPitch;
+
+		float m_MaxPitchRate;
+		float m_MaxHeadingRate;
+		bool m_MoveCamera;
 	};
 }
