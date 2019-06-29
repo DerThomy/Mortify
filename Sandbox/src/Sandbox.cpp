@@ -2,6 +2,9 @@
 
 #include "imgui.h"
 
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+
 class ExampleLayer : public Mortify::Layer
 {
 public:
@@ -35,6 +38,9 @@ class Sandbox : public Mortify::Application
 public:
 	Sandbox()
 	{
+		m_Camera->SetLookAt({ 0, 0, 0 });
+		m_Camera->SetPosition({ 0, 0, 2.0f });
+
 		MT_INFO("Creating test imgui layer");
 		PushLayer(new ExampleLayer());
 
@@ -102,11 +108,13 @@ public:
 			out vec3 v_Position;
 			out vec4 v_Color;
 
+			uniform mat4 mvpMatrix;
+
 			void main()
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position, 1.0);
+				gl_Position = mvpMatrix * vec4(a_Position, 1.0);
 			}
 		)";
 
@@ -132,10 +140,12 @@ public:
 
 			out vec3 v_Position;
 
+			uniform mat4 mvpMatrix;
+
 			void main()
 			{
 				v_Position = a_Position;
-				gl_Position = vec4(a_Position, 1.0);
+				gl_Position = mvpMatrix * vec4(a_Position, 1.0);
 			}
 		)";
 
@@ -154,6 +164,9 @@ public:
 
 		m_TriangleShader.reset(new Mortify::Shader(triangleVertexSource, triangleFragmentSource));
 		m_SquareShader.reset(new Mortify::Shader(squareVertexSource, squareFragmentSource));
+
+		mvp_square_location = glGetUniformLocation(m_SquareShader->getProgramID(), "mvpMatrix");
+		mvp_triangle_location = glGetUniformLocation(m_TriangleShader->getProgramID(), "mvpMatrix");
 	}
 
 	~Sandbox()
@@ -161,6 +174,10 @@ public:
 
 	virtual void RunImpl() override 
 	{
+		glm::mat4 model = glm::mat4(1.0f);
+
+		glm::mat4 mvp = m_Camera->GetVP() * model;
+
 		Mortify::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Mortify::RenderCommand::Clear();
 
@@ -169,10 +186,16 @@ public:
 		m_SquareShader->Bind();
 		Mortify::Renderer::Submit(m_SquareVA);
 
+		glUniformMatrix4fv(mvp_square_location, 1, GL_FALSE, glm::value_ptr(mvp));
+
 		m_TriangleShader->Bind();
 		Mortify::Renderer::Submit(m_TriangleVA);
 
+		glUniformMatrix4fv(mvp_triangle_location, 1, GL_FALSE, glm::value_ptr(mvp));
+
 		Mortify::Renderer::EndScene();
+
+		m_Camera->Update();
 	}
 
 private:
@@ -181,6 +204,9 @@ private:
 
 	std::shared_ptr<Mortify::VertexArray> m_SquareVA;
 	std::shared_ptr<Mortify::Shader> m_SquareShader;
+
+	GLint mvp_square_location;
+	GLint mvp_triangle_location;
 };
 
 

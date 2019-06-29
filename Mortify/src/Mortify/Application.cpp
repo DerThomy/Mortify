@@ -23,8 +23,12 @@ namespace Mortify
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
+		m_Camera.reset(new Camera());
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+
+		m_Camera->SetViewport(0, 0, m_Window->GetWidth(), m_Window->GetHeight());
 	}
 
 	Application::~Application()
@@ -69,6 +73,12 @@ namespace Mortify
 	{
 		m_Running = false;
 		return true;
+	}
+
+	void Application::PushLayer(Layer* layer)
+	{
+		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)

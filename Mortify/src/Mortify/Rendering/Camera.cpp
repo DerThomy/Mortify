@@ -5,6 +5,7 @@
 #include "Mortify/MouseCodes.h"
 #include "Mortify/Events/MouseEvent.h"
 #include "Mortify/Events/KeyEvent.h"
+#include "Mortify/Events/ApplicationEvent.h"
 
 namespace Mortify
 {
@@ -17,6 +18,8 @@ namespace Mortify
 		m_MaxPitchRate = 5;
 		m_MaxHeadingRate = 5;
 		m_MoveCamera = false;
+		m_NearClip = 0.1;
+		m_FarClip = 1000;
 	}
 
 	Camera::~Camera() {
@@ -168,32 +171,32 @@ namespace Mortify
 
 	void Camera::OnEvent(Event& e)
 	{
-		if (e.GetEventType == EventType::MouseMoved)
+		if (e.GetEventType() == EventType::MouseMoved)
 		{
 			MouseMovedEvent& mouse_moved_event = dynamic_cast<MouseMovedEvent&>(e);
 			Move2D(mouse_moved_event.GetX(), mouse_moved_event.GetY());
 		}
-		else if (e.GetEventType == EventType::MouseButtonClicked)
+		else if (e.GetEventType() == EventType::MouseButtonClicked)
 		{
 			MouseButtonClickedEvent& mouse_clicked_event = dynamic_cast<MouseButtonClickedEvent&>(e);
 			if (mouse_clicked_event.GetButtonCode() == MT_MOUSE_BUTTON_1)
 				m_MoveCamera = true;
 		}
-		else if (e.GetEventType == EventType::MouseButtonReleased)
+		else if (e.GetEventType() == EventType::MouseButtonReleased)
 		{
 			MouseButtonReleasedEvent& mouse_released_event = dynamic_cast<MouseButtonReleasedEvent&>(e);
 			if (mouse_released_event.GetButtonCode() == MT_MOUSE_BUTTON_1)
 				m_MoveCamera = false;
 		}
-		else if (e.GetEventType == EventType::MouseScrolled)
+		else if (e.GetEventType() == EventType::MouseScrolled)
 		{
 			MouseScrolledEvent& mouse_scrolled_event = dynamic_cast<MouseScrolledEvent&>(e);
 			if (mouse_scrolled_event.GetYOffset() > 0)
-				m_CameraPositionDelta += m_CameraUp * .05f;
+				m_CameraPositionDelta += m_CameraUp * 0.05f;
 			else if (mouse_scrolled_event.GetYOffset() < 0)
-				m_CameraPositionDelta -= m_CameraUp * .05f;
+				m_CameraPositionDelta -= m_CameraUp * 0.05f;
 		}
-		else if (e.GetEventType == EventType::KeyPressed)
+		else if (e.GetEventType() == EventType::KeyPressed)
 		{
 			KeyPressedEvent& key_pressed_event = dynamic_cast<KeyPressedEvent&>(e);
 			if (key_pressed_event.getKeyCode() == MT_KEY_W || key_pressed_event.getKeyCode() == MT_KEY_UP)
@@ -208,6 +211,11 @@ namespace Mortify
 				Move(DOWN);
 			else if (key_pressed_event.getKeyCode() == MT_KEY_E)
 				Move(UP);
+		}
+		else if (e.GetEventType() == EventType::WindowResize)
+		{
+			WindowResizeEvent& window_resize_event = dynamic_cast<WindowResizeEvent&>(e);
+			SetViewport(0, 0, window_resize_event.GetWidth(), window_resize_event.GetHeight());
 		}
 	}
 }

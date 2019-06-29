@@ -41,13 +41,7 @@ namespace Mortify
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;
-
-		std::shared_ptr<Shader> m_TriangleShader;
-		std::shared_ptr<VertexArray> m_TriangleVA;
-
-		std::shared_ptr<Shader> m_SquareShader;
-		std::shared_ptr<VertexArray> m_SquareVA;
-
+	protected:
 		std::shared_ptr<Camera> m_Camera;
 	private:
 		static Application* s_Instance;

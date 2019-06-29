@@ -99,6 +99,9 @@
     <ClInclude Include="src\Mortify\Rendering\Buffer.h">
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\Camera.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\RenderCommand.h">
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
@@ -1227,7 +1230,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Rendering\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
@@ -1249,6 +1251,9 @@
       <Filter>src\Mortify</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\Buffer.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\Camera.cpp">
       <Filter>src\Mortify\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp">
@@ -1287,6 +1292,5 @@
     <ClCompile Include="src\mtpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mortify\Rendering\Camera.cpp" />
   </ItemGroup>
 </Project>
