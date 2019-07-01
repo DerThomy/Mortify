@@ -37,12 +37,12 @@ namespace Mortify
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 
-		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;
 	protected:
-		std::shared_ptr<Camera> m_Camera;
+		OrthographicCamera m_Camera;
+		std::unique_ptr<Window> m_Window;
 	private:
 		static Application* s_Instance;
 	};

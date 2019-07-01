@@ -1,5 +1,7 @@
 #include "mtpch.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "Camera.h"
 #include "Mortify/KeyCodes.h"
 #include "Mortify/MouseCodes.h"
@@ -7,8 +9,25 @@
 #include "Mortify/Events/KeyEvent.h"
 #include "Mortify/Events/ApplicationEvent.h"
 
+
 namespace Mortify
 {
+	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
+		: m_ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), m_ViewMatrix(1.0f)
+	{
+		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	}
+
+	void OrthographicCamera::UpdateViewMatrix()
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0, 0, 1));
+
+		m_ViewMatrix = glm::inverse(transform);
+		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	}
+
+	/*
 	Camera::Camera() {
 		m_CameraMode = FREE;
 		m_CameraUp = glm::vec3(0, 1, 0);
@@ -42,7 +61,7 @@ namespace Mortify
 			m_Projection = glm::perspective(m_FOV, m_Aspect, m_NearClip, m_FarClip);
 			glm::vec3 axis = glm::cross(m_CameraDirection, m_CameraUp);
 			glm::quat pitch_quat = glm::angleAxis(m_CameraPitch, axis);
-			glm::quat heading_quat = glm::angleAxis(m_CameraHeading, axis);
+			glm::quat heading_quat = glm::angleAxis(m_CameraHeading, m_CameraUp);
 			glm::quat quat = glm::normalize(glm::cross(pitch_quat, heading_quat));
 
 			m_CameraDirection = glm::rotate(quat, m_CameraDirection);
@@ -92,24 +111,24 @@ namespace Mortify
 	void Camera::Move(CameraDirection dir) {
 		if (m_CameraMode == FREE) {
 			switch (dir) {
-			case UP:
-				m_CameraPositionDelta += m_CameraUp * m_CameraScale;
-				break;
-			case DOWN:
-				m_CameraPositionDelta -= m_CameraUp * m_CameraScale;
-				break;
-			case LEFT:
-				m_CameraPositionDelta -= glm::cross(m_CameraDirection, m_CameraUp) * m_CameraScale;
-				break;
-			case RIGHT:
-				m_CameraPositionDelta += glm::cross(m_CameraDirection, m_CameraUp) * m_CameraScale;
-				break;
-			case FORWARD:
-				m_CameraPositionDelta += m_CameraDirection * m_CameraScale;
-				break;
-			case BACK:
-				m_CameraPositionDelta -= m_CameraDirection * m_CameraScale;
-				break;
+				case UP:
+					m_CameraPositionDelta += m_CameraUp * m_CameraScale;
+					break;
+				case DOWN:
+					m_CameraPositionDelta -= m_CameraUp * m_CameraScale;
+					break;
+				case LEFT:
+					m_CameraPositionDelta -= glm::cross(m_CameraDirection, m_CameraUp) * m_CameraScale;
+					break;
+				case RIGHT:
+					m_CameraPositionDelta += glm::cross(m_CameraDirection, m_CameraUp) * m_CameraScale;
+					break;
+				case FORWARD:
+					m_CameraPositionDelta += m_CameraDirection * m_CameraScale;
+					break;
+				case BACK:
+					m_CameraPositionDelta -= m_CameraDirection * m_CameraScale;
+					break;
 			}
 		}
 	}
@@ -218,4 +237,5 @@ namespace Mortify
 			SetViewport(0, 0, window_resize_event.GetWidth(), window_resize_event.GetHeight());
 		}
 	}
+	*/
 }
