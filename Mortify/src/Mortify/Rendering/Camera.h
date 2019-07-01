@@ -70,6 +70,8 @@ namespace Mortify {
 		void SetLookAt(glm::vec3 pos);
 
 		void SetFOV(double fov);
+		
+		void SetZoom(double zoom);
 
 		void SetViewport(int loc_x, int loc_y, int width, int height);
 
@@ -108,7 +110,9 @@ namespace Mortify {
 		int m_WindowHeight;
 
 		double m_Aspect;
+		double m_AspectY;
 		double m_FOV;
+		double m_ZoomFactor;
 		double m_NearClip;
 		double m_FarClip;
 
