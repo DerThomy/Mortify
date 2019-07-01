@@ -32,6 +32,7 @@ namespace Mortify
 		m_CameraMode = FREE;
 		m_CameraUp = glm::vec3(0, 1, 0);
 		m_FOV = 45;
+		m_ZoomFactor = 1;
 		m_CameraPositionDelta = glm::vec3(0, 0, 0);
 		m_CameraScale = 0.5f;
 		m_MaxPitchRate = 5;
@@ -54,11 +55,11 @@ namespace Mortify
 
 		if (m_CameraMode == CameraType::ORTHO)
 		{
-			m_Projection = glm::ortho(-1.5f * float(m_Aspect), 1.5f * float(m_Aspect), -1.5f, 1.5f, -10.0f, 10.0f);
+			m_Projection = glm::ortho(-1.5f * float(m_Aspect) / float(m_AspectY) / float(m_ZoomFactor), 1.5f * float(m_Aspect) / float(m_AspectY) / float(m_ZoomFactor), -1.5f / float(m_AspectY) / float(m_ZoomFactor), 1.5f / float(m_AspectY) / float(m_ZoomFactor), -10.0f, 10.0f);
 		}
 		else if (m_CameraMode == CameraType::FREE)
 		{
-			m_Projection = glm::perspective(m_FOV, m_Aspect, m_NearClip, m_FarClip);
+			m_Projection = glm::perspective(glm::degrees(2 * atan(tan(glm::radians(m_FOV / 2)) / float(m_AspectY) / float(m_ZoomFactor))), m_Aspect, m_NearClip, m_FarClip);
 			glm::vec3 axis = glm::cross(m_CameraDirection, m_CameraUp);
 			glm::quat pitch_quat = glm::angleAxis(m_CameraPitch, axis);
 			glm::quat heading_quat = glm::angleAxis(m_CameraHeading, m_CameraUp);
@@ -95,6 +96,9 @@ namespace Mortify
 	void Camera::SetFOV(double fov) {
 		m_FOV = fov;
 	}
+	void Camera::SetZoom(double zoom) {
+		m_ZoomFactor = zoom;
+	}
 	void Camera::SetViewport(int loc_x, int loc_y, int width, int height) {
 		m_ViewportX = loc_x;
 		m_ViewportY = loc_y;
@@ -102,6 +106,11 @@ namespace Mortify
 		m_WindowHeight = height;
 		//need to use doubles division here, it will not work otherwise and it is possible to get a zero aspect ratio with integer rounding
 		m_Aspect = double(width) / double(height);
+		m_AspectY = 1;
+		if (m_Aspect < 1.77777777777777778)
+		{
+			m_AspectY = m_Aspect / 1.77777777777777778
+		}
 	}
 	void Camera::SetClipping(double near_clip_distance, double far_clip_distance) {
 		m_NearClip = near_clip_distance;
