@@ -5,8 +5,21 @@
 #include <glm/glm.hpp>
 
 #include "Mortify/Events/Event.h"
+#include "Mortify/Window.h"
 
 namespace Mortify {
+
+	class PerspectiveCamera
+	{
+	private:
+		glm::mat4 m_ProjectionMatrix;
+		glm::mat4 m_ViewMatrix;
+		glm::mat4 m_ViewProjectionMatrix;
+
+		float m_Pitch;
+		float m_Yaw;
+		float m_Roll;
+	};
 
 	class OrthographicCamera
 	{
@@ -22,8 +35,12 @@ namespace Mortify {
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+
+		void OnEvent(Event& e);
+
 	private:
 		void UpdateViewMatrix();
+
 	private:
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewMatrix;
