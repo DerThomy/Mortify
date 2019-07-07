@@ -2,45 +2,12 @@
 
 #include "imgui.h"
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-
 class ExampleLayer : public Mortify::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example")
+		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f)
 	{
-
-	}
-
-	void OnUpdate() override
-	{
-		//MT_INFO("ExampleLayer::Update");
-	}
-
-	void OnEvent(Mortify::Event& event) override
-	{
-		//MT_TRACE("{0}", event);
-	}
-
-	virtual void OnImGuiRender() override
-	{
-		ImGui::Begin("Test");
-		ImGui::Text("Hello world 2");
-		ImGui::Button("test", ImVec2(20, 10));
-		ImGui::End();
-	}
-};
-
-class Sandbox : public Mortify::Application
-{
-public:
-	Sandbox()
-	{
-		MT_INFO("Creating test imgui layer");
-		PushLayer(new ExampleLayer());
-
 		m_TriangleVA.reset(Mortify::VertexArray::Create());
 
 		float triangleVertices[3 * 7] = {
@@ -163,18 +130,30 @@ public:
 		m_SquareShader.reset(new Mortify::Shader(squareVertexSource, squareFragmentSource));
 	}
 
-	~Sandbox()
-	{}
-
-	virtual void RunImpl() override 
+	void OnUpdate() override
 	{
-		//glm::mat4 model = glm::mat4(1.0f);
+		if (Mortify::Input::IsKeyPressed(MT_KEY_LEFT) || Mortify::Input::IsKeyPressed(MT_KEY_A))
+			m_CameraPosition.x -= m_CameraMoveSpeed;
+		else if (Mortify::Input::IsKeyPressed(MT_KEY_RIGHT) || Mortify::Input::IsKeyPressed(MT_KEY_D))
+			m_CameraPosition.x += m_CameraMoveSpeed;
+
+		if (Mortify::Input::IsKeyPressed(MT_KEY_UP) || Mortify::Input::IsKeyPressed(MT_KEY_W))
+			m_CameraPosition.y += m_CameraMoveSpeed;
+		else if (Mortify::Input::IsKeyPressed(MT_KEY_DOWN) || Mortify::Input::IsKeyPressed(MT_KEY_S))
+			m_CameraPosition.y -= m_CameraMoveSpeed;
+
+		if (Mortify::Input::IsKeyPressed(MT_KEY_Q))
+			m_CameraRotation += m_CameraRotationSpeed;
+		else if (Mortify::Input::IsKeyPressed(MT_KEY_E))
+			m_CameraRotation -= m_CameraRotationSpeed;
 
 		Mortify::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Mortify::RenderCommand::Clear();
-		//glViewport(0, 0, m_Window->GetWidth(), m_Window->GetHeight());
 
 		Mortify::Renderer::BeginScene(m_Camera);
+
+		m_Camera.SetPosition(m_CameraPosition);
+		m_Camera.SetRotation(m_CameraRotation);
 
 		m_SquareShader->Bind();
 		Mortify::Renderer::Submit(m_SquareVA, m_SquareShader);
@@ -185,15 +164,41 @@ public:
 		Mortify::Renderer::EndScene();
 	}
 
+	void OnEvent(Mortify::Event& event) override
+	{
+		
+	}
+
+	virtual void OnImGuiRender() override
+	{
+
+	}
+
 private:
 	std::shared_ptr<Mortify::VertexArray> m_TriangleVA;
 	std::shared_ptr<Mortify::Shader> m_TriangleShader;
 
 	std::shared_ptr<Mortify::VertexArray> m_SquareVA;
 	std::shared_ptr<Mortify::Shader> m_SquareShader;
+	Mortify::OrthographicCamera m_Camera;
 
-	GLint mvp_square_location;
-	GLint mvp_triangle_location;
+	glm::vec3 m_CameraPosition;
+	float m_CameraMoveSpeed = 0.1f;
+
+	float m_CameraRotation = 0.0f;
+	float m_CameraRotationSpeed = 0.5f;
+};
+
+class Sandbox : public Mortify::Application
+{
+public:
+	Sandbox()
+	{
+		PushLayer(new ExampleLayer());
+	}
+
+	~Sandbox()
+	{}
 };
 
 

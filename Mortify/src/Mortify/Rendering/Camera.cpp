@@ -28,44 +28,6 @@ namespace Mortify
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
 
-	void OrthographicCamera::OnEvent(Event& e)
-	{
-		if (e.GetEventType() == EventType::KeyPressed)
-		{
-			KeyPressedEvent& key_pressed_event = dynamic_cast<KeyPressedEvent&>(e);
-			if (key_pressed_event.getKeyCode() == MT_KEY_W || key_pressed_event.getKeyCode() == MT_KEY_UP)
-			{
-				m_Position.y += 0.01f;
-				UpdateViewMatrix();
-			}
-			else if (key_pressed_event.getKeyCode() == MT_KEY_A || key_pressed_event.getKeyCode() == MT_KEY_LEFT)
-			{
-				m_Position.x -= 0.01f;
-				UpdateViewMatrix();
-			}
-			else if (key_pressed_event.getKeyCode() == MT_KEY_S || key_pressed_event.getKeyCode() == MT_KEY_DOWN)
-			{
-				m_Position.y -= 0.01f;
-				UpdateViewMatrix();
-			}
-			else if (key_pressed_event.getKeyCode() == MT_KEY_D || key_pressed_event.getKeyCode() == MT_KEY_RIGHT)
-			{
-				m_Position.x += 0.01f;
-				UpdateViewMatrix();
-			}
-			else if (key_pressed_event.getKeyCode() == MT_KEY_E)
-			{
-				m_Rotation += 1.0f;
-				UpdateViewMatrix();
-			}
-			else if (key_pressed_event.getKeyCode() == MT_KEY_Q)
-			{
-				m_Rotation -= 1.0f;
-				UpdateViewMatrix();
-			}
-		}
-	}
-
 	/*
 	Camera::Camera() {
 		m_CameraMode = FREE;

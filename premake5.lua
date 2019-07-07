@@ -104,8 +104,7 @@ project "Sandbox"
         "Mortify/src",
         "Mortify/vendor/spdlog/include",
         "Mortify/vendor/ImGui",
-        "%{IncludeDir.glm}",
-        "%{IncludeDir.Glad}"
+		"%{IncludeDir.glm}"
     }
 
 	links {

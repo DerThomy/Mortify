@@ -9,12 +9,6 @@
 
 #include "Mortify/ImGui/ImGuiLayer.h"
 
-#include "Mortify/Rendering/Shader.h"
-#include "Mortify/Rendering/Buffer.h"
-#include "Mortify/Rendering/VertexArray.h"
-
-#include "Mortify/Rendering/Camera.h"
-
 namespace Mortify
 {
 	class MT_API Application
@@ -24,7 +18,6 @@ namespace Mortify
 		virtual ~Application();
 
 		void Run();
-		virtual void RunImpl() {};
 
 		void OnEvent(Event& e);
 
@@ -37,12 +30,10 @@ namespace Mortify
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 
+		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;
-	protected:
-		OrthographicCamera m_Camera;
-		std::unique_ptr<Window> m_Window;
 	private:
 		static Application* s_Instance;
 	};
