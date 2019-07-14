@@ -2,11 +2,13 @@
 
 #include "imgui.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 class ExampleLayer : public Mortify::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f)
+		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f), m_SquarePosition(0.0f)
 	{
 		m_TriangleVA.reset(Mortify::VertexArray::Create());
 
@@ -105,11 +107,12 @@ public:
 			out vec3 v_Position;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			void main()
 			{
 				v_Position = a_Position;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 
@@ -149,6 +152,16 @@ public:
 		else if (Mortify::Input::IsKeyPressed(MT_KEY_E))
 			m_CameraRotation -= m_CameraRotationSpeed * ts;
 
+		if (Mortify::Input::IsKeyPressed(MT_KEY_J))
+			m_SquarePosition.x -= m_TransformSpeed * ts;
+		else if (Mortify::Input::IsKeyPressed(MT_KEY_L))
+			m_SquarePosition.x += m_TransformSpeed * ts;
+
+		if (Mortify::Input::IsKeyPressed(MT_KEY_I))
+			m_SquarePosition.y += m_TransformSpeed * ts;
+		else if (Mortify::Input::IsKeyPressed(MT_KEY_K))
+			m_SquarePosition.y -= m_TransformSpeed * ts;
+
 		Mortify::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Mortify::RenderCommand::Clear();
 
@@ -158,7 +171,7 @@ public:
 		m_Camera.SetRotation(m_CameraRotation);
 
 		m_SquareShader->Bind();
-		Mortify::Renderer::Submit(m_SquareVA, m_SquareShader);
+		Mortify::Renderer::Submit(m_SquareVA, m_SquareShader, glm::translate(glm::mat4(1.0f), m_SquarePosition));
 
 		m_TriangleShader->Bind();
 		Mortify::Renderer::Submit(m_TriangleVA, m_TriangleShader);
@@ -189,6 +202,9 @@ private:
 
 	float m_CameraRotation = 0.0f;
 	float m_CameraRotationSpeed = 20.0f;
+
+	glm::vec3 m_SquarePosition;
+	float m_TransformSpeed = 4.0f;
 };
 
 class Sandbox : public Mortify::Application
