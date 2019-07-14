@@ -29,11 +29,12 @@ namespace Mortify
 		inline static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
-
+	private:
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;
+		float m_TimeFromLastFrame = 0.0f;
 	private:
 		static Application* s_Instance;
 	};

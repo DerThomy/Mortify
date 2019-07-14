@@ -1,12 +1,11 @@
 #include "mtpch.h"
 
 #include "Application.h"
-
 #include "Mortify/Log.h"
-
 #include "Mortify/Input.h"
-
 #include "Mortify/Rendering/Renderer.h"
+
+#include <GLFW/glfw3.h>
 
 
 namespace Mortify
@@ -22,6 +21,7 @@ namespace Mortify
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetVSync(false);
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
@@ -49,8 +49,12 @@ namespace Mortify
 	{
 		while (m_Running)
 		{
+			float time = glfwGetTime();
+			Timestep ts = time - m_TimeFromLastFrame;
+			m_TimeFromLastFrame = time;
+
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(ts);
 
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)

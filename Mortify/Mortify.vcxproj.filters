@@ -1230,6 +1230,7 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Core\Timestep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
