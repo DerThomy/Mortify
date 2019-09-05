@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Mortify/Core.h"
+#include "Mortify/Define.h"
 #include "Mortify/Core/Timestep.h"
 #include "Mortify/Events/Event.h"
+#include "Mortify/Window.h"
 
 namespace Mortify
 {

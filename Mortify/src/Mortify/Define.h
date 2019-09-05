@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef MT_PLATFORM_WINDOWS
 	#ifdef MT_USE_DLL
 		#ifdef MT_BUILD_DLL
@@ -29,3 +31,12 @@
 #define BIT(x) (1 << x)
 
 #define BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+namespace Mortify
+{
+	template <typename T>
+	using Ref = std::shared_ptr<T>;
+
+	template <typename T>
+	using Scope = std::unique_ptr<T>;
+}

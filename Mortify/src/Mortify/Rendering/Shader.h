@@ -1,23 +1,19 @@
 #pragma once
 
 #include <string>
-#include <glm/glm.hpp>
+
+typedef int GLint;
 
 namespace Mortify
 {
 	class Shader
 	{
 	public:
-		Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
-		Shader::~Shader();
+		virtual ~Shader() = default;
 
-		unsigned int const getProgramID() const { return m_RendererID; }
+		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
 
-		void Bind() const;
-		void Unbind() const;
-
-		void UploadUniformMatrix4f(const std::string& name, const glm::mat4& matrix);
-	private:
-		uint32_t m_RendererID;
+		static Shader* Create(const std::string& vertexSrc, const std::string& fragmentSrc);
 	};
 }

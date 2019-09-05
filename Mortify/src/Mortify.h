@@ -14,14 +14,20 @@
 
 #include "Mortify/ImGui/ImGuiLayer.h"
 
+//----Renderer--------------------
+
 #include "Mortify/Rendering/Renderer.h"
 #include "Mortify/Rendering/RenderCommand.h"
 
 #include "Mortify/Rendering/Shader.h"
 #include "Mortify/Rendering/Buffer.h"
 #include "Mortify/Rendering/VertexArray.h"
+#include "Mortify/Rendering/Material.h"
+#include "Mortify/Rendering/Mesh.h"
 
 #include "Mortify/Rendering/Camera.h"
+
+//--------------------------------
 
 //-----------EntryPoint-----------
 

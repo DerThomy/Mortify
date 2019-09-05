@@ -54,9 +54,6 @@
     <ClInclude Include="src\Mortify\Application.h">
       <Filter>src\Mortify</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Core.h">
-      <Filter>src\Mortify</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mortify\Define.h">
       <Filter>src\Mortify</Filter>
     </ClInclude>
@@ -1231,6 +1228,12 @@
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Core\Timestep.h" />
+    <ClInclude Include="src\Mortify\Rendering\Material.h" />
+    <ClInclude Include="src\Mortify\Rendering\RenderObject.h" />
+    <ClInclude Include="src\Mortify\Rendering\Mesh.h" />
+    <ClInclude Include="src\Mortify\Core\Resource.h" />
+    <ClInclude Include="src\Mortify\Rendering\Vertex.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
@@ -1293,5 +1296,8 @@
     <ClCompile Include="src\mtpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Core\Resource.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Mesh.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
   </ItemGroup>
 </Project>

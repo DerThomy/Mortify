@@ -73,13 +73,13 @@ namespace Mortify
 	{
 	public:
 		BufferLayout(const std::initializer_list<BufferElement>& elements)
-			: m_Elements(elements)
+			: m_Elements(elements), m_Stride(0)
 		{
 			CalculateOffsetAndStride();
 		}
 
 		BufferLayout()
-			: m_Elements(0)
+			: m_Elements(0), m_Stride(0)
 		{}
 
 		inline const std::vector<BufferElement>& GetElements() { return m_Elements; }

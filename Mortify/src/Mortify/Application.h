@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Define.h"
 
 #include "Window.h"
 #include "Mortify/LayerStack.h"
@@ -29,6 +29,7 @@ namespace Mortify
 		inline static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;

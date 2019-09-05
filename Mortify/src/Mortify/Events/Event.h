@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mortify/Core.h"
+#include "Mortify/Define.h"
 
 #include <string>
 #include <sstream>

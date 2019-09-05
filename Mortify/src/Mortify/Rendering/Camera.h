@@ -3,6 +3,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "Mortify/Events/Event.h"
 #include "Mortify/Window.h"
@@ -35,6 +36,13 @@ namespace Mortify {
 		inline float GetRotation() const { return m_Rotation; }
 		inline void SetRotation(float rotation) { m_Rotation = rotation; UpdateViewMatrix(); }
 
+		inline float GetAspectRatio() const { return m_AspectRatio; }
+		inline void SetAspectRatio(float aspect) 
+		{ 
+			m_AspectRatio = aspect;  
+			m_ProjectionMatrix = glm::ortho(m_Left * m_AspectRatio, m_Right * m_AspectRatio, m_Bottom, m_Top, -1.0f, 1.0f); 
+		}
+
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
@@ -49,6 +57,12 @@ namespace Mortify {
 
 		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
 		float m_Rotation = 0.0f;
+		float m_AspectRatio = 1.0f;
+
+		float m_Left;
+		float m_Right;
+		float m_Bottom;
+		float m_Top;
 	};
 
 	/*

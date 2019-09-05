@@ -19,10 +19,16 @@ namespace Mortify
 			s_RenderAPI->Clear();
 		}
 
-		static inline void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+		static inline void SetViewport(float width, float height)
+		{
+			s_RenderAPI->SetViewport(width, height);
+		}
+
+		static inline void DrawIndexed(const Ref<VertexArray>& vertexArray)
 		{
 			s_RenderAPI->DrawIndexed(vertexArray);
 		}
+
 	private:
 		static RendererAPI* s_RenderAPI;
 	};

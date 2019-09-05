@@ -1,5 +1,7 @@
 #include <Mortify.h>
 
+#include "Platform/OpenGL/OpenGLShader.h"
+
 #include "imgui.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,7 +20,7 @@ public:
 			 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f,
 		};
 
-		std::shared_ptr<Mortify::VertexBuffer> triangleVB;
+		Mortify::Ref<Mortify::VertexBuffer> triangleVB;
 		triangleVB.reset(Mortify::VertexBuffer::Create(triangleVertices, sizeof(triangleVertices)));
 
 		Mortify::BufferLayout triangleLayout = {
@@ -32,7 +34,7 @@ public:
 
 		unsigned int triangleIndicies[3] = { 0, 1, 2 };
 
-		std::shared_ptr<Mortify::IndexBuffer> triangleIB;
+		Mortify::Ref<Mortify::IndexBuffer> triangleIB;
 		triangleIB.reset(Mortify::IndexBuffer::Create(triangleIndicies, sizeof(triangleIndicies) / sizeof(uint32_t)));
 
 		m_TriangleVA->SetIndexBuffer(triangleIB);
@@ -48,7 +50,7 @@ public:
 			-0.75f,  0.75f, 0.0f
 		};
 
-		std::shared_ptr<Mortify::VertexBuffer> squareVB;
+		Mortify::Ref<Mortify::VertexBuffer> squareVB;
 		squareVB.reset(Mortify::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 
 		squareVB->SetLayout({
@@ -60,7 +62,7 @@ public:
 
 		unsigned int squareIndicies[6] = { 0, 1, 2, 2, 3, 0 };
 
-		std::shared_ptr<Mortify::IndexBuffer> squareIB;
+		Mortify::Ref<Mortify::IndexBuffer> squareIB;
 		squareIB.reset(Mortify::IndexBuffer::Create(squareIndicies, sizeof(squareIndicies) / sizeof(uint32_t)));
 
 		m_SquareVA->SetIndexBuffer(squareIB);
@@ -75,6 +77,7 @@ public:
 			out vec4 v_Color;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			void main()
 			{
@@ -129,8 +132,8 @@ public:
 			}
 		)";
 
-		m_TriangleShader.reset(new Mortify::Shader(triangleVertexSource, triangleFragmentSource));
-		m_SquareShader.reset(new Mortify::Shader(squareVertexSource, squareFragmentSource));
+		m_TriangleShader.reset(Mortify::Shader::Create(triangleVertexSource, triangleFragmentSource));
+		m_SquareShader.reset(Mortify::Shader::Create(squareVertexSource, squareFragmentSource));
 	}
 
 	void OnUpdate(Mortify::Timestep ts) override
@@ -170,10 +173,10 @@ public:
 		m_Camera.SetPosition(m_CameraPosition);
 		m_Camera.SetRotation(m_CameraRotation);
 
-		m_SquareShader->Bind();
+		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_SquareShader)->Bind();
 		Mortify::Renderer::Submit(m_SquareVA, m_SquareShader, glm::translate(glm::mat4(1.0f), m_SquarePosition));
 
-		m_TriangleShader->Bind();
+		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_TriangleShader)->Bind();
 		Mortify::Renderer::Submit(m_TriangleVA, m_TriangleShader);
 
 		Mortify::Renderer::EndScene();
@@ -190,11 +193,11 @@ public:
 	}
 
 private:
-	std::shared_ptr<Mortify::VertexArray> m_TriangleVA;
-	std::shared_ptr<Mortify::Shader> m_TriangleShader;
+	Mortify::Ref<Mortify::VertexArray> m_TriangleVA;
+	Mortify::Ref<Mortify::Shader> m_TriangleShader;
 
-	std::shared_ptr<Mortify::VertexArray> m_SquareVA;
-	std::shared_ptr<Mortify::Shader> m_SquareShader;
+	Mortify::Ref<Mortify::VertexArray> m_SquareVA;
+	Mortify::Ref<Mortify::Shader> m_SquareShader;
 	Mortify::OrthographicCamera m_Camera;
 
 	glm::vec3 m_CameraPosition;
