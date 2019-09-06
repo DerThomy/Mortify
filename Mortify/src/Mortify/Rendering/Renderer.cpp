@@ -32,7 +32,7 @@ namespace Mortify
 
 	void Renderer::Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform)
 	{
-		shader->Bind();
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->Bind();
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMatrix4f("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMatrix4f("u_Transform", transform);
 

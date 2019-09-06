@@ -7,12 +7,12 @@
 
 namespace Mortify
 {
-	VertexArray* VertexArray::Create()
+	Ref<VertexArray> VertexArray::Create()
 	{
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL: return new OpenGLVertexArray();
+			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertexArray>();
 		}
 
 		MT_CORE_ASSERT(false, "RenderAPI is not supported");

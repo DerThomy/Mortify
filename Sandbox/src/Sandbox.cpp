@@ -12,7 +12,7 @@ public:
 	ExampleLayer()
 		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f), m_SquarePosition(0.0f)
 	{
-		m_TriangleVA.reset(Mortify::VertexArray::Create());
+		m_TriangleVA = Mortify::VertexArray::Create();
 
 		float triangleVertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -21,7 +21,7 @@ public:
 		};
 
 		Mortify::Ref<Mortify::VertexBuffer> triangleVB;
-		triangleVB.reset(Mortify::VertexBuffer::Create(triangleVertices, sizeof(triangleVertices)));
+		triangleVB = Mortify::VertexBuffer::Create(triangleVertices, sizeof(triangleVertices));
 
 		Mortify::BufferLayout triangleLayout = {
 			{Mortify::ShaderDataType::Float3, "a_Position"},
@@ -35,13 +35,13 @@ public:
 		unsigned int triangleIndicies[3] = { 0, 1, 2 };
 
 		Mortify::Ref<Mortify::IndexBuffer> triangleIB;
-		triangleIB.reset(Mortify::IndexBuffer::Create(triangleIndicies, sizeof(triangleIndicies) / sizeof(uint32_t)));
+		triangleIB = Mortify::IndexBuffer::Create(triangleIndicies, sizeof(triangleIndicies) / sizeof(uint32_t));
 
 		m_TriangleVA->SetIndexBuffer(triangleIB);
 
 		// Square rendering
 
-		m_SquareVA.reset(Mortify::VertexArray::Create());
+		m_SquareVA = Mortify::VertexArray::Create();
 
 		float squareVertices[3 * 4] = {
 			-0.75f, -0.75f, 0.0f,
@@ -51,7 +51,7 @@ public:
 		};
 
 		Mortify::Ref<Mortify::VertexBuffer> squareVB;
-		squareVB.reset(Mortify::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		squareVB = Mortify::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 
 		squareVB->SetLayout({
 				{Mortify::ShaderDataType::Float3, "a_Position"}
@@ -63,7 +63,7 @@ public:
 		unsigned int squareIndicies[6] = { 0, 1, 2, 2, 3, 0 };
 
 		Mortify::Ref<Mortify::IndexBuffer> squareIB;
-		squareIB.reset(Mortify::IndexBuffer::Create(squareIndicies, sizeof(squareIndicies) / sizeof(uint32_t)));
+		squareIB = Mortify::IndexBuffer::Create(squareIndicies, sizeof(squareIndicies) / sizeof(uint32_t));
 
 		m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -83,7 +83,7 @@ public:
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 
@@ -132,8 +132,8 @@ public:
 			}
 		)";
 
-		m_TriangleShader.reset(Mortify::Shader::Create(triangleVertexSource, triangleFragmentSource));
-		m_SquareShader.reset(Mortify::Shader::Create(squareVertexSource, squareFragmentSource));
+		m_TriangleShader = Mortify::Shader::Create(triangleVertexSource, triangleFragmentSource);
+		m_SquareShader = Mortify::Shader::Create(squareVertexSource, squareFragmentSource);
 	}
 
 	void OnUpdate(Mortify::Timestep ts) override
