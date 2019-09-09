@@ -13,6 +13,8 @@ namespace Mortify
 	class Renderer
 	{
 	public:
+		static void Init();
+
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
@@ -20,7 +22,7 @@ namespace Mortify
 
 		static inline RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 
-		static inline const ResourceManager const* GetResourceManager() { return m_ResourceManager; }
+		static inline const ResourceManager* const GetResourceManager() { return m_ResourceManager; }
 	private:
 		struct SceneData
 		{

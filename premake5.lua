@@ -6,7 +6,12 @@ workspace "Mortify"
 		"Debug",
 		"Release",
 		"Dist" 
-	}
+    }
+    
+    flags
+    {
+        "MultiProcessorCompile"
+    }
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -16,6 +21,7 @@ IncludeDir["GLFW"] = "Mortify/vendor/GLFW/include"
 IncludeDir["Glad"] = "Mortify/vendor/Glad/include"
 IncludeDir["ImGui"] = "Mortify/vendor/ImGui"
 IncludeDir["glm"] = "Mortify/vendor/glm"
+IncludeDir["stb_image"] = "Mortify/vendor/stb_image"
 
 include "Mortify/vendor/GLFW"
 include "Mortify/vendor/Glad"
@@ -38,7 +44,9 @@ project "Mortify"
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
+        "%{prj.name}/vendor/glm/glm/**.inl",
+        "%{prj.name}/vendor/stb_image/**.h",
+        "%{prj.name}/vendor/stb_image/**.cpp"
     }
 
     defines {
@@ -51,7 +59,8 @@ project "Mortify"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}"
     }
 
 	links {

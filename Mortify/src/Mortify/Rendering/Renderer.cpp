@@ -11,23 +11,19 @@ namespace Mortify
 
 	uint32_t Renderer::m_SceneCounter = 0;
 
+	void Renderer::Init()
+	{
+		RenderCommand::Init();
+	}
+
 	void Renderer::BeginScene(OrthographicCamera& camera)
 	{
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
-		m_SceneData->SceneID = m_SceneCounter;
-		m_ResourceManager->SetCurrentScene(m_SceneCounter);
-		m_SceneCounter++;
-
-		//m_ResourceManager->LoadResources();
 	}
 
 	void Renderer::EndScene()
 	{
-		m_SceneCounter--;
-		m_SceneData->SceneID = m_SceneCounter;
-		m_ResourceManager->SetCurrentScene(m_SceneCounter);
 
-		//m_ResourceManager->UnloadResources();
 	}
 
 	void Renderer::Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform)

@@ -20,6 +20,7 @@
 #include "Mortify/Rendering/RenderCommand.h"
 
 #include "Mortify/Rendering/Shader.h"
+#include "Mortify/Rendering/Texture.h"
 #include "Mortify/Rendering/Buffer.h"
 #include "Mortify/Rendering/VertexArray.h"
 #include "Mortify/Rendering/Material.h"

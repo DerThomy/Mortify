@@ -5,96 +5,81 @@
 #include "imgui.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class ExampleLayer : public Mortify::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f), m_SquarePosition(0.0f)
+		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f)
 	{
-		m_TriangleVA = Mortify::VertexArray::Create();
+		m_VertexArray = Mortify::VertexArray::Create();
 
-		float triangleVertices[3 * 7] = {
+		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
 			 0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
-			 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f,
+			 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		Mortify::Ref<Mortify::VertexBuffer> triangleVB;
-		triangleVB = Mortify::VertexBuffer::Create(triangleVertices, sizeof(triangleVertices));
-
-		Mortify::BufferLayout triangleLayout = {
-			{Mortify::ShaderDataType::Float3, "a_Position"},
-			{Mortify::ShaderDataType::Float4, "a_Color"}
+		Mortify::Ref<Mortify::VertexBuffer> vertexBuffer;
+		vertexBuffer = Mortify::VertexBuffer::Create(vertices, sizeof(vertices));
+		Mortify::BufferLayout layout = {
+			{ Mortify::ShaderDataType::Float3, "a_Position" },
+			{ Mortify::ShaderDataType::Float4, "a_Color" }
 		};
+		vertexBuffer->SetLayout(layout);
+		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
-		triangleVB->SetLayout(triangleLayout);
-
-		m_TriangleVA->AddVertexBuffer(triangleVB);
-
-		unsigned int triangleIndicies[3] = { 0, 1, 2 };
-
-		Mortify::Ref<Mortify::IndexBuffer> triangleIB;
-		triangleIB = Mortify::IndexBuffer::Create(triangleIndicies, sizeof(triangleIndicies) / sizeof(uint32_t));
-
-		m_TriangleVA->SetIndexBuffer(triangleIB);
-
-		// Square rendering
+		uint32_t indices[3] = { 0, 1, 2 };
+		Mortify::Ref<Mortify::IndexBuffer> indexBuffer;
+		indexBuffer = Mortify::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		m_SquareVA = Mortify::VertexArray::Create();
 
-		float squareVertices[3 * 4] = {
-			-0.75f, -0.75f, 0.0f,
-			 0.75f, -0.75f, 0.0f,
-			 0.75f,  0.75f, 0.0f,
-			-0.75f,  0.75f, 0.0f
+		float squareVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
 		Mortify::Ref<Mortify::VertexBuffer> squareVB;
 		squareVB = Mortify::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
-
 		squareVB->SetLayout({
-				{Mortify::ShaderDataType::Float3, "a_Position"}
-			}
-		);
-
+			{ Mortify::ShaderDataType::Float3, "a_Position" },
+			{ Mortify::ShaderDataType::Float2, "a_TexCoord" }
+			});
 		m_SquareVA->AddVertexBuffer(squareVB);
 
-		unsigned int squareIndicies[6] = { 0, 1, 2, 2, 3, 0 };
-
+		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 		Mortify::Ref<Mortify::IndexBuffer> squareIB;
-		squareIB = Mortify::IndexBuffer::Create(squareIndicies, sizeof(squareIndicies) / sizeof(uint32_t));
-
+		squareIB = Mortify::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
-		std::string triangleVertexSource = R"(
+		std::string vertexSrc = R"(
 			#version 330 core
-
+			
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
-
-			out vec3 v_Position;
-			out vec4 v_Color;
-
 			uniform mat4 u_ViewProjection;
 			uniform mat4 u_Transform;
-
+			out vec3 v_Position;
+			out vec4 v_Color;
 			void main()
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
 			}
 		)";
 
-		std::string triangleFragmentSource = R"(
+		std::string fragmentSrc = R"(
 			#version 330 core
-
+			
 			layout(location = 0) out vec4 color;
-
 			in vec3 v_Position;
 			in vec4 v_Color;
-
 			void main()
 			{
 				color = vec4(v_Position * 0.5 + 0.5, 1.0);
@@ -102,44 +87,47 @@ public:
 			}
 		)";
 
-		std::string squareVertexSource = R"(
+		m_Shader = Mortify::Shader::Create("Triangle Shader", vertexSrc, fragmentSrc);
+
+		std::string flatColorShaderVertexSrc = R"(
 			#version 330 core
-
+			
 			layout(location = 0) in vec3 a_Position;
-
-			out vec3 v_Position;
-
 			uniform mat4 u_ViewProjection;
 			uniform mat4 u_Transform;
-
+			out vec3 v_Position;
 			void main()
 			{
 				v_Position = a_Position;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
 			}
 		)";
 
-		std::string squareFragmentSource = R"(
+		std::string flatColorShaderFragmentSrc = R"(
 			#version 330 core
-
+			
 			layout(location = 0) out vec4 color;
-
 			in vec3 v_Position;
-
+			
+			uniform vec3 u_Color;
 			void main()
 			{
-				color = vec4(0.2, 0.3, 0.8, 1.0);
+				color = vec4(u_Color, 1.0);
 			}
 		)";
 
-		m_TriangleShader = Mortify::Shader::Create(triangleVertexSource, triangleFragmentSource);
-		m_SquareShader = Mortify::Shader::Create(squareVertexSource, squareFragmentSource);
+		m_FlatColorShader = Mortify::Shader::Create("Flat Color", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
+		auto m_TextureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
+
+		m_Texture = Mortify::Texture2D::Create("assets/textures/Checkerboard.png");
+		m_ChernoLogoTexture = Mortify::Texture2D::Create("assets/textures/ChernoLogo.png");
+
+		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Mortify::Timestep ts) override
 	{
-		//MT_TRACE("Timestep for each frame: {0}s ({1}ms)", ts.GetSeconds(), ts.GetMilliseconds());
-
 		if (Mortify::Input::IsKeyPressed(MT_KEY_LEFT) || Mortify::Input::IsKeyPressed(MT_KEY_A))
 			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
 		else if (Mortify::Input::IsKeyPressed(MT_KEY_RIGHT) || Mortify::Input::IsKeyPressed(MT_KEY_D))
@@ -152,62 +140,72 @@ public:
 
 		if (Mortify::Input::IsKeyPressed(MT_KEY_Q))
 			m_CameraRotation += m_CameraRotationSpeed * ts;
-		else if (Mortify::Input::IsKeyPressed(MT_KEY_E))
+		if (Mortify::Input::IsKeyPressed(MT_KEY_E))
 			m_CameraRotation -= m_CameraRotationSpeed * ts;
-
-		if (Mortify::Input::IsKeyPressed(MT_KEY_J))
-			m_SquarePosition.x -= m_TransformSpeed * ts;
-		else if (Mortify::Input::IsKeyPressed(MT_KEY_L))
-			m_SquarePosition.x += m_TransformSpeed * ts;
-
-		if (Mortify::Input::IsKeyPressed(MT_KEY_I))
-			m_SquarePosition.y += m_TransformSpeed * ts;
-		else if (Mortify::Input::IsKeyPressed(MT_KEY_K))
-			m_SquarePosition.y -= m_TransformSpeed * ts;
 
 		Mortify::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Mortify::RenderCommand::Clear();
 
-		Mortify::Renderer::BeginScene(m_Camera);
-
 		m_Camera.SetPosition(m_CameraPosition);
 		m_Camera.SetRotation(m_CameraRotation);
 
-		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_SquareShader)->Bind();
-		Mortify::Renderer::Submit(m_SquareVA, m_SquareShader, glm::translate(glm::mat4(1.0f), m_SquarePosition));
+		Mortify::Renderer::BeginScene(m_Camera);
 
-		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_TriangleShader)->Bind();
-		Mortify::Renderer::Submit(m_TriangleVA, m_TriangleShader);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_FlatColorShader)->Bind();
+		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+
+		for (int y = 0; y < 20; y++)
+		{
+			for (int x = 0; x < 20; x++)
+			{
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				Mortify::Renderer::Submit(m_SquareVA, m_FlatColorShader, transform);
+			}
+		}
+
+		m_Texture->Bind();
+		Mortify::Renderer::Submit(m_SquareVA, m_ShaderLibrary.Get("Texture"), glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		m_ChernoLogoTexture->Bind();
+		Mortify::Renderer::Submit(m_SquareVA, m_ShaderLibrary.Get("Texture"), glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+		// Triangle
+		// Mortify::Renderer::Submit(m_Shader, m_VertexArray);
 
 		Mortify::Renderer::EndScene();
 	}
 
-	void OnEvent(Mortify::Event& event) override
-	{
-		
-	}
-
 	virtual void OnImGuiRender() override
 	{
+		ImGui::Begin("Settings");
+		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+		ImGui::End();
+	}
 
+	void OnEvent(Mortify::Event & event) override
+	{
 	}
 
 private:
-	Mortify::Ref<Mortify::VertexArray> m_TriangleVA;
-	Mortify::Ref<Mortify::Shader> m_TriangleShader;
+	Mortify::ShaderLibrary m_ShaderLibrary;
+	Mortify::Ref<Mortify::Shader> m_Shader;
+	Mortify::Ref<Mortify::VertexArray> m_VertexArray;
 
+	Mortify::Ref<Mortify::Shader> m_FlatColorShader;
 	Mortify::Ref<Mortify::VertexArray> m_SquareVA;
-	Mortify::Ref<Mortify::Shader> m_SquareShader;
-	Mortify::OrthographicCamera m_Camera;
 
+	Mortify::Ref<Mortify::Texture2D> m_Texture, m_ChernoLogoTexture;
+
+	Mortify::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
-	float m_CameraMoveSpeed = 3.0f;
+	float m_CameraMoveSpeed = 5.0f;
 
 	float m_CameraRotation = 0.0f;
-	float m_CameraRotationSpeed = 20.0f;
+	float m_CameraRotationSpeed = 80.0f;
 
-	glm::vec3 m_SquarePosition;
-	float m_TransformSpeed = 4.0f;
+	glm::vec3 m_SquareColor = { 0.2f, 0.3f, 0.8f };
 };
 
 class Sandbox : public Mortify::Application

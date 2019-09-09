@@ -9,6 +9,11 @@ namespace Mortify
 	class RenderCommand
 	{
 	public:
+		static inline void Init()
+		{
+			s_RenderAPI->Init();
+		}
+
 		static inline void SetClearColor(const glm::vec4& color)
 		{
 			s_RenderAPI->SetClearColor(color);
