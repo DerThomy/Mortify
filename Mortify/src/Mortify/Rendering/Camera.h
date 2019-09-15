@@ -37,10 +37,10 @@ namespace Mortify {
 		inline void SetRotation(float rotation) { m_Rotation = rotation; UpdateViewMatrix(); }
 
 		inline float GetAspectRatio() const { return m_AspectRatio; }
-		inline void SetAspectRatio(float aspect) 
-		{ 
-			m_AspectRatio = aspect;  
-			m_ProjectionMatrix = glm::ortho(m_Left * m_AspectRatio, m_Right * m_AspectRatio, m_Bottom, m_Top, -1.0f, 1.0f); 
+		inline void SetAspectRatio(float aspect)
+		{
+			m_AspectRatio = aspect;
+			m_ProjectionMatrix = glm::ortho(m_Left * m_AspectRatio, m_Right * m_AspectRatio, m_Bottom, m_Top, -1.0f, 1.0f);
 		}
 
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
@@ -64,97 +64,4 @@ namespace Mortify {
 		float m_Bottom;
 		float m_Top;
 	};
-
-	/*
-	class Camera
-	{
-	public:
-		enum CameraType {
-			ORTHO,
-			FREE
-		};
-		enum CameraDirection {
-			UP,
-			DOWN,
-			FORWARD,
-			BACK,
-			LEFT,
-			RIGHT
-		};
-
-	public:
-		Camera();
-
-		~Camera();
-
-		void Reset();
-
-		void Update();
-
-		void ChangePitch(float degrees);
-
-		void ChangeHeading(float degrees);
-
-		void SetMode(CameraType cam_mode);
-
-		void SetPosition(glm::vec3 pos);
-
-		void SetLookAt(glm::vec3 pos);
-
-		void SetFOV(double fov);
-		
-		void SetZoom(double zoom);
-
-		void SetViewport(int loc_x, int loc_y, int width, int height);
-
-		void SetClipping(double near_clip_distance, double far_clip_distance);
-
-		void OnEvent(Event& e);
-
-		inline CameraType GetMode() const { return m_CameraMode; }
-		inline int GetViewportX() const { return m_ViewportX; }
-		inline int GetViewportY() const { return m_ViewportY; }
-		inline glm::mat4 GetVP() const { return m_VP; }
-
-	private:
-		void Move(CameraDirection dir);
-		void Move2D(int x, int y);
-
-	private:
-		CameraType m_CameraMode;
-
-		glm::vec3 m_CameraPosition;
-		glm::vec3 m_CameraPositionDelta;
-		glm::vec3 m_CameraLookAt;
-		glm::vec3 m_CameraDirection;
-
-		glm::vec3 m_CameraUp;
-		glm::vec3 m_MousePosition;
-
-		glm::mat4 m_Projection;
-		glm::mat4 m_View;
-		glm::mat4 m_VP;
-
-		int m_ViewportX;
-		int m_ViewportY;
-
-		int m_WindowWidth;
-		int m_WindowHeight;
-
-		double m_Aspect;
-		double m_AspectY;
-		double m_FOV;
-		double m_ZoomFactor;
-		double m_NearClip;
-		double m_FarClip;
-
-		float m_CameraScale;
-		float m_CameraHeading;
-		float m_CameraPitch;
-
-		float m_MaxPitchRate;
-		float m_MaxHeadingRate;
-		bool m_MoveCamera;
-	};
-	*/
 }
