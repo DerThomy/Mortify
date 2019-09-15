@@ -34,6 +34,8 @@
 
 namespace Mortify
 {
+	using byte = unsigned char;
+
 	template <typename T>
 	using Ref = std::shared_ptr<T>;
 

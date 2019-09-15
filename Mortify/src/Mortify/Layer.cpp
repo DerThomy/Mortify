@@ -9,9 +9,4 @@ namespace Mortify
 	{
 		
 	}
-
-	Layer::~Layer()
-	{
-
-	}
 }

@@ -6,6 +6,8 @@
 
 namespace Mortify
 {
+	using RendererID = uint32_t;
+
 	class RendererAPI
 	{
 	public:

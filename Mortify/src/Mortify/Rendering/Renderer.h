@@ -21,8 +21,6 @@ namespace Mortify
 		static void Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform = glm::mat4(1.0f));
 
 		static inline RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
-
-		static inline const ResourceManager* const GetResourceManager() { return m_ResourceManager; }
 	private:
 		struct SceneData
 		{
@@ -30,8 +28,7 @@ namespace Mortify
 			glm::mat4 ViewProjectionMatrix;
 		};
 
-		static SceneData* m_SceneData;
-		static ResourceManager* m_ResourceManager;
+		static SceneData* s_SceneData;
 		static uint32_t m_SceneCounter;
 	};
 }

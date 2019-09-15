@@ -38,9 +38,6 @@ namespace Mortify
 
 		inline const uint32_t const* GetIndices() const { return m_Indices; }
 
-		virtual void Load() override;
-		virtual void Unload() override;
-
 	private:
 		float* m_Vertices;
 		uint32_t* m_Indices;

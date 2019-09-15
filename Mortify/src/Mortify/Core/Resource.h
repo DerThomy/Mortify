@@ -7,20 +7,26 @@ namespace Mortify
 	class Resource
 	{
 	public:
-		Resource() : m_SceneID(0), m_Loaded(false) {}
+		Resource() : m_Loaded(false) {}
 		virtual ~Resource() {}
 
 		inline std::string GetPath() const { return m_Path; }
-		inline void SetPath(const std::string& path) { m_Path = path; }
 
-		inline bool IsLoaded() const { return m_Loaded; }
-		inline void SetLoaded(bool loaded) { m_Loaded = loaded; }
-
-		virtual void Load() = 0;
-		virtual void Unload() = 0;
+		inline void SetName(const std::string& name) { m_Name = name; }
+		inline const std::string& GetName() const { return m_Name; }
 
 	protected:
-		uint32_t m_SceneID;
+		inline const std::string& GetNameFromPath(const std::string& filePath)
+		{
+			auto lastSlash = filePath.find_last_of("/\\");
+			lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+			auto lastDot = filePath.rfind('.');
+			auto count = lastDot == std::string::npos ? filePath.size() - lastSlash : lastDot - lastSlash;
+			m_Name = filePath.substr(lastSlash, count);
+		}
+
+	protected:
+		std::string m_Name;
 		std::string m_Path;
 		bool m_Loaded;
 	};
@@ -28,31 +34,32 @@ namespace Mortify
 	class ResourceManager
 	{
 	public:
-		ResourceManager();
-		virtual ~ResourceManager() {}
-		inline static ResourceManager& GetInstance() { return *s_Instance; }
+		void Add(const Ref<Resource>& res)
+		{
+			MT_CORE_ASSERT(!Exists(res->GetName()), "Resource already exists");
+			m_Resources[res->GetName()] = res;
+		}
 
-		template <typename T>
-		T* GetResourceByID(std::string resourceID) const;
-		const std::list<Resource*>& GetSceneResources(uint32_t sceneID) const;
+		void Add(const std::string& name, const Ref<Resource>& res)
+		{
+			MT_CORE_ASSERT(!Exists(name), "Resource already exists");
+			m_Resources[name] = res;
+		}
 
-		void Clear();
-		inline void SetCurrentScene(uint32_t sid) { m_CurrentScene = sid; }
-		inline const uint32_t GetResourceCount() const { return m_ResourceCount; }
+		virtual Ref<Resource> Load(const std::string& filePath) = 0;
 
-		bool LoadFromXMLFile(std::string filename);
+		Ref<Resource> Get(const std::string& name)
+		{
+			MT_CORE_ASSERT(Exists(name), "Resource doesnt exist!");
+			return m_Resources[name];
+		}
 
-		template <typename T>
-		void AddResource(std::string path);
+		bool Exists(const std::string& name)
+		{
+			return m_Resources.find(name) != m_Resources.end();
+		}
 
-		void LoadResources();
-		void UnloadResources();
-
-	protected:
-		uint32_t m_CurrentScene;
-		uint32_t m_ResourceCount;
-		std::unordered_map<uint32_t, std::list<Resource*>> m_Resources;
 	private:
-		static ResourceManager* s_Instance;
+		std::unordered_map<std::string, Ref<Resource>> m_Resources;
 	};
 }

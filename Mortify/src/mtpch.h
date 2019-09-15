@@ -6,6 +6,7 @@
 #include <utility>
 #include <sstream>
 #include <algorithm>
+#include <optional>
 
 #include <string>
 #include <array>

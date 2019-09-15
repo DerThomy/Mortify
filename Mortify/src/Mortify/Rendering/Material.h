@@ -15,8 +15,6 @@ namespace Mortify
 		inline void SetShader(const Ref<Shader>& shader) { m_Shader = shader; }
 		inline const Ref<Shader>& GetShader() const { return m_Shader; }
 
-		virtual void Load() override {};
-		virtual void Unload() override {};
 	private:
 		Ref<Shader> m_Shader;
 	};

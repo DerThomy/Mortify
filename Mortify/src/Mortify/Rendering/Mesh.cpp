@@ -31,14 +31,4 @@ namespace Mortify
 			mesh->SetTransform(transform);
 		}
 	}
-
-	void Mesh::Load()
-	{
-
-	}
-
-	void Mesh::Unload()
-	{
-
-	}
 }

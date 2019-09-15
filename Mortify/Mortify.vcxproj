@@ -146,6 +146,8 @@
   <ItemGroup>
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Application.h" />
+    <ClInclude Include="src\Mortify\Core\Buffer.h" />
+    <ClInclude Include="src\Mortify\Core\IO\File.h" />
     <ClInclude Include="src\Mortify\Core\Resource.h" />
     <ClInclude Include="src\Mortify\Core\Timestep.h" />
     <ClInclude Include="src\Mortify\Define.h" />
@@ -167,10 +169,10 @@
     <ClInclude Include="src\Mortify\Rendering\Mesh.h" />
     <ClInclude Include="src\Mortify\Rendering\RenderCommand.h" />
     <ClInclude Include="src\Mortify\Rendering\RenderContext.h" />
-    <ClInclude Include="src\Mortify\Rendering\RenderObject.h" />
     <ClInclude Include="src\Mortify\Rendering\Renderer.h" />
     <ClInclude Include="src\Mortify\Rendering\RendererAPI.h" />
     <ClInclude Include="src\Mortify\Rendering\Shader.h" />
+    <ClInclude Include="src\Mortify\Rendering\ShaderUniform.h" />
     <ClInclude Include="src\Mortify\Rendering\Texture.h" />
     <ClInclude Include="src\Mortify\Rendering\Vertex.h" />
     <ClInclude Include="src\Mortify\Rendering\VertexArray.h" />
@@ -180,7 +182,9 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShaderUniform.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsFile.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\mtpch.h" />
@@ -550,13 +554,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp" />
+    <ClCompile Include="src\Mortify\Core\IO\File.cpp" />
     <ClCompile Include="src\Mortify\Core\Resource.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mortify\Layer.cpp" />
     <ClCompile Include="src\Mortify\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Log.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Buffer.cpp">
+      <ObjectFileName>$(IntDir)\Buffer1.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\Camera.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp" />
@@ -569,8 +576,10 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShaderUniform.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsFile.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\mtpch.cpp">

@@ -60,6 +60,9 @@
     <ClInclude Include="src\Mortify\Application.h">
       <Filter>src\Mortify</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Core\Buffer.h">
+      <Filter>src\Mortify\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\Core\Resource.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
@@ -123,9 +126,6 @@
     <ClInclude Include="src\Mortify\Rendering\RenderContext.h">
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Rendering\RenderObject.h">
-      <Filter>src\Mortify\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\Renderer.h">
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
@@ -133,6 +133,9 @@
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\Shader.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\ShaderUniform.h">
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\Texture.h">
@@ -1263,6 +1266,9 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Core\IO\File.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsFile.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShaderUniform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
@@ -1343,5 +1349,8 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Core\IO\File.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsFile.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShaderUniform.cpp" />
   </ItemGroup>
 </Project>
