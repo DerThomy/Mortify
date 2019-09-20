@@ -30,6 +30,8 @@ namespace Mortify
 				m_CameraRotation += m_CameraRotationSpeed * ts;
 			if (Mortify::Input::IsKeyPressed(MT_KEY_E))
 				m_CameraRotation -= m_CameraRotationSpeed * ts;
+
+			m_Camera.SetRotation(m_CameraRotation);
 		}
 
 		m_Camera.SetPosition(m_CameraPosition);
@@ -46,7 +48,7 @@ namespace Mortify
 
 	bool OrthoCameraController::OnMouseScrolledEvent(MouseScrolledEvent& e)
 	{
-		m_ZoomLevel = e.GetYOffset() * 0.1f;
+		m_ZoomLevel += e.GetYOffset() * 0.15f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
