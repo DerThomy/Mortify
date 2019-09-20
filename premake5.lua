@@ -22,6 +22,7 @@ IncludeDir["Glad"] = "Mortify/vendor/Glad/include"
 IncludeDir["ImGui"] = "Mortify/vendor/ImGui"
 IncludeDir["glm"] = "Mortify/vendor/glm"
 IncludeDir["stb_image"] = "Mortify/vendor/stb_image"
+IncludeDir["assimp"] = "Mortify/vendor/assimp/include"
 
 include "Mortify/vendor/GLFW"
 include "Mortify/vendor/Glad"
@@ -60,7 +61,8 @@ project "Mortify"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.stb_image}"
+        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.assimp}"
     }
 
 	links {
@@ -132,12 +134,24 @@ project "Sandbox"
 		runtime "Debug"
         symbols "on"
 
+        --links {
+		--	"Hazel/vendor/assimp/bin/Debug/assimp-vc141-mtd.lib"
+		--}
+
     filter "configurations:Release"
         defines "MT_RELEASE"
 		runtime "Release"
         optimize "on"
 
+        --links {
+		--	"Hazel/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+		--}
+
     filter "configurations:Dist"
         defines "MT_DIST"
 		runtime "Release"
         optimize "on"
+
+        --links {
+		--	"Hazel/vendor/assimp/bin/Release/assimp-vc141-mt.lib"
+		--}

@@ -16,7 +16,7 @@ namespace Mortify
 		friend class OpenGLShader;
 
 	public:
-		OpenGLShaderResourceDeclaration(const std::string& name, Type type, uint32_t count);
+		OpenGLShaderResourceDeclaration(Type type, const std::string& name, uint32_t count);
 
 		inline virtual const std::string& GetName() const override { return m_Name; }
 		inline virtual uint32_t GetRegister() const override { return m_Register; }

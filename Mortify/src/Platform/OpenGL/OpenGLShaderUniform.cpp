@@ -4,7 +4,7 @@
 
 namespace Mortify
 {
-	OpenGLShaderResourceDeclaration::OpenGLShaderResourceDeclaration(const std::string& name, Type type, uint32_t count)
+	OpenGLShaderResourceDeclaration::OpenGLShaderResourceDeclaration(Type type, const std::string& name, uint32_t count)
 		: m_Name(name), m_Type(type), m_Count(count)
 	{
 	}

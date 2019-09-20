@@ -10,6 +10,9 @@
     <Filter Include="src\Mortify\Core">
       <UniqueIdentifier>{1ECBAE3D-0AC4-CD8F-33F6-B2141F4EAD9B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mortify\Core\IO">
+      <UniqueIdentifier>{053050F6-7191-2D04-FAFE-73B6665F64C3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Mortify\Events">
       <UniqueIdentifier>{2A1CB069-1600-71BF-7F60-6B126B635B41}</UniqueIdentifier>
     </Filter>
@@ -63,6 +66,9 @@
     <ClInclude Include="src\Mortify\Core\Buffer.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Core\IO\File.h">
+      <Filter>src\Mortify\Core\IO</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\Core\Resource.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
@@ -106,6 +112,9 @@
       <Filter>src\Mortify</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\MouseCodes.h">
+      <Filter>src\Mortify</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\OrthoCameraController.h">
       <Filter>src\Mortify</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\Buffer.h">
@@ -162,11 +171,17 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShaderUniform.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsFile.h">
+      <Filter>src\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>src\Platform\Windows</Filter>
@@ -1266,13 +1281,13 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Core\IO\File.h" />
-    <ClInclude Include="src\Platform\Windows\WindowsFile.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLShaderUniform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Application.cpp">
       <Filter>src\Mortify</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Core\IO\File.cpp">
+      <Filter>src\Mortify\Core\IO</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Core\Resource.cpp">
       <Filter>src\Mortify\Core</Filter>
@@ -1290,6 +1305,9 @@
       <Filter>src\Mortify</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Log.cpp">
+      <Filter>src\Mortify</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\OrthoCameraController.cpp">
       <Filter>src\Mortify</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\Buffer.cpp">
@@ -1331,11 +1349,17 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShaderUniform.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsFile.cpp">
+      <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>
@@ -1349,8 +1373,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mortify\Core\IO\File.cpp" />
-    <ClCompile Include="src\Platform\Windows\WindowsFile.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLShaderUniform.cpp" />
   </ItemGroup>
 </Project>

@@ -48,8 +48,10 @@ namespace Mortify
 		void UploadUniformMatrix4f(uint32_t location, const glm::mat4& values);
 		void UploadUniformMatrix4fArray(uint32_t location, const glm::mat4& values, uint32_t count);
 
+		void UploadUniformStruct(OpenGLShaderUniformDeclaration* uniform, byte* buffer, uint32_t offset);
+
 		void UploadUniformInt(const std::string& name, int32_t value);
-		void UploadUniformInTArray(const std::string& name, int32_t* values, int32_t count);
+		void UploadUniformIntArray(const std::string& name, int32_t* values, int32_t count);
 
 		void UploadUniformFloat(const std::string& name, float value);
 		void UploadUniformFloat2(const std::string& name, const glm::vec2& value);
@@ -75,6 +77,8 @@ namespace Mortify
 		std::optional<ShaderStruct*> FindStruct(const std::string& name);
 
 		GLint GetUniformLocation(const std::string& name) const;
+
+		void ResolveShaderUniformList(const ShaderUniformList& uniforms);
 
 		void ResolveUniforms();
 		void ValidateUniforms();

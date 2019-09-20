@@ -11,6 +11,7 @@
 #include "Mortify/KeyCodes.h"
 #include "Mortify/MouseCodes.h"
 #include "Mortify/Input.h"
+#include "Mortify/OrthoCameraController.h"
 
 #include "Mortify/ImGui/ImGuiLayer.h"
 
