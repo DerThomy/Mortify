@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Define.h"
+#include "Mortify/Core/Define.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 

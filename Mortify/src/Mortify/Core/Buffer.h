@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mtpch.h"
+#include "Log.h"
 
 namespace Mortify
 {

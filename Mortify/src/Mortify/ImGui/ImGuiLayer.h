@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Mortify/Layer.h"
+#include "Mortify/Core/Layer.h"
 
-#include "Mortify/Events/ApplicationEvent.h"
-#include "Mortify/Events/MouseEvent.h"
-#include "Mortify/Events/KeyEvent.h"
+#include "Mortify/Core/Events/ApplicationEvent.h"
+#include "Mortify/Core/Events/MouseEvent.h"
+#include "Mortify/Core/Events/KeyEvent.h"
 
 namespace Mortify
 {

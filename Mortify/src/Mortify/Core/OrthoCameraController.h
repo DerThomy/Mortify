@@ -3,9 +3,8 @@
 #include "Mortify/Rendering/Camera.h"
 #include "Mortify/Core/Timestep.h"
 
-#include "Mortify/Events/Event.h"
-#include "Mortify/Events/MouseEvent.h"
-#include "Mortify/Events/ApplicationEvent.h"
+#include "Mortify/Core/Events/MouseEvent.h"
+#include "Mortify/Core/Events/ApplicationEvent.h"
 
 namespace Mortify
 {

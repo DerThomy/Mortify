@@ -15,7 +15,7 @@
 #include <unordered_set>
 #include <list>
 
-#include "Mortify/Log.h"
+#include "Mortify/Core/Log.h"
 
 #ifdef MT_PLATFORM_WINDOWS
 	#include <Windows.h>

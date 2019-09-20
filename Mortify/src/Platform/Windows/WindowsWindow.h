@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mortify/Window.h"
+#include "Mortify/Core/Window.h"
 #include "Mortify/Rendering/RenderContext.h"
 
 #include <GLFW/glfw3.h>

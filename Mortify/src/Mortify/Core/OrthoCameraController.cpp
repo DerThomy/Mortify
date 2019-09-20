@@ -1,8 +1,8 @@
 #include "mtpch.h"
 #include "OrthoCameraController.h"
 
-#include "Mortify/KeyCodes.h"
-#include "Mortify/Input.h"
+#include "Mortify/Core/KeyCodes.h"
+#include "Mortify/Core/Input.h"
 
 namespace Mortify
 {

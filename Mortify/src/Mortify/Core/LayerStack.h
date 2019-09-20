@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Mortify/Define.h"
 #include "Layer.h"
 
 namespace Mortify

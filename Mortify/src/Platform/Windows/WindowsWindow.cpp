@@ -2,9 +2,9 @@
 
 #include "WindowsWindow.h"
 
-#include "Mortify/Events/ApplicationEvent.h"
-#include "Mortify/Events/MouseEvent.h"
-#include "Mortify/Events/KeyEvent.h"
+#include "Mortify/Core/Events/ApplicationEvent.h"
+#include "Mortify/Core/Events/MouseEvent.h"
+#include "Mortify/Core/Events/KeyEvent.h"
 #include "Platform/OpenGL/OpenGLRenderContext.h"
 
 #include <glad/glad.h>

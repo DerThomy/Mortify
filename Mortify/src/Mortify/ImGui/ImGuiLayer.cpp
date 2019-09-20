@@ -7,10 +7,9 @@
 #include "examples/imgui_impl_opengl3.h"
 #include "examples/imgui_impl_glfw.h"
 
-#include "Mortify/Application.h"
+#include "Mortify/Core/Application.h"
 
 // Temporary
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace Mortify

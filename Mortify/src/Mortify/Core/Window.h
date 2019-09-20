@@ -2,8 +2,8 @@
 
 #include "mtpch.h"
 
-#include "Mortify/Define.h"
-#include "Mortify/Events/Event.h"
+#include "Mortify/Core/Define.h"
+#include "Mortify/Core/Events/Event.h"
 
 namespace Mortify
 {

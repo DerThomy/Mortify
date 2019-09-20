@@ -145,25 +145,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Mortify.h" />
-    <ClInclude Include="src\Mortify\Application.h" />
+    <ClInclude Include="src\Mortify\Core\Application.h" />
     <ClInclude Include="src\Mortify\Core\Buffer.h" />
     <ClInclude Include="src\Mortify\Core\IO\File.h" />
     <ClInclude Include="src\Mortify\Core\Resource.h" />
     <ClInclude Include="src\Mortify\Core\Timestep.h" />
-    <ClInclude Include="src\Mortify\Define.h" />
+    <ClInclude Include="src\Mortify\Core\Define.h" />
     <ClInclude Include="src\Mortify\EntryPoint.h" />
-    <ClInclude Include="src\Mortify\Events\ApplicationEvent.h" />
-    <ClInclude Include="src\Mortify\Events\Event.h" />
-    <ClInclude Include="src\Mortify\Events\KeyEvent.h" />
-    <ClInclude Include="src\Mortify\Events\MouseEvent.h" />
+    <ClInclude Include="src\Mortify\Core\Events\ApplicationEvent.h" />
+    <ClInclude Include="src\Mortify\Core\Events\Event.h" />
+    <ClInclude Include="src\Mortify\Core\Events\KeyEvent.h" />
+    <ClInclude Include="src\Mortify\Core\Events\MouseEvent.h" />
     <ClInclude Include="src\Mortify\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="src\Mortify\Input.h" />
-    <ClInclude Include="src\Mortify\KeyCodes.h" />
-    <ClInclude Include="src\Mortify\Layer.h" />
-    <ClInclude Include="src\Mortify\LayerStack.h" />
-    <ClInclude Include="src\Mortify\Log.h" />
-    <ClInclude Include="src\Mortify\MouseCodes.h" />
-    <ClInclude Include="src\Mortify\OrthoCameraController.h" />
+    <ClInclude Include="src\Mortify\Core\Input.h" />
+    <ClInclude Include="src\Mortify\Core\KeyCodes.h" />
+    <ClInclude Include="src\Mortify\Core\Layer.h" />
+    <ClInclude Include="src\Mortify\Core\LayerStack.h" />
+    <ClInclude Include="src\Mortify\Core\Log.h" />
+    <ClInclude Include="src\Mortify\Core\MouseCodes.h" />
+    <ClInclude Include="src\Mortify\Core\OrthoCameraController.h" />
     <ClInclude Include="src\Mortify\Rendering\Buffer.h" />
     <ClInclude Include="src\Mortify\Rendering\Camera.h" />
     <ClInclude Include="src\Mortify\Rendering\Material.h" />
@@ -177,7 +177,7 @@
     <ClInclude Include="src\Mortify\Rendering\Texture.h" />
     <ClInclude Include="src\Mortify\Rendering\Vertex.h" />
     <ClInclude Include="src\Mortify\Rendering\VertexArray.h" />
-    <ClInclude Include="src\Mortify\Window.h" />
+    <ClInclude Include="src\Mortify\Core\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
@@ -554,15 +554,15 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Mortify\Application.cpp" />
+    <ClCompile Include="src\Mortify\Core\Application.cpp" />
     <ClCompile Include="src\Mortify\Core\IO\File.cpp" />
     <ClCompile Include="src\Mortify\Core\Resource.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Mortify\Layer.cpp" />
-    <ClCompile Include="src\Mortify\LayerStack.cpp" />
-    <ClCompile Include="src\Mortify\Log.cpp" />
-    <ClCompile Include="src\Mortify\OrthoCameraController.cpp" />
+    <ClCompile Include="src\Mortify\Core\Layer.cpp" />
+    <ClCompile Include="src\Mortify\Core\LayerStack.cpp" />
+    <ClCompile Include="src\Mortify\Core\Log.cpp" />
+    <ClCompile Include="src\Mortify\Core\OrthoCameraController.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Camera.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Mesh.cpp" />
@@ -601,4 +601,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>

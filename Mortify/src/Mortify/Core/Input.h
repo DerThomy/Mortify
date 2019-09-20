@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Define.h"
+#include "Mortify/Core/Define.h"
 
 namespace Mortify
 {

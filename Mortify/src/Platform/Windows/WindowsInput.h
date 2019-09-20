@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mortify/Input.h"
+#include "Mortify/Core/Input.h"
 
 namespace Mortify
 {

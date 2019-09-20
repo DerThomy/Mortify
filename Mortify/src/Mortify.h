@@ -2,16 +2,16 @@
 
 // For client use
 
-#include "Mortify/Application.h"
-#include "Mortify/Layer.h"
-#include "Mortify/Log.h"
+#include "Mortify/Core/Application.h"
+#include "Mortify/Core/Layer.h"
+#include "Mortify/Core/Log.h"
 
 #include "Mortify/Core/Timestep.h"
 
-#include "Mortify/KeyCodes.h"
-#include "Mortify/MouseCodes.h"
-#include "Mortify/Input.h"
-#include "Mortify/OrthoCameraController.h"
+#include "Mortify/Core/KeyCodes.h"
+#include "Mortify/Core/MouseCodes.h"
+#include "Mortify/Core/Input.h"
+#include "Mortify/Core/OrthoCameraController.h"
 
 #include "Mortify/ImGui/ImGuiLayer.h"
 

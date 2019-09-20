@@ -2,10 +2,10 @@
 
 #include "Define.h"
 
-#include "Window.h"
-#include "Mortify/LayerStack.h"
-#include "Mortify/Events/Event.h"
-#include "Mortify/Events/ApplicationEvent.h"
+#include "Mortify/Core/Window.h"
+#include "Mortify/Core/LayerStack.h"
+#include "Mortify/Core/Events/Event.h"
+#include "Mortify/Core/Events/ApplicationEvent.h"
 
 #include "Mortify/ImGui/ImGuiLayer.h"
 

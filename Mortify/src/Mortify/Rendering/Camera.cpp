@@ -1,11 +1,12 @@
 #include "mtpch.h"
 
 #include "Camera.h"
-#include "Mortify/KeyCodes.h"
-#include "Mortify/MouseCodes.h"
-#include "Mortify/Events/MouseEvent.h"
-#include "Mortify/Events/KeyEvent.h"
-#include "Mortify/Events/ApplicationEvent.h"
+
+#include "Mortify/Core/KeyCodes.h"
+#include "Mortify/Core/MouseCodes.h"
+#include "Mortify/Core/Events/MouseEvent.h"
+#include "Mortify/Core/Events/KeyEvent.h"
+#include "Mortify/Core/Events/ApplicationEvent.h"
 
 
 namespace Mortify

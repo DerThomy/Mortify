@@ -5,8 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Mortify/Events/Event.h"
-#include "Mortify/Window.h"
+#include "Mortify/Core/Events/Event.h"
+#include "Mortify/Core/Window.h"
 
 namespace Mortify {
 

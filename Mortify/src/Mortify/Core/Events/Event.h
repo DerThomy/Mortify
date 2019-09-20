@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mortify/Define.h"
+#include "Mortify/Core/Define.h"
 
 #include <string>
 #include <sstream>
@@ -35,7 +35,9 @@ namespace Mortify
 
 	class MT_API Event
 	{
+	private:
 		friend class EventDispatcher;
+
 	public:
 		bool Handled = false;
 
