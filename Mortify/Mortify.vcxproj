@@ -175,7 +175,6 @@
     <ClInclude Include="src\Mortify\Rendering\Shader.h" />
     <ClInclude Include="src\Mortify\Rendering\ShaderUniform.h" />
     <ClInclude Include="src\Mortify\Rendering\Texture.h" />
-    <ClInclude Include="src\Mortify\Rendering\Vertex.h" />
     <ClInclude Include="src\Mortify\Rendering\VertexArray.h" />
     <ClInclude Include="src\Mortify\Core\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />

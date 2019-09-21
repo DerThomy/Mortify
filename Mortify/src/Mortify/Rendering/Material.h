@@ -2,6 +2,7 @@
 
 #include "Shader.h"
 #include "Mortify/Core/Resource.h"
+#include "Mortify/Rendering/Texture.h"
 
 namespace Mortify
 {
@@ -17,5 +18,7 @@ namespace Mortify
 
 	private:
 		Ref<Shader> m_Shader;
+
+		std::vector<Texture> m_Textures;
 	};
 }

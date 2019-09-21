@@ -108,9 +108,6 @@
     <ClInclude Include="src\Mortify\Rendering\Texture.h">
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Rendering\Vertex.h">
-      <Filter>src\Mortify\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\VertexArray.h">
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
