@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Define.h"
+#include "Core.h"
 
 #include "Mortify/Core/Window.h"
 #include "Mortify/Core/LayerStack.h"

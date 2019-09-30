@@ -66,9 +66,6 @@
     <ClInclude Include="src\Mortify\Core\Buffer.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Core\Define.h">
-      <Filter>src\Mortify\Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mortify\Core\Events\ApplicationEvent.h">
       <Filter>src\Mortify\Core\Events</Filter>
     </ClInclude>
@@ -1295,6 +1292,9 @@
     </ClInclude>
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Core\Core.h">
+      <Filter>src\Mortify\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

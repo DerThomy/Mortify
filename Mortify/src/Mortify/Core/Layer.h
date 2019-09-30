@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Mortify/Core/Define.h"
+#include "Mortify/Core/Core.h"
 #include "Mortify/Core/Timestep.h"
 #include "Mortify/Core/Events/Event.h"
 #include "Mortify/Core/Window.h"
