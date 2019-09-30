@@ -612,7 +612,10 @@ namespace Mortify
 		}
 		
 		for (auto id : shaderIDs)
+		{
 			glDetachShader(program, id);
+			glDeleteShader(id);
+		}
 
 		m_RendererID = program;
 	}
