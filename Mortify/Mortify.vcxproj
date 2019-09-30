@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -19,26 +19,26 @@
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Mortify</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -147,16 +147,12 @@
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Core\Application.h" />
     <ClInclude Include="src\Mortify\Core\Buffer.h" />
-    <ClInclude Include="src\Mortify\Core\IO\File.h" />
-    <ClInclude Include="src\Mortify\Core\Resource.h" />
-    <ClInclude Include="src\Mortify\Core\Timestep.h" />
     <ClInclude Include="src\Mortify\Core\Define.h" />
-    <ClInclude Include="src\Mortify\EntryPoint.h" />
     <ClInclude Include="src\Mortify\Core\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Mortify\Core\Events\Event.h" />
     <ClInclude Include="src\Mortify\Core\Events\KeyEvent.h" />
     <ClInclude Include="src\Mortify\Core\Events\MouseEvent.h" />
-    <ClInclude Include="src\Mortify\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\Mortify\Core\IO\File.h" />
     <ClInclude Include="src\Mortify\Core\Input.h" />
     <ClInclude Include="src\Mortify\Core\KeyCodes.h" />
     <ClInclude Include="src\Mortify\Core\Layer.h" />
@@ -164,6 +160,11 @@
     <ClInclude Include="src\Mortify\Core\Log.h" />
     <ClInclude Include="src\Mortify\Core\MouseCodes.h" />
     <ClInclude Include="src\Mortify\Core\OrthoCameraController.h" />
+    <ClInclude Include="src\Mortify\Core\Resource.h" />
+    <ClInclude Include="src\Mortify\Core\Timestep.h" />
+    <ClInclude Include="src\Mortify\Core\Window.h" />
+    <ClInclude Include="src\Mortify\EntryPoint.h" />
+    <ClInclude Include="src\Mortify\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Mortify\Rendering\Buffer.h" />
     <ClInclude Include="src\Mortify\Rendering\Camera.h" />
     <ClInclude Include="src\Mortify\Rendering\Material.h" />
@@ -176,7 +177,6 @@
     <ClInclude Include="src\Mortify\Rendering\ShaderUniform.h" />
     <ClInclude Include="src\Mortify\Rendering\Texture.h" />
     <ClInclude Include="src\Mortify\Rendering\VertexArray.h" />
-    <ClInclude Include="src\Mortify\Core\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
@@ -253,6 +253,8 @@
     <ClInclude Include="vendor\glm\glm\ext.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\matrix_clip_space.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\matrix_clip_space.inl" />
+    <ClInclude Include="vendor\glm\glm\ext\matrix_common.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\matrix_common.inl" />
     <ClInclude Include="vendor\glm\glm\ext\matrix_double2x2.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\matrix_double2x2_precision.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\matrix_double2x3.hpp" />
@@ -317,6 +319,8 @@
     <ClInclude Include="vendor\glm\glm\ext\scalar_constants.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_constants.inl" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_int_sized.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\scalar_integer.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\scalar_integer.inl" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_relational.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_relational.inl" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_uint_sized.hpp" />
@@ -356,6 +360,8 @@
     <ClInclude Include="vendor\glm\glm\ext\vector_int3_precision.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\vector_int4.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\vector_int4_precision.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\vector_integer.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\vector_integer.inl" />
     <ClInclude Include="vendor\glm\glm\ext\vector_relational.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\vector_relational.inl" />
     <ClInclude Include="vendor\glm\glm\ext\vector_uint1.hpp" />
@@ -555,13 +561,13 @@
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp" />
     <ClCompile Include="src\Mortify\Core\IO\File.cpp" />
-    <ClCompile Include="src\Mortify\Core\Resource.cpp" />
-    <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
-    <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mortify\Core\Layer.cpp" />
     <ClCompile Include="src\Mortify\Core\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Core\Log.cpp" />
     <ClCompile Include="src\Mortify\Core\OrthoCameraController.cpp" />
+    <ClCompile Include="src\Mortify\Core\Resource.cpp" />
+    <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
+    <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Camera.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Mesh.cpp" />
