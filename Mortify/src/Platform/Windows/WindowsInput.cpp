@@ -6,7 +6,7 @@
 
 namespace Mortify
 {
-	Input* Input::s_Instance = new WindowsInput();
+	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();
 
 	bool WindowsInput::IsKeyPressedImpl(int keycode)
 	{
@@ -30,7 +30,7 @@ namespace Mortify
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 
-		return { (float)xpos, (float)ypos };
+		return { static_cast<float>(xpos), static_cast<float>(ypos) };
 	}
 
 	float WindowsInput::GetMouseXImpl()

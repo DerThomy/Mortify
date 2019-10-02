@@ -5,5 +5,5 @@
 
 namespace Mortify
 {
-	RendererAPI* RenderCommand::s_RenderAPI = new OpenGLRendererAPI;
+	Scope<RendererAPI> RenderCommand::s_RenderAPI = CreateScope<OpenGLRendererAPI>();
 }

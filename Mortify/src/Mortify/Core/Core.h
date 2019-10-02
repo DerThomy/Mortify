@@ -51,10 +51,10 @@
 #endif
 
 #ifdef MT_DEBUG
-	#define MT_ENABLE_ASSERT
+	#define MT_ENABLE_ASSERTS
 #endif
 
-#ifdef MT_ENABLE_ASSERT
+#ifdef MT_ENABLE_ASSERTS
 	#define MT_ASSERT(x, ...)		{ if(!(x)) { MT_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define MT_CORE_ASSERT(x, ...)	{ if(!(x)) { MT_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
@@ -73,6 +73,18 @@ namespace Mortify
 	template <typename T>
 	using Ref = std::shared_ptr<T>;
 
+	template <typename T, typename... Args>
+	constexpr Ref<T> CreateRef(Args&&... args)
+	{
+		return std::make_shared<T>(std::forward<Args>(args)...);
+	}
+
 	template <typename T>
 	using Scope = std::unique_ptr<T>;
+
+	template <typename T, typename... Args>
+	constexpr Scope<T> CreateScope(Args&& ... args)
+	{
+		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+	}
 }

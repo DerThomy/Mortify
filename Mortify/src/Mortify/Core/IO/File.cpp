@@ -8,6 +8,6 @@ namespace Mortify
 {
 	Ref<File> File::Create(const std::string& path)
 	{
-		return std::make_shared<WindowsFile>(path);
+		return CreateRef<WindowsFile>(path);
 	}
 }

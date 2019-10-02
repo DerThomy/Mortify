@@ -6,7 +6,7 @@
 
 namespace Mortify
 {
-	Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData();
+	Scope<Renderer::SceneData> Renderer::s_SceneData = CreateScope<Renderer::SceneData>();
 
 	void Renderer::Init()
 	{
@@ -36,7 +36,7 @@ namespace Mortify
 	// 2D
 	// ------------------------------------------------------------------------------------------------------------
 
-	Renderer2D::SceneData* Renderer2D::s_SceneData = new Renderer2D::SceneData();
+	Scope<Renderer2D::SceneData> Renderer2D::s_SceneData = CreateScope<Renderer2D::SceneData>();
 
 	void Renderer2D::Init()
 	{

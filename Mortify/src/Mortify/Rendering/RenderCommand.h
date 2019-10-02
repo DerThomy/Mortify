@@ -35,6 +35,6 @@ namespace Mortify
 		}
 
 	private:
-		static RendererAPI* s_RenderAPI;
+		static Scope<RendererAPI> s_RenderAPI;
 	};
 }

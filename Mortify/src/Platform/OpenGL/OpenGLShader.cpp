@@ -198,14 +198,16 @@ namespace Mortify
 			size_t eol = source.find_first_of("\r\n", pos);
 			MT_CORE_ASSERT(eol != std::string::npos, "Syntax error!");
 			std::string line = source.substr(pos, eol - pos);
-			size_t begin = source.find_first_not_of(" ", pos + typeTokenLength);
+			size_t begin = source.find_first_not_of(' ', pos + typeTokenLength);
 			MT_CORE_ASSERT(begin != eol, "Missing Type!");
 			std::string type = source.substr(begin, eol - begin);
 			MT_CORE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specification!");
 
-			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
-			pos = source.find(typeToken, nextLinePos);
-			shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+			size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
+			MT_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+			pos = source.find(typeToken, nextLinePos); //Start of next shader type declaration line
+
+			shaderSources[ShaderTypeFromString(type)] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
 		}
 
 		return shaderSources;

@@ -12,7 +12,7 @@ namespace Mortify
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
+			case RendererAPI::API::OpenGL: return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
 		}
 
 		MT_CORE_ASSERT(false, "RenderAPI is not supported");
@@ -24,7 +24,7 @@ namespace Mortify
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(filePath);
+		case RendererAPI::API::OpenGL: return CreateRef<OpenGLShader>(filePath);
 		}
 
 		MT_CORE_ASSERT(false, "RenderAPI is not supported");

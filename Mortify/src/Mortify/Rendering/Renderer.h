@@ -28,7 +28,7 @@ namespace Mortify
 			glm::mat4 ViewProjectionMatrix;
 		};
 
-		static SceneData* s_SceneData;
+		static Scope<SceneData> s_SceneData;
 		static uint32_t m_SceneCounter;
 	};
 
@@ -51,7 +51,7 @@ namespace Mortify
 			glm::mat4 ViewProjectionMatrix;
 		};
 
-		static SceneData* s_SceneData;
+		static Scope<SceneData> s_SceneData;
 		static uint32_t m_SceneCounter;
 	};
 }
