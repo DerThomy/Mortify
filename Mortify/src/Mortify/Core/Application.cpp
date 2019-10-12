@@ -68,7 +68,7 @@ namespace Mortify
 	
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
-		RenderCommand::SetViewport(e.GetWidth(), e.GetHeight());
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 		
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 			m_Minimized = true;

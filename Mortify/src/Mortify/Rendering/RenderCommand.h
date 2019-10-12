@@ -24,9 +24,9 @@ namespace Mortify
 			s_RenderAPI->Clear();
 		}
 
-		static inline void SetViewport(float width, float height)
+		static inline void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 		{
-			s_RenderAPI->SetViewport(width, height);
+			s_RenderAPI->SetViewport(x, y, width, height);
 		}
 
 		static inline void DrawIndexed(const Ref<VertexArray>& vertexArray)
