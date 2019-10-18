@@ -30,9 +30,3 @@
 #include "Mortify/Rendering/Camera.h"
 
 //--------------------------------
-
-//-----------EntryPoint-----------
-
-#include "Mortify/EntryPoint.h"
-
-//--------------------------------

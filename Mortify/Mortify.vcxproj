@@ -144,6 +144,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Mortify\Rendering\Renderer2D.h" />
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Core\Application.h" />
     <ClInclude Include="src\Mortify\Core\Buffer.h" />
@@ -573,6 +574,7 @@
     <ClCompile Include="src\Mortify\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Renderer.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\Renderer2D.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RendererAPI.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Shader.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Texture.cpp" />

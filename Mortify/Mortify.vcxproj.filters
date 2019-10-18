@@ -1296,6 +1296,9 @@
     <ClInclude Include="src\Mortify\Core\Core.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\Renderer2D.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp">
@@ -1388,5 +1391,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\Renderer2D.cpp" />
   </ItemGroup>
 </Project>
