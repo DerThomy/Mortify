@@ -17,9 +17,5 @@ public:
 private:
 	Mortify::OrthoCameraController m_CameraController;
 
-	// Temp
-	Mortify::Ref<Mortify::VertexArray> m_SquareVA;
-	Mortify::Ref<Mortify::Shader> m_FlatColorShader;
-
 	glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 };

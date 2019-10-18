@@ -1,6 +1,7 @@
 #include "mtpch.h"
 
 #include "Renderer.h"
+#include "Renderer2D.h"
 
 #include "Platform/OpenGL/OpenGLShader.h"
 
@@ -11,6 +12,7 @@ namespace Mortify
 	void Renderer::Init()
 	{
 		RenderCommand::Init();
+		Renderer2D::Init();
 	}
 
 	void Renderer::BeginScene(OrthographicCamera& camera)
