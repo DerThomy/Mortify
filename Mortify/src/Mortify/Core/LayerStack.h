@@ -4,7 +4,7 @@
 
 namespace Mortify
 {
-	class MT_API LayerStack
+	class  LayerStack
 	{
 	public:
 		LayerStack();

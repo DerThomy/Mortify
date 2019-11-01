@@ -5,9 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Mortify/Core/Events/Event.h"
-#include "Mortify/Core/Window.h"
-
 namespace Mortify {
 
 	class PerspectiveCamera

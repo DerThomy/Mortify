@@ -6,7 +6,7 @@
 
 namespace Mortify
 {
-	class MT_API Log
+	class  Log
 	{
 	public:
 		static void Init();

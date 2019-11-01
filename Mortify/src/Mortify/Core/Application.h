@@ -11,7 +11,7 @@
 
 namespace Mortify
 {
-	class MT_API Application
+	class  Application
 	{
 	public:
 		Application();

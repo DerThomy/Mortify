@@ -4,7 +4,7 @@
 
 namespace Mortify
 {
-	class MT_API MouseMovedEvent : public Event
+	class  MouseMovedEvent : public Event
 	{
 	public:
 		MouseMovedEvent(float x, float y)
@@ -26,7 +26,7 @@ namespace Mortify
 		float m_MouseY;
 	};
 
-	class MT_API MouseScrolledEvent : public Event
+	class  MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset)
@@ -48,7 +48,7 @@ namespace Mortify
 		float m_YOffset;
 	};
 
-	class MT_API MouseButtonEvent : public Event
+	class  MouseButtonEvent : public Event
 	{
 	public:
 		inline int GetButtonCode() const { return m_ButtonCode; }
@@ -61,7 +61,7 @@ namespace Mortify
 		int m_ButtonCode;
 	};
 
-	class MT_API MouseButtonClickedEvent : public MouseButtonEvent
+	class  MouseButtonClickedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonClickedEvent(int buttonCode)
@@ -76,7 +76,7 @@ namespace Mortify
 		EVENT_CLASS_TYPE(MouseButtonClicked)
 	};
 
-	class MT_API MouseButtonReleasedEvent : public MouseButtonEvent
+	class  MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonReleasedEvent(int buttonCode)

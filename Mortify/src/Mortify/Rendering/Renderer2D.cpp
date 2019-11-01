@@ -22,7 +22,7 @@ namespace Mortify
 		
 		s_Data->QuadVertexArray = VertexArray::Create();
 
-		float squareVertices[5 * 4] = {
+		float squareVertices[3 * 4] = {
 			-0.5f, -0.5f, 0.0f,
 			 0.5f, -0.5f, 0.0f,
 			 0.5f,  0.5f, 0.0f,
@@ -31,7 +31,7 @@ namespace Mortify
 
 		auto squareVB = VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		squareVB->SetLayout({
-			{ ShaderDataType::Float3, "a_Position" }
+			{ ShaderDataType::Float3, "a_Position" },
 			});
 		s_Data->QuadVertexArray->AddVertexBuffer(squareVB);
 

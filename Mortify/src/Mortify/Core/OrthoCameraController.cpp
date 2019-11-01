@@ -13,7 +13,7 @@ namespace Mortify
 	}
 
 	void OrthoCameraController::OnUpdate(Timestep ts)
-	{
+	{		
 		if (Mortify::Input::IsKeyPressed(MT_KEY_LEFT) || Mortify::Input::IsKeyPressed(MT_KEY_A))
 		{
 			m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
@@ -52,6 +52,8 @@ namespace Mortify
 		}
 
 		m_Camera.SetPosition(m_CameraPosition);
+
+		MT_CORE_INFO("CmaerPosition (x,y): {0} {1} | ViewMatrix: {2}", m_CameraPosition.x, m_CameraPosition.y, m_Camera.GetProjectionMatrix()[0][0]);
 
 		m_CameraTranslationSpeed = m_ZoomLevel;
 	}

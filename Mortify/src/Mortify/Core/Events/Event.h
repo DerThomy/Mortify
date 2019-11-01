@@ -33,7 +33,7 @@ namespace Mortify
 
 	#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-	class MT_API Event
+	class  Event
 	{
 	private:
 		friend class EventDispatcher;

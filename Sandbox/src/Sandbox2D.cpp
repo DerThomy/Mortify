@@ -31,7 +31,7 @@ void Sandbox2D::OnUpdate(Mortify::Timestep ts)
 
 	Mortify::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	Mortify::Renderer2D::DrawQuad({0.0f, 0.0f}, {1.0f, 1.0f}, m_SquareColor);
+	Mortify::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, m_SquareColor);
 
 	Mortify::Renderer2D::EndScene();
 }

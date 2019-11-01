@@ -4,7 +4,7 @@
 
 namespace Mortify
 {
-	class MT_API WindowResizeEvent : public Event
+	class  WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height)
@@ -26,7 +26,7 @@ namespace Mortify
 		unsigned int m_Height, m_Width;
 	};
 
-	class MT_API WindowCloseEvent : public Event
+	class  WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() {}
@@ -35,7 +35,7 @@ namespace Mortify
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class MT_API AppTickEvent : public Event
+	class  AppTickEvent : public Event
 	{
 	public:
 		AppTickEvent() {}
@@ -44,7 +44,7 @@ namespace Mortify
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class MT_API AppUpdateEvent : public Event
+	class  AppUpdateEvent : public Event
 	{
 	public:
 		AppUpdateEvent() {}
@@ -53,7 +53,7 @@ namespace Mortify
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class MT_API AppRenderEvent : public Event
+	class  AppRenderEvent : public Event
 	{
 	public:
 		AppRenderEvent() {}

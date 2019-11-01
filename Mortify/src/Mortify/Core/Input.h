@@ -4,7 +4,7 @@
 
 namespace Mortify
 {
-	class MT_API Input
+	class  Input
 	{
 	protected:
 		Input() = default;

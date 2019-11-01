@@ -38,17 +38,6 @@
 	#error "Unknown platform!"
 #endif
 
-#ifdef MT_PLATFORM_WINDOWS
-	#if HZ_DYNAMIC_LINK
-		#ifdef MT_BUILD_DLL
-			#define MT_API __declspec(dllexport)
-		#else
-			#define MT_API __declspec(dllimport)
-		#endif
-	#else
-		#define MT_API
-	#endif
-#endif
 
 #ifdef MT_DEBUG
 	#define MT_ENABLE_ASSERTS
