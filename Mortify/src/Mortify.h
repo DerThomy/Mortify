@@ -11,13 +11,13 @@
 #include "Mortify/Core/KeyCodes.h"
 #include "Mortify/Core/MouseCodes.h"
 #include "Mortify/Core/Input.h"
-#include "Mortify/Core/OrthoCameraController.h"
 
 #include "Mortify/ImGui/ImGuiLayer.h"
 
 //----Renderer--------------------
 
 #include "Mortify/Rendering/Renderer.h"
+#include "Mortify/Rendering/Renderer2D.h"
 #include "Mortify/Rendering/RenderCommand.h"
 
 #include "Mortify/Rendering/Shader.h"
@@ -28,5 +28,6 @@
 #include "Mortify/Rendering/Mesh.h"
 
 #include "Mortify/Rendering/Camera.h"
+#include "Mortify/Rendering/OrthoCameraController.h"
 
 //--------------------------------

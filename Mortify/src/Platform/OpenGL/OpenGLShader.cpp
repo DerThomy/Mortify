@@ -38,6 +38,26 @@ namespace Mortify
 		glDeleteProgram(m_RendererID);
 	}
 
+	void OpenGLShader::SetInt(const std::string& name, int value)
+	{
+		UploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+	{
+		UploadUniformFloat3(name, value);
+	}
+
+	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+	{
+		UploadUniformFloat4(name, value);
+	}
+
+	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+	{
+		UploadUniformMatrix4f(name, value);
+	}
+
 	void OpenGLShader::Reload()
 	{
 		if (m_AssetPath == std::string())
@@ -227,7 +247,7 @@ namespace Mortify
 	const char* FindToken(const char* str, const std::string & token)
 	{
 		const char* t = str;
-		while (t = strstr(t, token.c_str()))
+		while ((t = strstr(t, token.c_str())))
 		{
 			bool left = str == t || isspace(t[-1]);
 			bool right = !t[token.size()] || isspace(t[token.size()]);

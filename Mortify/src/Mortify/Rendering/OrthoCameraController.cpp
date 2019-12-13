@@ -53,8 +53,6 @@ namespace Mortify
 
 		m_Camera.SetPosition(m_CameraPosition);
 
-		MT_CORE_INFO("CmaerPosition (x,y): {0} {1} | ViewMatrix: {2}", m_CameraPosition.x, m_CameraPosition.y, m_Camera.GetProjectionMatrix()[0][0]);
-
 		m_CameraTranslationSpeed = m_ZoomLevel;
 	}
 

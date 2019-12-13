@@ -144,7 +144,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Mortify\Rendering\Renderer2D.h" />
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Core\Application.h" />
     <ClInclude Include="src\Mortify\Core\Buffer.h" />
@@ -160,7 +159,7 @@
     <ClInclude Include="src\Mortify\Core\LayerStack.h" />
     <ClInclude Include="src\Mortify\Core\Log.h" />
     <ClInclude Include="src\Mortify\Core\MouseCodes.h" />
-    <ClInclude Include="src\Mortify\Core\OrthoCameraController.h" />
+    <ClInclude Include="src\Mortify\Rendering\OrthoCameraController.h" />
     <ClInclude Include="src\Mortify\Core\Resource.h" />
     <ClInclude Include="src\Mortify\Core\Timestep.h" />
     <ClInclude Include="src\Mortify\Core\Window.h" />
@@ -173,6 +172,7 @@
     <ClInclude Include="src\Mortify\Rendering\RenderCommand.h" />
     <ClInclude Include="src\Mortify\Rendering\RenderContext.h" />
     <ClInclude Include="src\Mortify\Rendering\Renderer.h" />
+    <ClInclude Include="src\Mortify\Rendering\Renderer2D.h" />
     <ClInclude Include="src\Mortify\Rendering\RendererAPI.h" />
     <ClInclude Include="src\Mortify\Rendering\Shader.h" />
     <ClInclude Include="src\Mortify\Rendering\ShaderUniform.h" />
@@ -565,7 +565,7 @@
     <ClCompile Include="src\Mortify\Core\Layer.cpp" />
     <ClCompile Include="src\Mortify\Core\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Core\Log.cpp" />
-    <ClCompile Include="src\Mortify\Core\OrthoCameraController.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\OrthoCameraController.cpp" />
     <ClCompile Include="src\Mortify\Core\Resource.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
