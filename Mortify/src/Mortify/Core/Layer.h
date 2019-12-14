@@ -7,7 +7,7 @@
 
 namespace Mortify
 {
-	class  Layer
+	class Layer
 	{
 	public:
 		Layer(const std::string& debugName = "Layer");

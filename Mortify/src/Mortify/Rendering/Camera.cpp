@@ -1,6 +1,6 @@
 #include "mtpch.h"
 
-#include "Camera.h"
+#include "Mortify/Rendering/Camera.h"
 
 #include "Mortify/Core/KeyCodes.h"
 #include "Mortify/Core/MouseCodes.h"

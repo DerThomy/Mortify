@@ -20,7 +20,7 @@ namespace Mortify
 	};
 
 	// Window Interface for desktop system windows
-	class  Window
+	class Window
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;

@@ -24,8 +24,7 @@ public:
 			 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		Mortify::Ref<Mortify::VertexBuffer> vertexBuffer;
-		vertexBuffer = Mortify::VertexBuffer::Create(vertices, sizeof(vertices));
+		auto vertexBuffer = Mortify::VertexBuffer::Create(vertices, sizeof(vertices));
 		Mortify::BufferLayout layout = {
 			{ Mortify::ShaderDataType::Float3, "a_Position" },
 			{ Mortify::ShaderDataType::Float4, "a_Color" }
@@ -34,8 +33,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[3] = { 0, 1, 2 };
-		Mortify::Ref<Mortify::IndexBuffer> indexBuffer;
-		indexBuffer = Mortify::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+		auto indexBuffer = Mortify::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		m_SquareVA = Mortify::VertexArray::Create();
@@ -47,8 +45,7 @@ public:
 			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
-		Mortify::Ref<Mortify::VertexBuffer> squareVB;
-		squareVB = Mortify::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
+		auto squareVB = Mortify::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		squareVB->SetLayout({
 			{ Mortify::ShaderDataType::Float3, "a_Position" },
 			{ Mortify::ShaderDataType::Float2, "a_TexCoord" }
@@ -56,8 +53,7 @@ public:
 		m_SquareVA->AddVertexBuffer(squareVB);
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-		Mortify::Ref<Mortify::IndexBuffer> squareIB;
-		squareIB = Mortify::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+		auto squareIB = Mortify::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
 		std::string vertexSrc = R"(
@@ -125,8 +121,8 @@ public:
 		m_Texture = Mortify::Texture2D::Create("assets/textures/Checkerboard.png");
 		m_ChernoLogoTexture = Mortify::Texture2D::Create("assets/textures/ChernoLogo.png");
 
-		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_TextureShader)->Bind();
-		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		m_TextureShader->Bind();
+		m_TextureShader->SetInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Mortify::Timestep ts) override
@@ -140,8 +136,8 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_FlatColorShader)->Bind();
-		std::dynamic_pointer_cast<Mortify::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+		m_FlatColorShader->Bind();
+		m_FlatColorShader->SetFloat3("u_Color", m_SquareColor);
 
 		for (int y = 0; y < 20; y++)
 		{

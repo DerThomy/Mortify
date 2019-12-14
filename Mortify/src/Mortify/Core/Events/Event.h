@@ -1,10 +1,7 @@
 #pragma once
+#include "mtpch.h"
 
 #include "Mortify/Core/Core.h"
-
-#include <string>
-#include <sstream>
-#include <functional>
 
 namespace Mortify
 {
@@ -33,7 +30,7 @@ namespace Mortify
 
 	#define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-	class  Event
+	class Event
 	{
 	private:
 		friend class EventDispatcher;

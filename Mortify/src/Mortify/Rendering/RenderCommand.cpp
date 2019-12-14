@@ -1,9 +1,8 @@
 #include "mtpch.h"
 
-#include "RenderCommand.h"
-#include "Platform/OpenGL/OpenGLRendererAPI.h"
+#include "Mortify/Rendering/RenderCommand.h"
 
 namespace Mortify
 {
-	Scope<RendererAPI> RenderCommand::s_RenderAPI = CreateScope<OpenGLRendererAPI>();
+	Scope<RendererAPI> RenderCommand::s_RenderAPI = RendererAPI::Create();
 }

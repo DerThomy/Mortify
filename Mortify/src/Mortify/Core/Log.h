@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Mortify/Core/Core.h"
-#include "spdlog/spdlog.h"
-#include "spdlog/fmt/ostr.h"
+
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
 namespace Mortify
 {
@@ -11,12 +12,12 @@ namespace Mortify
 	public:
 		static void Init();
 
-		static inline std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger;  }
-		static inline std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger;  }
+		static inline Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger;  }
+		static inline Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger;  }
 
 	private:
-		static std::shared_ptr<spdlog::logger> s_CoreLogger;
-		static std::shared_ptr<spdlog::logger> s_ClientLogger;
+		static Ref<spdlog::logger> s_CoreLogger;
+		static Ref<spdlog::logger> s_ClientLogger;
 	};
 }
 

@@ -1,6 +1,6 @@
 #include "mtpch.h"
 
-#include "OpenGLShaderUniform.h"
+#include "Platform/OpenGL/OpenGLShaderUniform.h"
 
 namespace Mortify
 {

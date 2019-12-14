@@ -573,6 +573,7 @@
     <ClCompile Include="src\Mortify\Rendering\Camera.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\RenderContext.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Renderer2D.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RendererAPI.cpp" />

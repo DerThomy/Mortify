@@ -1,10 +1,10 @@
 #include "mtpch.h"
 
-#include "OpenGLRenderContext.h"
+#include "Platform/OpenGL/OpenGLRenderContext.h"
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include <gl/GL.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <GL/GL.h>
 
 namespace Mortify
 {

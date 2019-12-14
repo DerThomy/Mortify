@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Event.h"
+#include "Mortify/Core/Events/Event.h"
 
 namespace Mortify
 {
-	class  KeyEvent : public Event
+	class KeyEvent : public Event
 	{
 	public:
 		inline int getKeyCode() const { return m_KeyCode; }
@@ -17,7 +17,7 @@ namespace Mortify
 		int m_KeyCode;
 	};
 
-	class  KeyPressedEvent : public KeyEvent
+	class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(int keyCode, int repeatCount)
@@ -37,7 +37,7 @@ namespace Mortify
 		int m_RepeatCount;
 	};
 
-	class  KeyReleasedEvent : public KeyEvent
+	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(int keyCode)
@@ -53,7 +53,7 @@ namespace Mortify
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	class  KeyTypedEvent : public KeyEvent
+	class KeyTypedEvent : public KeyEvent
 	{
 	public:
 		KeyTypedEvent(int keyCode)

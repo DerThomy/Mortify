@@ -4,10 +4,10 @@
 
 namespace Mortify
 {
-	class  LayerStack
+	class LayerStack
 	{
 	public:
-		LayerStack();
+		LayerStack() = default;
 		~LayerStack();
 
 		void PushLayer(Layer* layer);

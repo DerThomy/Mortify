@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Camera.h"
-#include "Texture.h"
+#include "Mortify/Rendering/Camera.h"
+#include "Mortify/Rendering/Texture.h"
 
 namespace Mortify
 {

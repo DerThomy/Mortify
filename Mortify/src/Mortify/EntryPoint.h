@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Mortify/Core/Core.h"
+
 #ifdef MT_PLATFORM_WINDOWS
 
 int main(int argc, char** argv)

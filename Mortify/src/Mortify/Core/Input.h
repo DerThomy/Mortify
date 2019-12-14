@@ -4,7 +4,7 @@
 
 namespace Mortify
 {
-	class  Input
+	class Input
 	{
 	protected:
 		Input() = default;

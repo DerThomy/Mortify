@@ -1394,5 +1394,6 @@
     <ClCompile Include="src\Mortify\Rendering\OrthoCameraController.cpp">
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\RenderContext.cpp" />
   </ItemGroup>
 </Project>

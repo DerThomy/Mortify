@@ -1,9 +1,7 @@
 #include "mtpch.h"
 
-#include "Renderer.h"
-#include "Renderer2D.h"
-
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Mortify/Rendering/Renderer.h"
+#include "Mortify/Rendering/Renderer2D.h"
 
 namespace Mortify
 {
@@ -27,9 +25,9 @@ namespace Mortify
 
 	void Renderer::Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform)
 	{
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMatrix4f("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMatrix4f("u_Transform", transform);
+		shader->Bind();
+		shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+		shader->SetMat4("u_Transform", transform);
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
@@ -38,5 +36,10 @@ namespace Mortify
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height)
 	{
 		RenderCommand::SetViewport(0, 0, width, height);
+	}
+
+	void Renderer::Shutdown()
+	{
+		Renderer2D::Shutdown();
 	}
 }

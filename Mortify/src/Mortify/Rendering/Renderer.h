@@ -1,9 +1,9 @@
 #pragma once
 
-#include "RendererAPI.h"
-#include "RenderCommand.h"
-#include "Camera.h"
-#include "Material.h"
+#include "Mortify/Rendering/RendererAPI.h"
+#include "Mortify/Rendering/RenderCommand.h"
+#include "Mortify/Rendering/Camera.h"
+#include "Mortify/Rendering/Material.h"
 #include "Mortify/Core/Resource.h"
 
 #include <glm/glm.hpp>
@@ -14,6 +14,7 @@ namespace Mortify
 	{
 	public:
 		static void Init();
+		static void Shutdown();
 
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();

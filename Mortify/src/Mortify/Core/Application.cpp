@@ -29,6 +29,11 @@ namespace Mortify
 		PushOverlay(m_ImGuiLayer);
 	}
 
+	Application::~Application()
+	{
+		Renderer::Shutdown();
+	}
+
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);

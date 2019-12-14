@@ -1,7 +1,7 @@
 #include "mtpch.h"
 
-#include "VertexArray.h"
-#include "Renderer.h"
+#include "Mortify/Rendering/VertexArray.h"
+#include "Mortify/Rendering/Renderer.h"
 
 #include "Platform/OpenGL/OpenGLVertexArray.h"
 

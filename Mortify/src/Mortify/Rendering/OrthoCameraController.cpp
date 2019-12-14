@@ -1,5 +1,5 @@
 #include "mtpch.h"
-#include "OrthoCameraController.h"
+#include "Mortify/Rendering/OrthoCameraController.h"
 
 #include "Mortify/Core/KeyCodes.h"
 #include "Mortify/Core/Input.h"

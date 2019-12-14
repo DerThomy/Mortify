@@ -1,7 +1,7 @@
 #include "mtpch.h"
 
-#include "Renderer.h"
-#include "Buffer.h"
+#include "Mortify/Rendering/Renderer.h"
+#include "Mortify/Rendering/Buffer.h"
 
 #include "Platform/OpenGL/OpenGLBuffer.h"
 

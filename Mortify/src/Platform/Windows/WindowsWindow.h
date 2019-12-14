@@ -29,7 +29,7 @@ namespace Mortify
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
-		RenderContext* m_Context;
+		Ref<RenderContext> m_Context;
 
 		struct WindowData
 		{

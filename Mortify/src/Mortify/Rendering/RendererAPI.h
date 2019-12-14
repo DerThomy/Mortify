@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VertexArray.h"
+#include "Mortify/Rendering/VertexArray.h"
 
 #include <glm/glm.hpp>
 
@@ -27,6 +27,7 @@ namespace Mortify
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray) = 0;
 
 		static inline API GetAPI() { return s_API; }
+		static Scope<RendererAPI> Create();
 
 	private:
 		static API s_API;

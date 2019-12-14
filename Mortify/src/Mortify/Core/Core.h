@@ -25,10 +25,10 @@
 	#define HZ_PLATFORM_MACOS
 	#else
 	#error "Unknown Apple platform"
-#endif
- /* We also have to check __ANDROID__ before __linux__
-  * since android is based on the linux kernel
-  * it has __linux__ defined */
+	#endif
+	/* We also have to check __ANDROID__ before __linux__
+	 * since android is based on the linux kernel
+	 * it has __linux__ defined */
 #elif defined(__ANDROID__)
 	#error "Android is not supported!"
 #elif defined(__linux__)
