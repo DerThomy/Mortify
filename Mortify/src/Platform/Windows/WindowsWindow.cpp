@@ -25,16 +25,22 @@ namespace Mortify
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -43,14 +49,18 @@ namespace Mortify
 
 		if (s_GLFWWindowCount == 0)
 		{
-			// TODO: glfwTerminate on sytem shutdown
+			MT_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
 			MT_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		s_GLFWWindowCount++;
+		{
+			MT_PROFILE_SCOPE("glfwCreateWindow");
+			
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+			++s_GLFWWindowCount;
+		}
 		
 		m_Context = RenderContext::Create(m_Window);;
 		m_Context->Init();
@@ -151,12 +161,16 @@ namespace Mortify
 
 	void WindowsWindow::OnUpdate()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glfwPollEvents();
 		m_Context->SwapBuffer();
 	}
 
 	void WindowsWindow::Shutdown()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glfwDestroyWindow(m_Window);
 		--s_GLFWWindowCount;
 
@@ -166,6 +180,8 @@ namespace Mortify
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		if (enabled)
 			glfwSwapInterval(1);
 		else

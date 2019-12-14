@@ -13,7 +13,9 @@ namespace Mortify
 	}
 
 	void OrthoCameraController::OnUpdate(Timestep ts)
-	{		
+	{
+		MT_PROFILE_FUNCTION();
+		
 		if (Mortify::Input::IsKeyPressed(MT_KEY_LEFT) || Mortify::Input::IsKeyPressed(MT_KEY_A))
 		{
 			m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
@@ -58,13 +60,17 @@ namespace Mortify
 
 	void OrthoCameraController::OnEvent(Event& e)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(OrthoCameraController::OnMouseScrolledEvent));
-		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OrthoCameraController::OnWindowResizeEvent));
+		dispatcher.Dispatch<MouseScrolledEvent>(MT_BIND_EVENT_FN(OrthoCameraController::OnMouseScrolledEvent));
+		dispatcher.Dispatch<WindowResizeEvent>(MT_BIND_EVENT_FN(OrthoCameraController::OnWindowResizeEvent));
 	}
 
 	bool OrthoCameraController::OnMouseScrolledEvent(MouseScrolledEvent& e)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		m_ZoomLevel += e.GetYOffset() * 0.15f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 
@@ -74,6 +80,8 @@ namespace Mortify
 
 	bool OrthoCameraController::OnWindowResizeEvent(WindowResizeEvent& e)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);

@@ -9,6 +9,8 @@ namespace Mortify
 
 	void Renderer::Init()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		RenderCommand::Init();
 		Renderer2D::Init();
 	}

@@ -16,6 +16,8 @@ namespace Mortify
 
 	void OpenGLRenderContext::Init()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glfwMakeContextCurrent(m_WindowHandle);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		MT_CORE_ASSERT(status, "Failed to initizalize Glad!");
@@ -37,6 +39,8 @@ namespace Mortify
 
 	void OpenGLRenderContext::SwapBuffer()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glfwSwapBuffers(m_WindowHandle);
 	}
 }

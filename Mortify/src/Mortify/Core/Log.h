@@ -7,7 +7,7 @@
 
 namespace Mortify
 {
-	class  Log
+	class Log
 	{
 	public:
 		static void Init();

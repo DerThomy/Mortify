@@ -28,21 +28,29 @@ namespace Mortify
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glCreateVertexArrays(1, &m_RendererID);
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glBindVertexArray(m_RendererID);
 	}
 
 	void OpenGLVertexArray::Unbind() const
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glBindVertexArray(0);
 	}
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
 
@@ -64,6 +72,8 @@ namespace Mortify
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();
 

@@ -1299,6 +1299,7 @@
     <ClInclude Include="src\Mortify\Rendering\OrthoCameraController.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Debug\Instrumentor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp">

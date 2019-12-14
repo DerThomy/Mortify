@@ -21,6 +21,8 @@ namespace Mortify
 	
 	void Renderer2D::Init()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		s_Data = new Renderer2DStorage();
 		
 		s_Data->QuadVertexArray = VertexArray::Create();
@@ -58,12 +60,16 @@ namespace Mortify
 
 	void Renderer2D::BeginScene(OrthographicCamera& camera)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer2D::EndScene()
 	{
+		MT_PROFILE_FUNCTION();
+		
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -73,6 +79,8 @@ namespace Mortify
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		s_Data->TextureShader->SetFloat4("u_Color", color);
 		s_Data->WhiteTexture->Bind();
 
@@ -90,7 +98,9 @@ namespace Mortify
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
-		MT_CORE_ASSERT(texture, "Texture was not loaded");
+		MT_PROFILE_FUNCTION();
+		
+		MT_CORE_ASSERT(texture, "Texture empty!");
 		s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f));
 		texture->Bind();
 

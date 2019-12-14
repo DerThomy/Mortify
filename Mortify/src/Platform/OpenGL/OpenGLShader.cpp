@@ -11,6 +11,8 @@ namespace Mortify
 	OpenGLShader::OpenGLShader(const std::string& filePath)
 		: m_RendererID(0), m_AssetPath(filePath)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		auto lastSlash = filePath.find_last_of("/\\");
 		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
 		auto lastDot = filePath.rfind('.');
@@ -23,6 +25,8 @@ namespace Mortify
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 		: m_RendererID(0), m_Name(name), m_AssetPath(std::string())
 	{
+		MT_PROFILE_FUNCTION();
+		
 		m_ShaderSources[GL_VERTEX_SHADER] = vertexSrc;
 		m_ShaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
 		Compile();
@@ -35,31 +39,43 @@ namespace Mortify
 
 	OpenGLShader::~OpenGLShader()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glDeleteProgram(m_RendererID);
 	}
 
 	void OpenGLShader::SetInt(const std::string& name, int value)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		UploadUniformInt(name, value);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		UploadUniformFloat3(name, value);
 	}
 
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		UploadUniformFloat4(name, value);
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		UploadUniformMatrix4f(name, value);
 	}
 
 	void OpenGLShader::Reload()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		if (m_AssetPath == std::string())
 		{
 			MT_CORE_ERROR("Cant reload shader '{0}', scince its source is provided by strings", m_Name);
@@ -85,11 +101,15 @@ namespace Mortify
 
 	void OpenGLShader::Bind() const
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
+		MT_PROFILE_FUNCTION();
+		
 		glUseProgram(0);
 	}
 
@@ -187,6 +207,8 @@ namespace Mortify
 
 	std::string OpenGLShader::ReadFile(const std::string& filePath)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		std::string result;
 		std::ifstream in(filePath, std::ios::in | std::ios::binary);
 		if (in)
@@ -215,6 +237,8 @@ namespace Mortify
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
+		MT_PROFILE_FUNCTION();
+		
 		std::unordered_map<GLenum, std::string> shaderSources;
 
 		const char* typeToken = "#type";
@@ -575,6 +599,8 @@ namespace Mortify
 
 	void OpenGLShader::Compile()
 	{
+		MT_PROFILE_FUNCTION();
+		
 		GLuint program = glCreateProgram();
 
 		MT_CORE_ASSERT(m_ShaderSources.size() <= 2, "More than 2 shaders are currently not supported");
