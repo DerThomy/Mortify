@@ -144,7 +144,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Mortify\Debug\Instrumentor.h" />
     <ClInclude Include="src\Mortify.h" />
     <ClInclude Include="src\Mortify\Core\Application.h" />
     <ClInclude Include="src\Mortify\Core\Buffer.h" />
@@ -160,16 +159,17 @@
     <ClInclude Include="src\Mortify\Core\LayerStack.h" />
     <ClInclude Include="src\Mortify\Core\Log.h" />
     <ClInclude Include="src\Mortify\Core\MouseCodes.h" />
-    <ClInclude Include="src\Mortify\Rendering\OrthoCameraController.h" />
     <ClInclude Include="src\Mortify\Core\Resource.h" />
     <ClInclude Include="src\Mortify\Core\Timestep.h" />
     <ClInclude Include="src\Mortify\Core\Window.h" />
+    <ClInclude Include="src\Mortify\Debug\Instrumentor.h" />
     <ClInclude Include="src\Mortify\EntryPoint.h" />
     <ClInclude Include="src\Mortify\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Mortify\Rendering\Buffer.h" />
     <ClInclude Include="src\Mortify\Rendering\Camera.h" />
     <ClInclude Include="src\Mortify\Rendering\Material.h" />
     <ClInclude Include="src\Mortify\Rendering\Mesh.h" />
+    <ClInclude Include="src\Mortify\Rendering\OrthoCameraController.h" />
     <ClInclude Include="src\Mortify\Rendering\RenderCommand.h" />
     <ClInclude Include="src\Mortify\Rendering\RenderContext.h" />
     <ClInclude Include="src\Mortify\Rendering\Renderer.h" />
@@ -566,13 +566,13 @@
     <ClCompile Include="src\Mortify\Core\Layer.cpp" />
     <ClCompile Include="src\Mortify\Core\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Core\Log.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\OrthoCameraController.cpp" />
     <ClCompile Include="src\Mortify\Core\Resource.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Camera.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Mesh.cpp" />
+    <ClCompile Include="src\Mortify\Rendering\OrthoCameraController.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RenderContext.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Renderer.cpp" />

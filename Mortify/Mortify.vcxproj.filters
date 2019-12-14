@@ -16,6 +16,9 @@
     <Filter Include="src\Mortify\Core\IO">
       <UniqueIdentifier>{053050F6-7191-2D04-FAFE-73B6665F64C3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Mortify\Debug">
+      <UniqueIdentifier>{FC8994F3-68A0-9289-B117-1EAB1D6D6311}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Mortify\ImGui">
       <UniqueIdentifier>{B0F4F2F3-1C0B-F189-6582-7CABD1D7C111}</UniqueIdentifier>
     </Filter>
@@ -111,6 +114,9 @@
     <ClInclude Include="src\Mortify\Core\Window.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Debug\Instrumentor.h">
+      <Filter>src\Mortify\Debug</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\EntryPoint.h">
       <Filter>src\Mortify</Filter>
     </ClInclude>
@@ -127,6 +133,9 @@
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\Mesh.h">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mortify\Rendering\OrthoCameraController.h">
       <Filter>src\Mortify\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="src\Mortify\Rendering\RenderCommand.h">
@@ -1296,10 +1305,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Rendering\OrthoCameraController.h">
-      <Filter>src\Mortify\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mortify\Debug\Instrumentor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp">
@@ -1335,7 +1340,13 @@
     <ClCompile Include="src\Mortify\Rendering\Mesh.cpp">
       <Filter>src\Mortify\Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\OrthoCameraController.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp">
+      <Filter>src\Mortify\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Rendering\RenderContext.cpp">
       <Filter>src\Mortify\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\Renderer.cpp">
@@ -1392,9 +1403,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mortify\Rendering\OrthoCameraController.cpp">
-      <Filter>src\Mortify\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mortify\Rendering\RenderContext.cpp" />
   </ItemGroup>
 </Project>
