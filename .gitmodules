@@ -7,3 +7,6 @@
 [submodule "Mortify/vendor/GLFW"]
 	path = Mortify/vendor/GLFW
 	url = https://github.com/DerThomy/glfw
+[submodule "ImGUI"]
+	path = Mortify/vendor/ImGUI
+	url = https://www.github.com/DerThomy/imgui
