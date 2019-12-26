@@ -49,7 +49,7 @@ namespace Mortify
 		Application& app = Application::Get();
 
 	#ifdef MT_PLATFORM_WINDOWS
-		ImGui_ImplWin32_Init(app.GetWindow().GetNativeWindow());
+		ImGui_ImplWin32_Init(app.GetWindow().GetNativeWindow(), app.GetWindow().GetContext()->GetContextHandler());
 		app.GetWindow().SetUseImGUI(true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 	#endif	
@@ -87,10 +87,11 @@ namespace Mortify
 		
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			const Ref<Context>& backup_current_contex = app.GetWindow().GetContext();
+			app.GetWindow().GetContext()->SaveContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			app.GetWindow().SetContext(backup_current_contex);
+			app.GetWindow().GetContext()->RestoreContext();
+			app.GetWindow().GetContext()->MakeContextCurrent();
 		}
 	}
 }

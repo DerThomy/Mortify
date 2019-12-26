@@ -72,8 +72,12 @@ void Sandbox2D::OnImGuiRender()
 {
 	MT_PROFILE_FUNCTION();
 	
-	ImGui::Begin("Settings");
-	ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+	ImGui::Begin("Demo");
+
+	ImGui::ShowDemoWindow();
+
+	//ImGui::Begin("Settings");
+	//ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 	
 	ImGui::End();
 }

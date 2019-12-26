@@ -22,6 +22,10 @@ namespace Mortify
 		virtual void SwapBuffers() override;
 		virtual bool SetVsync(bool on) override;
 		virtual void Destroy() override;
+		virtual void* GetContextHandler() override { return (void*)m_OpenGLRenderContextHandler; };
+		virtual void SetContextHandler(void* handler) override { m_OpenGLRenderContextHandler = (HGLRC)handler; };
+		virtual void SaveContext() override { m_BackupHDC = m_DeviceContextHandler; };
+		virtual void RestoreContext() override { m_DeviceContextHandler = m_BackupHDC; };
 
 		static Context::procAdr getGLProcAddress(const char* procname);
 
@@ -32,6 +36,9 @@ namespace Mortify
 		PIXELFORMATDESCRIPTOR m_PFD;
 		HDC m_DeviceContextHandler;
 		HGLRC m_OpenGLRenderContextHandler;
+
+	private:
+		HDC m_BackupHDC;
 	};
 
 	class WindowsWindow : public Window
@@ -80,6 +87,7 @@ namespace Mortify
 		HDC m_DeviceContextHandler;
 		Ref<Context> m_Context;
 		Scope<RenderContext> m_RenderContext;
+		WNDCLASSEX m_Class;
 
 		struct WindowData
 		{
@@ -89,6 +97,7 @@ namespace Mortify
 			bool UseImGUI;
 			std::unordered_map<KeyCode, bool> m_Keys;
 			std::unordered_map<MouseCode, bool> m_MouseButtons;
+			HWND* hwnd;
 
 			EventCallbackFn EventCallback;
 		};

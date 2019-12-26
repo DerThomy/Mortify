@@ -31,6 +31,10 @@ namespace Mortify
 		virtual void SwapBuffers() = 0;
 		virtual bool SetVsync(bool on) = 0;
 		virtual void Destroy() = 0;
+		virtual void* GetContextHandler() = 0;
+		virtual void SetContextHandler(void* handler) = 0;
+		virtual void SaveContext() = 0;
+		virtual void RestoreContext() = 0;
 	};
 
 	// Window Interface for desktop system windows

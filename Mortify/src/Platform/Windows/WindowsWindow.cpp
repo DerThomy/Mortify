@@ -54,8 +54,23 @@ namespace Mortify
 	{
 		WindowData& data = *(WindowData*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
-		if (&data != nullptr && data.UseImGUI && ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
-			return true;
+		if (&data != nullptr && data.UseImGUI)
+		{
+			if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
+				return true;
+			else if (msg == WM_DPICHANGED)
+			{
+				if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DpiEnableScaleViewports)
+				{
+					//const int dpi = HIWORD(wParam);
+					//printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
+					const RECT* suggested_rect = (RECT*)lparam;
+					::SetWindowPos(*data.hwnd, NULL, suggested_rect->left, suggested_rect->top,
+						suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top,
+						SWP_NOZORDER | SWP_NOACTIVATE);
+				}
+			}
+		}
 
 		switch (msg)
 		{
@@ -195,6 +210,11 @@ namespace Mortify
 			break;
 		}
 
+		case WM_DPICHANGED:
+		{
+			
+		}
+
 		default:
 			return DefWindowProc(hwnd, msg, wparam, lparam);
 		}
@@ -220,28 +240,28 @@ namespace Mortify
 
 		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(windowCount));
 
-		WNDCLASSEX wc;
-		wc.cbClsExtra = NULL;
-		wc.cbSize = sizeof(wc);
-		wc.style = CS_HREDRAW | CS_VREDRAW;
-		wc.cbWndExtra = sizeof(WindowData*);
-		wc.cbClsExtra = NULL;
-		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-		wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-		wc.hInstance = NULL;
-		wc.lpszClassName = class_name.c_str();
-		wc.lpszMenuName = L"MainMenu";
-		wc.lpfnWndProc = WindowsWindow::WndProc;
+		m_Class.cbClsExtra = NULL;
+		m_Class.cbSize = sizeof(m_Class);
+		m_Class.style = CS_HREDRAW | CS_VREDRAW;
+		m_Class.cbWndExtra = sizeof(WindowData*);
+		m_Class.cbClsExtra = NULL;
+		m_Class.hbrBackground = (HBRUSH)COLOR_WINDOW;
+		m_Class.hCursor = LoadCursor(NULL, IDC_ARROW);
+		m_Class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+		m_Class.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+		m_Class.hInstance = NULL;
+		m_Class.lpszClassName = class_name.c_str();
+		m_Class.lpszMenuName = L"MainMenu";
+		m_Class.lpfnWndProc = WindowsWindow::WndProc;
 
-		MT_ASSERT(RegisterClassEx(&wc), "Failed to register class");
+		MT_ASSERT(RegisterClassEx(&m_Class), "Failed to register class");
 
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 		m_Window = CreateWindowEx(NULL, class_name.c_str(), converter.from_bytes(props.Title).c_str(),
 			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, props.Width, props.Height, NULL, NULL, NULL, NULL);
 
 		MT_CORE_ASSERT(m_Window, "WindowsWindow creation failed");
+		m_Data.hwnd = &m_Window;
 
 		windowCount++;
 		SetWindowLongPtr(m_Window, GWLP_USERDATA, (LONG_PTR)&(m_Data));
@@ -279,12 +299,14 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		MT_CORE_ASSERT(DestroyWindow(m_Window), "Failed to destroy window");
+		if (m_Window)
+			DestroyWindow(m_Window);
+
 		--windowCount;
 
 		m_Context->Destroy();
-
 		ReleaseDC(m_Window, m_DeviceContextHandler);
+		UnregisterClassW(m_Class.lpszClassName, m_Class.hInstance);
 
 		if (windowCount == 0)
 			FreeLibrary(openGLModule);
