@@ -66,8 +66,6 @@ namespace Mortify
 			Timestep ts = time - m_TimeFromLastFrame;
 			m_TimeFromLastFrame = time;
 
-			MT_CORE_INFO("TimeStep: {0}", ts.GetMilliseconds());
-
 			if (!m_Minimized)
 			{
 				{
