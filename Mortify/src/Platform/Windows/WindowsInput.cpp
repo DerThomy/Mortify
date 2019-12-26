@@ -2,35 +2,31 @@
 
 #include "Platform/Windows/WindowsInput.h"
 #include "Mortify/Core/Application.h"
+
+#include <Windows.h>
 #include <GLFW/glfw3.h>
 
 namespace Mortify
 {
 	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();
 
-	bool WindowsInput::IsKeyPressedImpl(int keycode)
+	bool WindowsInput::IsKeyPressedImpl(KeyCode keycode)
 	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		auto state = glfwGetKey(window, keycode);
-
-		return state == GLFW_PRESS || state == GLFW_REPEAT;
+		return Application::Get().GetWindow().IsKeyPressed(keycode);
 	}
 
-	bool WindowsInput::IsMouseButtonClickedImpl(int button)
+	bool WindowsInput::IsMouseButtonClickedImpl(MouseCode button)
 	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		auto state = glfwGetMouseButton(window, button);
-
-		return state == GLFW_PRESS;
+		return Application::Get().GetWindow().IsMouseButtonPressed(button);
 	}
 
 	std::pair<float, float> WindowsInput::GetMousePositionImpl()
 	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		double xpos, ypos;
-		glfwGetCursorPos(window, &xpos, &ypos);
+		POINT p;
+		GetCursorPos(&p);
+		ScreenToClient(*(HWND*)Application::Get().GetWindow().GetNativeWindow(), &p);
 
-		return { static_cast<float>(xpos), static_cast<float>(ypos) };
+		return { static_cast<float>(p.x), static_cast<float>(p.y) };
 	}
 
 	float WindowsInput::GetMouseXImpl()

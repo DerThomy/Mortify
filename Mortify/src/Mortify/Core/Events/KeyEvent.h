@@ -1,26 +1,27 @@
 #pragma once
 
 #include "Mortify/Core/Events/Event.h"
+#include "Mortify/Core/Input.h"
 
 namespace Mortify
 {
 	class KeyEvent : public Event
 	{
 	public:
-		inline int getKeyCode() const { return m_KeyCode; }
+		inline KeyCode getKeyCode() const { return m_KeyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryInput & EventCategoryKeyboard)
 	protected:
-		KeyEvent(int keyCode)
+		KeyEvent(KeyCode keyCode)
 			: m_KeyCode(keyCode) {}
 
-		int m_KeyCode;
+		KeyCode m_KeyCode;
 	};
 
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keyCode, int repeatCount)
+		KeyPressedEvent(KeyCode keyCode, int repeatCount)
 			: KeyEvent(keyCode), m_RepeatCount(repeatCount) {}
 
 		inline int getRepeatCount() const { return m_RepeatCount; }
@@ -40,7 +41,7 @@ namespace Mortify
 	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
-		KeyReleasedEvent(int keyCode)
+		KeyReleasedEvent(KeyCode keyCode)
 			: KeyEvent(keyCode) {}
 
 		std::string ToString() const override
@@ -56,7 +57,7 @@ namespace Mortify
 	class KeyTypedEvent : public KeyEvent
 	{
 	public:
-		KeyTypedEvent(int keyCode)
+		KeyTypedEvent(KeyCode keyCode)
 			: KeyEvent(keyCode) {}
 
 		std::string ToString() const override

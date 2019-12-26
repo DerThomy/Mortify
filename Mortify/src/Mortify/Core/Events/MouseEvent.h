@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mortify/Core/Events/Event.h"
+#include "Mortify/Core/Input.h"
 
 namespace Mortify
 {
@@ -51,20 +52,20 @@ namespace Mortify
 	class MouseButtonEvent : public Event
 	{
 	public:
-		inline int GetButtonCode() const { return m_ButtonCode; }
+		inline MouseCode GetButtonCode() const { return m_ButtonCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouseButton | EventCategoryInput)
 	protected:
-		MouseButtonEvent(int buttonCode)
+		MouseButtonEvent(MouseCode buttonCode)
 			: m_ButtonCode(buttonCode) {}
 
-		int m_ButtonCode;
+		MouseCode m_ButtonCode;
 	};
 
 	class MouseButtonClickedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonClickedEvent(int buttonCode)
+		MouseButtonClickedEvent(MouseCode buttonCode)
 			: MouseButtonEvent(buttonCode) {}
 
 		std::string ToString() const override {
@@ -79,7 +80,7 @@ namespace Mortify
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(int buttonCode)
+		MouseButtonReleasedEvent(MouseCode buttonCode)
 			: MouseButtonEvent(buttonCode) {}
 
 		std::string ToString() const override {

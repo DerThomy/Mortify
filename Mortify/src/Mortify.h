@@ -5,6 +5,7 @@
 #include "Mortify/Core/Core.h"
 
 #include "Mortify/Core/Application.h"
+#include "Mortify/Core/OS.h"
 #include "Mortify/Core/Layer.h"
 #include "Mortify/Core/Log.h"
 

@@ -1,6 +1,7 @@
 #include "mtpch.h"
 
 #include "Platform/OpenGL/OpenGLRenderContext.h"
+#include "Platform/Windows/WindowsWindow.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -8,7 +9,7 @@
 
 namespace Mortify
 {
-	OpenGLRenderContext::OpenGLRenderContext(GLFWwindow* windowHandle)
+	OpenGLRenderContext::OpenGLRenderContext(Window* windowHandle)
 		: m_WindowHandle(windowHandle)
 	{
 		MT_CORE_ASSERT(m_WindowHandle, "Window handle is null!");
@@ -18,8 +19,8 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		glfwMakeContextCurrent(m_WindowHandle);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		m_WindowHandle->GetContext()->MakeContextCurrent();
+		int status = gladLoadGLLoader((GLADloadproc)m_WindowHandle->GetContext()->GetProcFunc());
 		MT_CORE_ASSERT(status, "Failed to initizalize Glad!");
 
 		MT_CORE_INFO("OpenGL Info:");
@@ -27,7 +28,7 @@ namespace Mortify
 		MT_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
 		MT_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
 
-	#ifdef MT_ENABLE_ASSERTS
+	#ifdef MT_DEBUG
 		int versionMajor;
 		int versionMinor;
 		glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
@@ -41,6 +42,6 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		glfwSwapBuffers(m_WindowHandle);
+		m_WindowHandle->GetContext()->SwapBuffers();
 	}
 }

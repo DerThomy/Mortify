@@ -16,8 +16,10 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		MT_ASSERT(!s_Instance, "Application already exists!")
+		MT_CORE_ASSERT(!s_Instance, "Application already exists!")
 		s_Instance = this;
+
+		m_OS = OS::Create();
 
 		m_Window = Window::Create();
 		m_Window->SetEventCallback(MT_BIND_EVENT_FN(Application::OnEvent));
@@ -60,9 +62,11 @@ namespace Mortify
 		{
 			MT_PROFILE_SCOPE("RunLoop");
 			
-			float time = glfwGetTime();
+			float time = m_OS->GetTime();
 			Timestep ts = time - m_TimeFromLastFrame;
 			m_TimeFromLastFrame = time;
+
+			MT_CORE_INFO("TimeStep: {0}", ts.GetMilliseconds());
 
 			if (!m_Minimized)
 			{

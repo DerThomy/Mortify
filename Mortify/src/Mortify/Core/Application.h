@@ -6,6 +6,7 @@
 #include "Mortify/Core/LayerStack.h"
 #include "Mortify/Core/Events/Event.h"
 #include "Mortify/Core/Events/ApplicationEvent.h"
+#include "Mortify/Core/OS.h"
 
 #include "Mortify/ImGui/ImGuiLayer.h"
 
@@ -32,6 +33,7 @@ namespace Mortify
 		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		Mortify::Scope<Window> m_Window;
+		Mortify::Ref<OS> m_OS;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;

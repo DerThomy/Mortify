@@ -90,7 +90,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -115,7 +115,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -140,7 +140,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -159,6 +159,7 @@
     <ClInclude Include="src\Mortify\Core\LayerStack.h" />
     <ClInclude Include="src\Mortify\Core\Log.h" />
     <ClInclude Include="src\Mortify\Core\MouseCodes.h" />
+    <ClInclude Include="src\Mortify\Core\OS.h" />
     <ClInclude Include="src\Mortify\Core\Resource.h" />
     <ClInclude Include="src\Mortify\Core\Timestep.h" />
     <ClInclude Include="src\Mortify\Core\Window.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\Windows\WindowsFile.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsOS.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\mtpch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -566,6 +568,7 @@
     <ClCompile Include="src\Mortify\Core\Layer.cpp" />
     <ClCompile Include="src\Mortify\Core\LayerStack.cpp" />
     <ClCompile Include="src\Mortify\Core\Log.cpp" />
+    <ClCompile Include="src\Mortify\Core\OS.cpp" />
     <ClCompile Include="src\Mortify\Core\Resource.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
@@ -590,6 +593,7 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsFile.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsOS.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\mtpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

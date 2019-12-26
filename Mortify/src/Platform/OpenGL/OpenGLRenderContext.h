@@ -9,12 +9,12 @@ namespace Mortify
 	class OpenGLRenderContext : public RenderContext
 	{
 	public:
-		OpenGLRenderContext(GLFWwindow* windowHandle);
+		OpenGLRenderContext(Window* windowHandle);
 
 		virtual void Init() override;
 		virtual void SwapBuffer() override;
 
 	private:
-		GLFWwindow* m_WindowHandle;
+		Window* m_WindowHandle;
 	};
 }

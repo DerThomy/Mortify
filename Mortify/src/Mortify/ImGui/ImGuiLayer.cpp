@@ -4,7 +4,7 @@
 
 #include <imgui.h>
 #include <examples/imgui_impl_opengl3.h>
-#include <examples/imgui_impl_glfw.h>
+#include <examples/imgui_impl_win32.h>
 
 #include "Mortify/Core/Application.h"
 
@@ -47,11 +47,12 @@ namespace Mortify
 		}
 
 		Application& app = Application::Get();
-		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
-		// Setup Platform/Renderer bindings
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
+	#ifdef MT_PLATFORM_WINDOWS
+		ImGui_ImplWin32_Init(app.GetWindow().GetNativeWindow());
+		app.GetWindow().SetUseImGUI(true);
 		ImGui_ImplOpenGL3_Init("#version 410");
+	#endif	
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -59,7 +60,7 @@ namespace Mortify
 		MT_PROFILE_FUNCTION();
 		
 		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
+		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 	}
 	
@@ -68,7 +69,7 @@ namespace Mortify
 		MT_PROFILE_FUNCTION();
 		
 		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
+		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 	}
 
@@ -86,10 +87,10 @@ namespace Mortify
 		
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			const Ref<Context>& backup_current_contex = app.GetWindow().GetContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backup_current_context);
+			app.GetWindow().SetContext(backup_current_contex);
 		}
 	}
 }

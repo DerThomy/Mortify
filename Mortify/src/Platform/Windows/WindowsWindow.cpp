@@ -5,13 +5,25 @@
 #include "Mortify/Core/Events/ApplicationEvent.h"
 #include "Mortify/Core/Events/MouseEvent.h"
 #include "Mortify/Core/Events/KeyEvent.h"
+#include "Mortify/Core/MouseCodes.h"
+#include "Mortify/Core/KeyCodes.h"
 #include "Platform/OpenGL/OpenGLRenderContext.h"
+#include "Mortify/Rendering/RendererAPI.h"
 
 #include <glad/glad.h>
+#include <imgui.h>
+#include <locale>
+#include <codecvt>
+#include <memory>
+
+#include <imgui.h>
+#include <examples/imgui_impl_win32.h>
 
 namespace Mortify
 {
-	static uint8_t s_GLFWWindowCount = 0;
+	static uint8_t windowCount = 0;
+
+	static HMODULE openGLModule = LoadLibraryA("opengl32.dll");
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
@@ -37,9 +49,168 @@ namespace Mortify
 		Shutdown();
 	}
 
+	//extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK WindowsWindow::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+	{
+		WindowData& data = *(WindowData*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+
+		if (&data != nullptr && data.UseImGUI && ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
+			return true;
+
+		switch (msg)
+		{
+		case WM_SIZE:
+		{
+			int width = LOWORD(lparam);
+			int height = HIWORD(lparam);
+
+			data.Width = width;
+			data.Height = height;
+
+			if (data.EventCallback)
+			{
+				WindowResizeEvent resizeEvent(width, height);
+				data.EventCallback(resizeEvent);
+			}
+			break;
+		}
+
+		case WM_DESTROY:
+		{
+			if (data.EventCallback)
+			{
+				WindowCloseEvent closeEvent;
+				data.EventCallback(closeEvent);
+			}
+
+			PostQuitMessage(0);
+			break;
+		}
+		case WM_KEYDOWN:
+		{
+			KeyCode key = translateWin32Keys(wparam, lparam);
+			data.m_Keys[key] = true;
+			if (data.EventCallback)
+			{
+				KeyPressedEvent keyPressedEvent(key, LOWORD(lparam));
+				data.EventCallback(keyPressedEvent);
+			}
+			break;
+		}
+		case WM_KEYUP:
+		{
+			KeyCode key = translateWin32Keys(wparam, lparam);
+			data.m_Keys[key] = false;
+			if (data.EventCallback)
+			{
+				KeyReleasedEvent keyReleasedEvent(key);
+				data.EventCallback(keyReleasedEvent);
+			}
+			break;
+		}
+
+		case WM_CHAR:
+		{
+			if (data.EventCallback)
+			{
+				KeyTypedEvent KeyTypedEvent(win32_keycodes[(unsigned int)wparam]);
+				data.EventCallback(KeyTypedEvent);
+			}
+			break;
+		}
+
+		case WM_LBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+		case WM_MBUTTONDOWN:
+		case WM_XBUTTONDOWN:
+		case WM_LBUTTONUP:
+		case WM_RBUTTONUP:
+		case WM_MBUTTONUP:
+		case WM_XBUTTONUP:
+		{
+			if (data.EventCallback)
+			{
+				MouseCode button;
+
+				if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP)
+					button = MT_MOUSE_BUTTON_LEFT;
+				else if (msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP)
+					button = MT_MOUSE_BUTTON_RIGHT;
+				else if (msg == WM_MBUTTONDOWN || msg == WM_MBUTTONUP)
+					button = MT_MOUSE_BUTTON_MIDDLE;
+				else if (GET_XBUTTON_WPARAM(wparam) == XBUTTON1)
+					button = MT_MOUSE_BUTTON_4;
+				else
+					button = MT_MOUSE_BUTTON_5;
+
+				if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN ||
+					msg == WM_MBUTTONDOWN || msg == WM_XBUTTONDOWN)
+				{
+					data.m_MouseButtons[button] = true;
+					MouseButtonClickedEvent mouseClickedEvent(button);
+					data.EventCallback(mouseClickedEvent);
+				}
+				else
+				{
+					data.m_MouseButtons[button] = false;
+					MouseButtonReleasedEvent mouseReleasedEvent(button);
+					data.EventCallback(mouseReleasedEvent);
+				}
+			}
+
+			break;
+		}
+
+		case WM_MOUSEWHEEL:
+		{
+			if (data.EventCallback)
+			{
+				MouseScrolledEvent mouseVScrolledEvent(0.0f, (SHORT)HIWORD(wparam) / (double)WHEEL_DELTA);
+				data.EventCallback(mouseVScrolledEvent);
+			}
+			break;
+		}
+
+		case WM_MOUSEHWHEEL:
+		{
+			if (data.EventCallback)
+			{
+				MouseScrolledEvent mouseHScrolledEvent((SHORT)HIWORD(wparam) / (double)WHEEL_DELTA, 0.0f);
+				data.EventCallback(mouseHScrolledEvent);
+			}
+			break;
+		}
+
+		case WM_MOUSEMOVE:
+		{
+			const int x = (int)(short)LOWORD(lparam);
+			const int y = (int)(short)HIWORD(lparam);
+
+			if (data.EventCallback)
+			{
+				MouseMovedEvent mouseMovedEvent(x, y);
+				data.EventCallback(mouseMovedEvent);
+			}
+
+			break;
+		}
+
+		default:
+			return DefWindowProc(hwnd, msg, wparam, lparam);
+		}
+
+		return NULL;
+	}
+
 	void WindowsWindow::Init(const WindowProps& props)
 	{
 		MT_PROFILE_FUNCTION();
+
+		for (const auto& code : KeyCode())
+			m_Data.m_Keys[code] = false;
+
+		for (const auto& button : MouseCode())
+			m_Data.m_MouseButtons[button] = false;
 		
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
@@ -47,151 +218,161 @@ namespace Mortify
 
 		MT_CORE_INFO("Creating window {0} ({1}(w), {2}(h))", props.Title, props.Width, props.Height);
 
-		if (s_GLFWWindowCount == 0)
-		{
-			MT_PROFILE_SCOPE("glfwInit");
-			int success = glfwInit();
-			MT_CORE_ASSERT(success, "Could not initialize GLFW!");
-			glfwSetErrorCallback(GLFWErrorCallback);
-		}
+		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(windowCount));
 
+		WNDCLASSEX wc;
+		wc.cbClsExtra = NULL;
+		wc.cbSize = sizeof(wc);
+		wc.style = CS_HREDRAW | CS_VREDRAW;
+		wc.cbWndExtra = sizeof(WindowData*);
+		wc.cbClsExtra = NULL;
+		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+		wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+		wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+		wc.hInstance = NULL;
+		wc.lpszClassName = class_name.c_str();
+		wc.lpszMenuName = L"MainMenu";
+		wc.lpfnWndProc = WindowsWindow::WndProc;
+
+		MT_ASSERT(RegisterClassEx(&wc), "Failed to register class");
+
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		m_Window = CreateWindowEx(NULL, class_name.c_str(), converter.from_bytes(props.Title).c_str(),
+			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, props.Width, props.Height, NULL, NULL, NULL, NULL);
+
+		MT_CORE_ASSERT(m_Window, "WindowsWindow creation failed");
+
+		windowCount++;
+		SetWindowLongPtr(m_Window, GWLP_USERDATA, (LONG_PTR)&(m_Data));
+
+		m_DeviceContextHandler = GetDC(m_Window);
+		
+		switch (RendererAPI::GetAPI())
 		{
-			MT_PROFILE_SCOPE("glfwCreateWindow");
-			
-			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-			++s_GLFWWindowCount;
+			case RendererAPI::API::None:		{ MT_CORE_ASSERT(false, "A RenderAPI must be chosen!"); break; }
+			case RendererAPI::API::OpenGL:		{ m_Context = CreateRef<WindowsGLContext>(m_Window, m_DeviceContextHandler); break; }
 		}
 		
-		m_Context = RenderContext::Create(m_Window);;
-		m_Context->Init();
+		m_RenderContext = RenderContext::Create(this);
+		m_RenderContext->Init();
 
-		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(true);
-
-		// Set GLFW callbacks
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-		{
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			data.Width = width;
-			data.Height = height;
-
-			WindowResizeEvent event(width, height);
-			data.EventCallback(event);
-		});
-
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-		{
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-			WindowCloseEvent event;
-			data.EventCallback(event);
-		});
-
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-		{
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			switch (action)
-			{
-				case GLFW_PRESS:
-				{
-					KeyPressedEvent event(key, 0);
-					data.EventCallback(event);
-					break;
-				}
-				case GLFW_RELEASE:
-				{
-					KeyReleasedEvent event(key);
-					data.EventCallback(event);
-					break;
-				}
-				case GLFW_REPEAT:
-				{
-					KeyPressedEvent event(key, 1);
-					data.EventCallback(event);
-					break;
-				}
-			}
-		});
-
-		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
-		{
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-			KeyTypedEvent event(keycode);
-			data.EventCallback(event);
-		});
-
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
-		{
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-			switch (action)
-			{
-				case GLFW_PRESS:
-				{
-					MouseButtonClickedEvent event(button);
-					data.EventCallback(event);
-					break;
-				}
-				case GLFW_RELEASE:
-				{
-					MouseButtonReleasedEvent event(button);
-					data.EventCallback(event);
-					break;
-				}
-			}
-		});
-
-		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
-		{
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-			MouseScrolledEvent event((float)xOffset, (float)yOffset);
-			data.EventCallback(event);
-		});
-
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) 
-		{
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-			MouseMovedEvent event((float)xPos, (float)yPos);
-			data.EventCallback(event);
-		});
+		ShowWindow(m_Window, SW_SHOW);
 	}
 
 	void WindowsWindow::OnUpdate()
 	{
 		MT_PROFILE_FUNCTION();
 		
-		glfwPollEvents();
-		m_Context->SwapBuffer();
+		MSG msg = { };
+
+		while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessageW(&msg);
+		}
+
+		m_RenderContext->SwapBuffer();
 	}
 
 	void WindowsWindow::Shutdown()
 	{
 		MT_PROFILE_FUNCTION();
 		
-		glfwDestroyWindow(m_Window);
-		--s_GLFWWindowCount;
+		MT_CORE_ASSERT(DestroyWindow(m_Window), "Failed to destroy window");
+		--windowCount;
 
-		if (s_GLFWWindowCount == 0)
-			glfwTerminate();
+		m_Context->Destroy();
+
+		ReleaseDC(m_Window, m_DeviceContextHandler);
+
+		if (windowCount == 0)
+			FreeLibrary(openGLModule);
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
 		MT_PROFILE_FUNCTION();
 		
-		if (enabled)
-			glfwSwapInterval(1);
+		if (m_Context->SetVsync(enabled))
+			m_Data.VSync = enabled;
 		else
-			glfwSwapInterval(0);
-
-		m_Data.VSync = enabled;
+			MT_CORE_WARN("Failed to set vsync!");
 	}
 
 	bool WindowsWindow::IsVSync() const
 	{
 		return m_Data.VSync;
+	}
+
+	WindowsGLContext::WindowsGLContext(HWND hwnd, HDC hdc)
+		: m_WindowHandler(hwnd), m_DeviceContextHandler(hdc)
+	{
+		m_PFD = {
+			sizeof(PIXELFORMATDESCRIPTOR),
+			1,
+			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    // Flags
+			PFD_TYPE_RGBA,        // The kind of framebuffer. RGBA or palette.
+			32,                   // Colordepth of the framebuffer.
+			0, 0, 0, 0, 0, 0,
+			0,
+			0,
+			0,
+			0, 0, 0, 0,
+			24,                   // Number of bits for the depthbuffer
+			8,                    // Number of bits for the stencilbuffer
+			0,                    // Number of Aux buffers in the framebuffer.
+			PFD_MAIN_PLANE,
+			0,
+			0, 0, 0
+		};
+
+		MT_CORE_ASSERT(SetPixelFormat(m_DeviceContextHandler, ChoosePixelFormat(m_DeviceContextHandler, &m_PFD), &m_PFD),
+			"Failed to set Pixel format");
+
+		DescribePixelFormat(m_DeviceContextHandler, GetPixelFormat(m_DeviceContextHandler), sizeof(m_PFD), &m_PFD);
+
+		m_OpenGLRenderContextHandler = wglCreateContext(m_DeviceContextHandler);
+
+		MT_CORE_ASSERT(m_OpenGLRenderContextHandler, "Failed to create wgl context");
+	}
+
+	void WindowsGLContext::MakeContextCurrent()
+	{
+		MT_CORE_ASSERT(wglMakeCurrent(m_DeviceContextHandler, m_OpenGLRenderContextHandler), "Failed to make context current");
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+	}
+
+	Context::procAdr WindowsGLContext::getGLProcAddress(const char* procname)
+	{
+		const Context::procAdr proc = (Context::procAdr)wglGetProcAddress(procname);
+		
+		if (proc)
+			return proc;
+
+		return (Context::procAdr)GetProcAddress(openGLModule, procname);
+	}
+
+	Context::procFunc WindowsGLContext::GetProcFunc()
+	{
+		return getGLProcAddress;
+	}
+
+	void WindowsGLContext::SwapBuffers()
+	{
+		::SwapBuffers(m_DeviceContextHandler);
+	}
+
+	bool WindowsGLContext::SetVsync(bool on)
+	{
+		if (wglSwapIntervalEXT != nullptr)
+			return wglSwapIntervalEXT(1 ? on : 0);
+		return false;
+	}
+
+	void WindowsGLContext::Destroy()
+	{
+		wglMakeCurrent(m_DeviceContextHandler, NULL);
+		wglDeleteContext(m_OpenGLRenderContextHandler);
 	}
 }

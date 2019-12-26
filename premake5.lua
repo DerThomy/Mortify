@@ -69,7 +69,8 @@ project "Mortify"
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"opengl32.lib"
+        "opengl32.lib",
+        "Winmm.lib"
 	}
 
     filter "system:windows"

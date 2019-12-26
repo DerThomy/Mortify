@@ -105,6 +105,9 @@
     <ClInclude Include="src\Mortify\Core\MouseCodes.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mortify\Core\OS.h">
+      <Filter>src\Mortify\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Mortify\Core\Resource.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
@@ -190,6 +193,9 @@
       <Filter>src\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
+      <Filter>src\Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\WindowsOS.h">
       <Filter>src\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
@@ -1322,6 +1328,9 @@
     <ClCompile Include="src\Mortify\Core\Log.cpp">
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Core\OS.cpp">
+      <Filter>src\Mortify\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Mortify\Core\Resource.cpp">
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
@@ -1392,6 +1401,9 @@
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
+      <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsOS.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
