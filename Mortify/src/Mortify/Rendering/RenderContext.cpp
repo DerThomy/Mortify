@@ -3,7 +3,7 @@
 
 #include "Mortify/Rendering/Renderer.h"
 #include "Platform/OpenGL/OpenGLRenderContext.h"
-#include "Platform/Windows/WindowsWindow.h"
+#include "Mortify/Core/Window.h"
 
 namespace Mortify
 {

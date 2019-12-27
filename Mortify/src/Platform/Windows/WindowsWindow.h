@@ -64,15 +64,7 @@ namespace Mortify
 		bool IsVSync() const override;
 		inline void SetUseImGUI(bool use) override { m_Data.UseImGUI = use; };
 		inline bool UseImGUI() const override { return m_Data.UseImGUI; };
-		inline bool IsKeyPressed(KeyCode code) const override 
-		{ 
-			if (code != KeyCode::Invalid) 
-				return m_Data.m_Keys.at(code);
-			else 
-				MT_CORE_WARN("Invalid key"); 
-			
-			return false; 
-		}
+		inline bool IsKeyPressed(KeyCode code) const override;
 		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_Data.m_MouseButtons.at(button); };
 
 	private:

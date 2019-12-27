@@ -210,11 +210,6 @@ namespace Mortify
 			break;
 		}
 
-		case WM_DPICHANGED:
-		{
-			
-		}
-
 		default:
 			return DefWindowProc(hwnd, msg, wparam, lparam);
 		}
@@ -325,6 +320,16 @@ namespace Mortify
 	bool WindowsWindow::IsVSync() const
 	{
 		return m_Data.VSync;
+	}
+
+	inline bool WindowsWindow::IsKeyPressed(KeyCode code) const
+	{
+		if (code != KeyCode::Invalid)
+			return m_Data.m_Keys.at(code);
+		else
+			MT_CORE_WARN("Invalid key");
+
+		return false;
 	}
 
 	WindowsGLContext::WindowsGLContext(HWND hwnd, HDC hdc)
