@@ -1,50 +1,17 @@
 #pragma once
 
 #include "Mortify/Core/Window.h"
-#include "Mortify/Rendering/RenderContext.h"
+#include "RenderContexts/WindowsRenderContext.h"
 
 #include <GLFW/glfw3.h>
 #include <Windows.h>
 
-typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC)(int);
-
 namespace Mortify
 {
-	class WindowsWindow;
-
-	class WindowsGLContext : public Context
-	{
-	public:
-		WindowsGLContext(HWND hwnd, HDC hdc);
-
-		virtual void MakeContextCurrent() override;
-		virtual procFunc GetProcFunc() override;
-		virtual void SwapBuffers() override;
-		virtual bool SetVsync(bool on) override;
-		virtual void Destroy() override;
-		virtual void* GetContextHandler() override { return (void*)m_OpenGLRenderContextHandler; };
-		virtual void SetContextHandler(void* handler) override { m_OpenGLRenderContextHandler = (HGLRC)handler; };
-		virtual void SaveContext() override { m_BackupHDC = m_DeviceContextHandler; };
-		virtual void RestoreContext() override { m_DeviceContextHandler = m_BackupHDC; };
-
-		static Context::procAdr getGLProcAddress(const char* procname);
-
-		PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
-
-	public:
-		HWND m_WindowHandler;
-		PIXELFORMATDESCRIPTOR m_PFD;
-		HDC m_DeviceContextHandler;
-		HGLRC m_OpenGLRenderContextHandler;
-
-	private:
-		HDC m_BackupHDC;
-	};
-
 	class WindowsWindow : public Window
 	{
 	private:
-		friend class WindowsGLContext;
+		friend class WindowsGLRenderContext;
 	public:
 		WindowsWindow(const WindowProps& props);
 		virtual ~WindowsWindow();
@@ -53,8 +20,8 @@ namespace Mortify
 
 		inline unsigned int GetWidth() const override { return m_Data.Width; }
 		inline unsigned int GetHeight() const override { return m_Data.Height; }
-		inline const Ref<Context>& WindowsWindow::GetContext() const override { return m_Context; }
-		inline void SetContext(const Ref<Context>& context) override { m_Context = context; };
+		inline const Ref<RenderContext>& WindowsWindow::GetContext() const override { return m_RenderContext; }
+		inline void SetContext(const Ref<RenderContext>& context) override { m_RenderContext = context; };
 		
 		inline virtual void* GetNativeWindow() const override { return m_Window; }
 
@@ -77,8 +44,7 @@ namespace Mortify
 	private:
 		HWND m_Window;
 		HDC m_DeviceContextHandler;
-		Ref<Context> m_Context;
-		Scope<RenderContext> m_RenderContext;
+		Ref<RenderContext> m_RenderContext;
 		WNDCLASSEX m_Class;
 
 		struct WindowData

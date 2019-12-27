@@ -5,6 +5,7 @@
 #include "Mortify/Core/Core.h"
 #include "Mortify/Core/Events/Event.h"
 #include "Mortify/Core/Input.h"
+#include "Mortify/Rendering/RenderContext.h"
 
 namespace Mortify
 {
@@ -18,23 +19,6 @@ namespace Mortify
 					unsigned int width = 1280, 
 					unsigned int height = 720)
 			: Title(title), Width(width), Height(height) {}
-	};
-
-	class Context
-	{
-	public:
-		typedef void (*procAdr) (void);
-		typedef procAdr (*procFunc)(const char*);
-
-		virtual void MakeContextCurrent() = 0;
-		virtual procFunc GetProcFunc() = 0;
-		virtual void SwapBuffers() = 0;
-		virtual bool SetVsync(bool on) = 0;
-		virtual void Destroy() = 0;
-		virtual void* GetContextHandler() = 0;
-		virtual void SetContextHandler(void* handler) = 0;
-		virtual void SaveContext() = 0;
-		virtual void RestoreContext() = 0;
 	};
 
 	// Window Interface for desktop system windows
@@ -51,8 +35,8 @@ namespace Mortify
 		virtual unsigned int GetHeight() const = 0;
 		
 		virtual void* GetNativeWindow() const = 0;
-		virtual const Ref<Context>& GetContext() const = 0;
-		virtual void SetContext(const Ref<Context>& context) = 0;
+		virtual const Ref<RenderContext>& GetContext() const = 0;
+		virtual void SetContext(const Ref<RenderContext>& context) = 0;
 
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;

@@ -7,8 +7,6 @@
 #include "Mortify/Core/Events/KeyEvent.h"
 #include "Mortify/Core/MouseCodes.h"
 #include "Mortify/Core/KeyCodes.h"
-#include "Platform/OpenGL/OpenGLRenderContext.h"
-#include "Mortify/Rendering/RendererAPI.h"
 
 #include <glad/glad.h>
 #include <imgui.h>
@@ -22,13 +20,6 @@
 namespace Mortify
 {
 	static uint8_t windowCount = 0;
-
-	static HMODULE openGLModule = LoadLibraryA("opengl32.dll");
-
-	static void GLFWErrorCallback(int error, const char* description)
-	{
-		MT_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
-	}
 
 	Scope<Window> Window::Create(const WindowProps& props)
 	{
@@ -263,13 +254,7 @@ namespace Mortify
 
 		m_DeviceContextHandler = GetDC(m_Window);
 		
-		switch (RendererAPI::GetAPI())
-		{
-			case RendererAPI::API::None:		{ MT_CORE_ASSERT(false, "A RenderAPI must be chosen!"); break; }
-			case RendererAPI::API::OpenGL:		{ m_Context = CreateRef<WindowsGLContext>(m_Window, m_DeviceContextHandler); break; }
-		}
-		
-		m_RenderContext = RenderContext::Create(this);
+		m_RenderContext = WindowsRenderContext::Create(this);
 		m_RenderContext->Init();
 
 		ShowWindow(m_Window, SW_SHOW);
@@ -287,7 +272,7 @@ namespace Mortify
 			DispatchMessageW(&msg);
 		}
 
-		m_RenderContext->SwapBuffer();
+		m_RenderContext->SwapBuffers();
 	}
 
 	void WindowsWindow::Shutdown()
@@ -299,19 +284,19 @@ namespace Mortify
 
 		--windowCount;
 
-		m_Context->Destroy();
+		m_RenderContext->Destroy();
 		ReleaseDC(m_Window, m_DeviceContextHandler);
 		UnregisterClassW(m_Class.lpszClassName, m_Class.hInstance);
 
-		if (windowCount == 0)
-			FreeLibrary(openGLModule);
+		//if (windowCount == 0)
+			//FreeLibrary(openGLModule);
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
 		MT_PROFILE_FUNCTION();
 		
-		if (m_Context->SetVsync(enabled))
+		if (m_RenderContext->SetVsync(enabled))
 			m_Data.VSync = enabled;
 		else
 			MT_CORE_WARN("Failed to set vsync!");
@@ -330,76 +315,5 @@ namespace Mortify
 			MT_CORE_WARN("Invalid key");
 
 		return false;
-	}
-
-	WindowsGLContext::WindowsGLContext(HWND hwnd, HDC hdc)
-		: m_WindowHandler(hwnd), m_DeviceContextHandler(hdc)
-	{
-		m_PFD = {
-			sizeof(PIXELFORMATDESCRIPTOR),
-			1,
-			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    // Flags
-			PFD_TYPE_RGBA,        // The kind of framebuffer. RGBA or palette.
-			32,                   // Colordepth of the framebuffer.
-			0, 0, 0, 0, 0, 0,
-			0,
-			0,
-			0,
-			0, 0, 0, 0,
-			24,                   // Number of bits for the depthbuffer
-			8,                    // Number of bits for the stencilbuffer
-			0,                    // Number of Aux buffers in the framebuffer.
-			PFD_MAIN_PLANE,
-			0,
-			0, 0, 0
-		};
-
-		MT_CORE_ASSERT(SetPixelFormat(m_DeviceContextHandler, ChoosePixelFormat(m_DeviceContextHandler, &m_PFD), &m_PFD),
-			"Failed to set Pixel format");
-
-		DescribePixelFormat(m_DeviceContextHandler, GetPixelFormat(m_DeviceContextHandler), sizeof(m_PFD), &m_PFD);
-
-		m_OpenGLRenderContextHandler = wglCreateContext(m_DeviceContextHandler);
-
-		MT_CORE_ASSERT(m_OpenGLRenderContextHandler, "Failed to create wgl context");
-	}
-
-	void WindowsGLContext::MakeContextCurrent()
-	{
-		MT_CORE_ASSERT(wglMakeCurrent(m_DeviceContextHandler, m_OpenGLRenderContextHandler), "Failed to make context current");
-		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-	}
-
-	Context::procAdr WindowsGLContext::getGLProcAddress(const char* procname)
-	{
-		const Context::procAdr proc = (Context::procAdr)wglGetProcAddress(procname);
-		
-		if (proc)
-			return proc;
-
-		return (Context::procAdr)GetProcAddress(openGLModule, procname);
-	}
-
-	Context::procFunc WindowsGLContext::GetProcFunc()
-	{
-		return getGLProcAddress;
-	}
-
-	void WindowsGLContext::SwapBuffers()
-	{
-		::SwapBuffers(m_DeviceContextHandler);
-	}
-
-	bool WindowsGLContext::SetVsync(bool on)
-	{
-		if (wglSwapIntervalEXT != nullptr)
-			return wglSwapIntervalEXT(1 ? on : 0);
-		return false;
-	}
-
-	void WindowsGLContext::Destroy()
-	{
-		wglMakeCurrent(m_DeviceContextHandler, NULL);
-		wglDeleteContext(m_OpenGLRenderContextHandler);
 	}
 }

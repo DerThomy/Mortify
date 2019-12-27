@@ -1,15 +1,26 @@
 #pragma once
 
-#include "Mortify/Core/Window.h"
-
 namespace Mortify
 {
+	class Window;
+
 	class RenderContext
 	{
 	public:
-		virtual void Init() = 0;
-		virtual void SwapBuffer() = 0;
+		typedef void (*procAdr) (void);
+		typedef procAdr(*procFunc)(const char*);
 
-		static Scope<RenderContext> Create(Window* window);
+		virtual void Init() = 0;
+		virtual void MakeContextCurrent() = 0;
+		virtual procFunc GetProcFunc() = 0;
+		virtual void SwapBuffers() = 0;
+		virtual bool SetVsync(bool on) = 0;
+		virtual void Destroy() = 0;
+		virtual void* GetContextHandler() = 0;
+		virtual void SetContextHandler(void* handler) = 0;
+		virtual void SaveContext() = 0;
+		virtual void RestoreContext() = 0;
+
+		static Ref<RenderContext> Create(Window* window);
 	};
 }

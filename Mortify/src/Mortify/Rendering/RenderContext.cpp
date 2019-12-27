@@ -2,20 +2,21 @@
 #include "Mortify/Rendering/RenderContext.h"
 
 #include "Mortify/Rendering/Renderer.h"
-#include "Platform/OpenGL/OpenGLRenderContext.h"
 #include "Mortify/Core/Window.h"
+
+#include "Platform/Windows/RenderContexts/WindowsRenderContext.h"
 
 namespace Mortify
 {
-	Scope<RenderContext> RenderContext::Create(Window* window)
+	Ref<RenderContext> RenderContext::Create(Window* window)
 	{
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPI::API::None:    MT_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return CreateScope<OpenGLRenderContext>(window);
-		}
+		Ref<RenderContext> context = Ref<RenderContext>();
 
-		MT_CORE_ASSERT(false, "Unknown RendererAPI!");
-		return nullptr;
+	#ifdef MT_PLATFORM_WINDOWS
+		context = WindowsRenderContext::Create(window);
+	#endif
+
+		MT_CORE_ASSERT(context, "Platform not supported!");
+		return context;
 	}
 }
