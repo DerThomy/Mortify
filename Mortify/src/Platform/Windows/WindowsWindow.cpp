@@ -201,6 +201,16 @@ namespace Mortify
 			break;
 		}
 
+		case WM_ERASEBKGND:
+		{
+			return true;
+		}
+
+		case WM_SIZING:
+		{
+			return true;
+		}
+
 		default:
 			return DefWindowProc(hwnd, msg, wparam, lparam);
 		}
