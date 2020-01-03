@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Mortify/Core/Window.h"
-#include "RenderContexts/WindowsRenderContext.h"
+#include "WindowsRenderContext.h"
 
 #include <GLFW/glfw3.h>
 #include <Windows.h>

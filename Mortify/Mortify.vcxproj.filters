@@ -1308,8 +1308,8 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\Windows\RenderContexts\WindowsRenderContext.h" />
     <ClInclude Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsRenderContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp">
@@ -1411,7 +1411,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\Windows\RenderContexts\WindowsRenderContext.cpp" />
     <ClCompile Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsRenderContext.cpp" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@
 #include "Mortify/Rendering/Renderer.h"
 #include "Mortify/Core/Window.h"
 
-#include "Platform/Windows/RenderContexts/WindowsRenderContext.h"
+#include "Platform/Windows/WindowsRenderContext.h"
 
 namespace Mortify
 {
