@@ -20,10 +20,10 @@ namespace Mortify
 
 		void OnUpdate() override;
 
-		inline unsigned int GetWidth() const override { return m_Data.Width; }
-		inline unsigned int GetHeight() const override { return m_Data.Height; }
+		inline unsigned int GetWidth() const override { return m_Width; }
+		inline unsigned int GetHeight() const override { return m_Height; }
 
-		inline WindowMode GetWindowMode() const override { return m_Data.Mode; }
+		inline WindowMode GetWindowMode() const override { return m_Mode; }
 		void SetWindowMode(WindowMode mode) override;
 		
 		inline const Ref<RenderContext>& GetContext() const override { return m_RenderContext; }
@@ -32,13 +32,13 @@ namespace Mortify
 		inline void* GetNativeWindow() const override { return m_Window; }
 
 		// Window attributes
-		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+		inline void SetEventCallback(const EventCallbackFn& callback) override { m_EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
-		inline void SetUseImGUI(bool use) override { m_Data.UseImGUI = use; };
-		inline bool UseImGUI() const override { return m_Data.UseImGUI; };
+		inline void SetUseImGUI(bool use) override { m_UsesImGUI = use; };
+		inline bool UseImGUI() const override { return m_UsesImGUI; };
 		bool IsKeyPressed(KeyCode code) const override;
-		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_Data.m_MouseButtons.at(button); };
+		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_MouseButtons.at(button); };
 
 	private:
 		virtual void Init(const WindowProps& props);
@@ -56,19 +56,15 @@ namespace Mortify
 		WNDCLASSEX m_Class;
 		Ref<WindowsOS> m_OS;
 
-		struct WindowData
-		{
-			std::string Title;
-			unsigned int Width, Height;
-			WindowMode Mode;
-			bool VSync;
-			bool UseImGUI;
-			std::unordered_map<KeyCode, bool> m_Keys;
-			std::unordered_map<MouseCode, bool> m_MouseButtons;
+		std::string m_Title;
+		unsigned int m_Width, m_Height;
+		WindowMode m_Mode;
+		bool m_VSync;
+		bool m_UsesImGUI;
+		
+		std::unordered_map<KeyCode, bool> m_Keys;
+		std::unordered_map<MouseCode, bool> m_MouseButtons;
 
-			EventCallbackFn EventCallback;
-		};
-
-		WindowData m_Data;
+		EventCallbackFn m_EventCallback;
 	};
 }

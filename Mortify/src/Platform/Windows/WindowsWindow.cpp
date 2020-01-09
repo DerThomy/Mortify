@@ -49,7 +49,7 @@ namespace Mortify
 	{
 		WindowsWindow* window = (WindowsWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
-		if (window != nullptr && window->m_Data.UseImGUI)
+		if (window != nullptr && window->m_UsesImGUI)
 		{
 			if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
 				return true;
@@ -60,7 +60,7 @@ namespace Mortify
 					//const int dpi = HIWORD(wParam);
 					//printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
 					const RECT* suggested_rect = (RECT*)lparam;
-					::SetWindowPos(window->m_Window, NULL, suggested_rect->left, suggested_rect->top,
+					::SetWindowPos(hwnd, NULL, suggested_rect->left, suggested_rect->top,
 						suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top,
 						SWP_NOZORDER | SWP_NOACTIVATE);
 				}
@@ -75,21 +75,31 @@ namespace Mortify
 			int width = LOWORD(lparam);
 			int height = HIWORD(lparam);
 
-			window->m_Data.Width = width;
-			window->m_Data.Height = height;
+			window->m_Width = width;
+			window->m_Height = height;
 
-			if (window->m_Data.EventCallback)
+			if (window->m_EventCallback)
 			{
 				WindowResizeEvent resizeEvent(width, height);
-				window->m_Data.EventCallback(resizeEvent);
+				window->m_EventCallback(resizeEvent);
 			}
 			return 0;
 		}
 
+		case WM_SETFOCUS:
+		{
+			break;
+		}
+			
+		case WM_KILLFOCUS:
+		{
+			break;
+		}
+			
 		case WM_NCACTIVATE:
 		case WM_NCPAINT:
 		{
-			if (window->m_Data.Mode == WindowMode::Borderless)
+			if (window->m_Mode == WindowMode::Borderless)
 				return true;
 
 			break;
@@ -97,44 +107,113 @@ namespace Mortify
 
 		case WM_DESTROY:
 		{
-			if (window->m_Data.EventCallback)
+			if (window->m_EventCallback)
 			{
 				WindowCloseEvent closeEvent;
-				window->m_Data.EventCallback(closeEvent);
+				window->m_EventCallback(closeEvent);
 			}
 
 			PostQuitMessage(0);
 			return 0;
 		}
+		case WM_SYSCOMMAND:
+		{
+			switch (wparam & 0xfff0)
+			{
+				case SC_SCREENSAVE:
+				case SC_MONITORPOWER:
+				{
+					if (window->m_Mode == WindowMode::Fullscreen)
+					{
+						// We are running in full screen mode, so disallow
+						// screen saver and screen blanking
+						return 0;
+					}
+					
+					break;
+				}
+
+				// User trying to access application menu using ALT?
+				case SC_KEYMENU:
+				return 0;
+			}
+			break;
+		}
+		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN:
 		{
 			KeyCode key = translateWin32Keys(wparam, lparam);
-			window->m_Data.m_Keys[key] = true;
-			if (window->m_Data.EventCallback)
+				
+			if (key == KeyCode::Invalid)
+				break;
+
+			if (wparam == VK_SNAPSHOT)
+			{
+				window->m_Keys[key] = false;
+				
+				if (window->m_EventCallback)
+				{
+					KeyPressedEvent snapPressed(key, LOWORD(lparam));
+					window->m_EventCallback(snapPressed);
+					KeyReleasedEvent snapReleased(key);
+					window->m_EventCallback(snapReleased);
+				}
+
+				window->m_Keys[key] = true;
+				
+				break;
+			}
+				
+			window->m_Keys[key] = true;
+			if (window->m_EventCallback)
 			{
 				KeyPressedEvent keyPressedEvent(key, LOWORD(lparam));
-				window->m_Data.EventCallback(keyPressedEvent);
+				window->m_EventCallback(keyPressedEvent);
 			}
-			return 0;
+				
+			break;
 		}
+		case WM_SYSKEYUP:
 		case WM_KEYUP:
 		{
 			KeyCode key = translateWin32Keys(wparam, lparam);
-			window->m_Data.m_Keys[key] = false;
-			if (window->m_Data.EventCallback)
+				
+			if (key == KeyCode::Invalid)
+				break;
+
+			// Release both shift keys because if both are pressed the first release does not emit an event
+			if (wparam == VK_SHIFT)
+			{
+				window->m_Keys[MT_KEY_LEFT_SHIFT] = false;
+				window->m_Keys[MT_KEY_RIGHT_SHIFT] = false;
+				
+				if (window->m_EventCallback)
+				{
+					KeyReleasedEvent keyLeftShift(MT_KEY_LEFT_SHIFT);
+					window->m_EventCallback(keyLeftShift);
+					KeyReleasedEvent keyRightShift(MT_KEY_RIGHT_SHIFT);
+					window->m_EventCallback(keyRightShift);
+				}
+				
+				break;
+			}
+				
+			window->m_Keys[key] = false;
+			if (window->m_EventCallback)
 			{
 				KeyReleasedEvent keyReleasedEvent(key);
-				window->m_Data.EventCallback(keyReleasedEvent);
+				window->m_EventCallback(keyReleasedEvent);
 			}
-			return 0;
+				
+			break;
 		}
 
 		case WM_CHAR:
 		{
-			if (window->m_Data.EventCallback)
+			if (window->m_EventCallback)
 			{
 				KeyTypedEvent KeyTypedEvent(win32_keycodes[(unsigned int)wparam]);
-				window->m_Data.EventCallback(KeyTypedEvent);
+				window->m_EventCallback(KeyTypedEvent);
 			}
 			return 0;
 		}
@@ -148,7 +227,7 @@ namespace Mortify
 		case WM_MBUTTONUP:
 		case WM_XBUTTONUP:
 		{
-			if (window->m_Data.EventCallback)
+			if (window->m_EventCallback)
 			{
 				MouseCode button;
 
@@ -166,37 +245,40 @@ namespace Mortify
 				if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN ||
 					msg == WM_MBUTTONDOWN || msg == WM_XBUTTONDOWN)
 				{
-					window->m_Data.m_MouseButtons[button] = true;
+					window->m_MouseButtons[button] = true;
 					MouseButtonClickedEvent mouseClickedEvent(button);
-					window->m_Data.EventCallback(mouseClickedEvent);
+					window->m_EventCallback(mouseClickedEvent);
 				}
 				else
 				{
-					window->m_Data.m_MouseButtons[button] = false;
+					window->m_MouseButtons[button] = false;
 					MouseButtonReleasedEvent mouseReleasedEvent(button);
-					window->m_Data.EventCallback(mouseReleasedEvent);
+					window->m_EventCallback(mouseReleasedEvent);
 				}
 			}
+
+			if (msg == WM_XBUTTONDOWN || msg == WM_XBUTTONUP)
+				return true;
 
 			return 0;
 		}
 
 		case WM_MOUSEWHEEL:
 		{
-			if (window->m_Data.EventCallback)
+			if (window->m_EventCallback)
 			{
 				MouseScrolledEvent mouseVScrolledEvent(0.0f, (SHORT)HIWORD(wparam) / (double)WHEEL_DELTA);
-				window->m_Data.EventCallback(mouseVScrolledEvent);
+				window->m_EventCallback(mouseVScrolledEvent);
 			}
 			return 0;
 		}
 
 		case WM_MOUSEHWHEEL:
 		{
-			if (window->m_Data.EventCallback)
+			if (window->m_EventCallback)
 			{
 				MouseScrolledEvent mouseHScrolledEvent((SHORT)HIWORD(wparam) / (double)WHEEL_DELTA, 0.0f);
-				window->m_Data.EventCallback(mouseHScrolledEvent);
+				window->m_EventCallback(mouseHScrolledEvent);
 			}
 			return 0;
 		}
@@ -206,10 +288,10 @@ namespace Mortify
 			const int x = (int)(short)LOWORD(lparam);
 			const int y = (int)(short)HIWORD(lparam);
 
-			if (window->m_Data.EventCallback)
+			if (window->m_EventCallback)
 			{
 				MouseMovedEvent mouseMovedEvent(x, y);
-				window->m_Data.EventCallback(mouseMovedEvent);
+				window->m_EventCallback(mouseMovedEvent);
 			}
 
 			return 0;
@@ -234,14 +316,14 @@ namespace Mortify
 		MT_PROFILE_FUNCTION();
 
 		for (const auto& code : KeyCode())
-			m_Data.m_Keys[code] = false;
+			m_Keys[code] = false;
 
 		for (const auto& button : MouseCode())
-			m_Data.m_MouseButtons[button] = false;
+			m_MouseButtons[button] = false;
 		
-		m_Data.Title = props.Title;
-		m_Data.Width = props.Width;
-		m_Data.Height = props.Height;
+		m_Title = props.Title;
+		m_Width = props.Width;
+		m_Height = props.Height;
 
 		MT_CORE_INFO("Creating window {0} ({1}(w), {2}(h))", props.Title, props.Width, props.Height);
 
@@ -341,20 +423,20 @@ namespace Mortify
 		MT_PROFILE_FUNCTION();
 		
 		if (m_RenderContext->SetVsync(enabled))
-			m_Data.VSync = enabled;
+			m_VSync = enabled;
 		else
 			MT_CORE_WARN("Failed to set vsync!");
 	}
 
 	bool WindowsWindow::IsVSync() const
 	{
-		return m_Data.VSync;
+		return m_VSync;
 	}
 
 	inline bool WindowsWindow::IsKeyPressed(KeyCode code) const
 	{
 		if (code != KeyCode::Invalid)
-			return m_Data.m_Keys.at(code);
+			return m_Keys.at(code);
 		else
 			MT_CORE_WARN("Invalid key");
 
