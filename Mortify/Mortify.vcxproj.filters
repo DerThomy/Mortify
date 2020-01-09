@@ -1309,7 +1309,6 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.h" />
-    <ClInclude Include="src\Platform\Windows\WindowsRenderContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp">
@@ -1352,9 +1351,6 @@
       <Filter>src\Mortify\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp">
-      <Filter>src\Mortify\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mortify\Rendering\RenderContext.cpp">
       <Filter>src\Mortify\Rendering</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Rendering\Renderer.cpp">

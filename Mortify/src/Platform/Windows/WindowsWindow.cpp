@@ -7,6 +7,7 @@
 #include "Mortify/Core/Events/KeyEvent.h"
 #include "Mortify/Core/MouseCodes.h"
 #include "Mortify/Core/KeyCodes.h"
+#include "Mortify/Core/OS.h"
 
 #include <glad/glad.h>
 #include <imgui.h>
@@ -29,6 +30,9 @@ namespace Mortify
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
 		MT_PROFILE_FUNCTION();
+
+		m_OS = std::dynamic_pointer_cast<WindowsOS>(OS::GetOS());
+		MT_CORE_ASSERT(m_OS, "OS must be initialized before creating a window!");
 		
 		Init(props);
 	}
@@ -43,9 +47,9 @@ namespace Mortify
 	//extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK WindowsWindow::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
-		WindowData& data = *(WindowData*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		WindowsWindow* window = (WindowsWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
-		if (&data != nullptr && data.UseImGUI)
+		if (window != nullptr && window->m_Data.UseImGUI)
 		{
 			if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
 				return true;
@@ -56,7 +60,7 @@ namespace Mortify
 					//const int dpi = HIWORD(wParam);
 					//printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
 					const RECT* suggested_rect = (RECT*)lparam;
-					::SetWindowPos(*data.hwnd, NULL, suggested_rect->left, suggested_rect->top,
+					::SetWindowPos(window->m_Window, NULL, suggested_rect->left, suggested_rect->top,
 						suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top,
 						SWP_NOZORDER | SWP_NOACTIVATE);
 				}
@@ -65,64 +69,74 @@ namespace Mortify
 
 		switch (msg)
 		{
+
 		case WM_SIZE:
 		{
 			int width = LOWORD(lparam);
 			int height = HIWORD(lparam);
 
-			data.Width = width;
-			data.Height = height;
+			window->m_Data.Width = width;
+			window->m_Data.Height = height;
 
-			if (data.EventCallback)
+			if (window->m_Data.EventCallback)
 			{
 				WindowResizeEvent resizeEvent(width, height);
-				data.EventCallback(resizeEvent);
+				window->m_Data.EventCallback(resizeEvent);
 			}
+			return 0;
+		}
+
+		case WM_NCACTIVATE:
+		case WM_NCPAINT:
+		{
+			if (window->m_Data.Mode == WindowMode::Borderless)
+				return true;
+
 			break;
 		}
 
 		case WM_DESTROY:
 		{
-			if (data.EventCallback)
+			if (window->m_Data.EventCallback)
 			{
 				WindowCloseEvent closeEvent;
-				data.EventCallback(closeEvent);
+				window->m_Data.EventCallback(closeEvent);
 			}
 
 			PostQuitMessage(0);
-			break;
+			return 0;
 		}
 		case WM_KEYDOWN:
 		{
 			KeyCode key = translateWin32Keys(wparam, lparam);
-			data.m_Keys[key] = true;
-			if (data.EventCallback)
+			window->m_Data.m_Keys[key] = true;
+			if (window->m_Data.EventCallback)
 			{
 				KeyPressedEvent keyPressedEvent(key, LOWORD(lparam));
-				data.EventCallback(keyPressedEvent);
+				window->m_Data.EventCallback(keyPressedEvent);
 			}
-			break;
+			return 0;
 		}
 		case WM_KEYUP:
 		{
 			KeyCode key = translateWin32Keys(wparam, lparam);
-			data.m_Keys[key] = false;
-			if (data.EventCallback)
+			window->m_Data.m_Keys[key] = false;
+			if (window->m_Data.EventCallback)
 			{
 				KeyReleasedEvent keyReleasedEvent(key);
-				data.EventCallback(keyReleasedEvent);
+				window->m_Data.EventCallback(keyReleasedEvent);
 			}
-			break;
+			return 0;
 		}
 
 		case WM_CHAR:
 		{
-			if (data.EventCallback)
+			if (window->m_Data.EventCallback)
 			{
 				KeyTypedEvent KeyTypedEvent(win32_keycodes[(unsigned int)wparam]);
-				data.EventCallback(KeyTypedEvent);
+				window->m_Data.EventCallback(KeyTypedEvent);
 			}
-			break;
+			return 0;
 		}
 
 		case WM_LBUTTONDOWN:
@@ -134,7 +148,7 @@ namespace Mortify
 		case WM_MBUTTONUP:
 		case WM_XBUTTONUP:
 		{
-			if (data.EventCallback)
+			if (window->m_Data.EventCallback)
 			{
 				MouseCode button;
 
@@ -152,39 +166,39 @@ namespace Mortify
 				if (msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN ||
 					msg == WM_MBUTTONDOWN || msg == WM_XBUTTONDOWN)
 				{
-					data.m_MouseButtons[button] = true;
+					window->m_Data.m_MouseButtons[button] = true;
 					MouseButtonClickedEvent mouseClickedEvent(button);
-					data.EventCallback(mouseClickedEvent);
+					window->m_Data.EventCallback(mouseClickedEvent);
 				}
 				else
 				{
-					data.m_MouseButtons[button] = false;
+					window->m_Data.m_MouseButtons[button] = false;
 					MouseButtonReleasedEvent mouseReleasedEvent(button);
-					data.EventCallback(mouseReleasedEvent);
+					window->m_Data.EventCallback(mouseReleasedEvent);
 				}
 			}
 
-			break;
+			return 0;
 		}
 
 		case WM_MOUSEWHEEL:
 		{
-			if (data.EventCallback)
+			if (window->m_Data.EventCallback)
 			{
 				MouseScrolledEvent mouseVScrolledEvent(0.0f, (SHORT)HIWORD(wparam) / (double)WHEEL_DELTA);
-				data.EventCallback(mouseVScrolledEvent);
+				window->m_Data.EventCallback(mouseVScrolledEvent);
 			}
-			break;
+			return 0;
 		}
 
 		case WM_MOUSEHWHEEL:
 		{
-			if (data.EventCallback)
+			if (window->m_Data.EventCallback)
 			{
 				MouseScrolledEvent mouseHScrolledEvent((SHORT)HIWORD(wparam) / (double)WHEEL_DELTA, 0.0f);
-				data.EventCallback(mouseHScrolledEvent);
+				window->m_Data.EventCallback(mouseHScrolledEvent);
 			}
-			break;
+			return 0;
 		}
 
 		case WM_MOUSEMOVE:
@@ -192,13 +206,13 @@ namespace Mortify
 			const int x = (int)(short)LOWORD(lparam);
 			const int y = (int)(short)HIWORD(lparam);
 
-			if (data.EventCallback)
+			if (window->m_Data.EventCallback)
 			{
 				MouseMovedEvent mouseMovedEvent(x, y);
-				data.EventCallback(mouseMovedEvent);
+				window->m_Data.EventCallback(mouseMovedEvent);
 			}
 
-			break;
+			return 0;
 		}
 
 		case WM_ERASEBKGND:
@@ -210,12 +224,9 @@ namespace Mortify
 		{
 			return true;
 		}
-
-		default:
-			return DefWindowProc(hwnd, msg, wparam, lparam);
 		}
 
-		return NULL;
+		return DefWindowProc(hwnd, msg, wparam, lparam);
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
@@ -239,7 +250,7 @@ namespace Mortify
 		m_Class.cbClsExtra = NULL;
 		m_Class.cbSize = sizeof(m_Class);
 		m_Class.style = CS_HREDRAW | CS_VREDRAW;
-		m_Class.cbWndExtra = sizeof(WindowData*);
+		m_Class.cbWndExtra = sizeof(WindowsWindow*);
 		m_Class.cbClsExtra = NULL;
 		m_Class.hbrBackground = (HBRUSH)COLOR_WINDOW;
 		m_Class.hCursor = LoadCursor(NULL, IDC_ARROW);
@@ -252,19 +263,18 @@ namespace Mortify
 
 		MT_ASSERT(RegisterClassEx(&m_Class), "Failed to register class");
 
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		m_Window = CreateWindowEx(NULL, class_name.c_str(), converter.from_bytes(props.Title).c_str(),
-			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, props.Width, props.Height, NULL, NULL, NULL, NULL);
-
+		std::wstring title = OS::GetOS()->WideCharFromUTF8(props.Title);
+		m_Window = CreateWindowEx(NULL, class_name.c_str(), title.c_str(),
+			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, props.Width, props.Height, NULL, NULL, GetModuleHandleW(NULL), NULL);
 		MT_CORE_ASSERT(m_Window, "WindowsWindow creation failed");
 		m_Data.hwnd = &m_Window;
 
 		windowCount++;
-		SetWindowLongPtr(m_Window, GWLP_USERDATA, (LONG_PTR)&(m_Data));
+		SetWindowLongPtr(m_Window, GWLP_USERDATA, (LONG_PTR)this);
 
 		m_DeviceContextHandler = GetDC(m_Window);
 		
-		m_RenderContext = WindowsRenderContext::Create(this);
+		m_RenderContext = RenderContext::Create(this);
 		m_RenderContext->Init();
 
 		ShowWindow(m_Window, SW_SHOW);
@@ -283,6 +293,31 @@ namespace Mortify
 		}
 
 		m_RenderContext->SwapBuffers();
+	}
+
+	void WindowsWindow::SetWindowMode(WindowMode mode)
+	{
+		switch(mode)
+		{
+			case WindowMode::Fullscreen:
+			{
+				FitToMonitor();
+				break;
+			}
+			
+		}
+	}
+
+	void WindowsWindow::FitToMonitor()
+	{
+	    MONITORINFO mi = { sizeof(mi) };
+	    GetMonitorInfo(MonitorFromWindow(m_Window, MONITOR_DEFAULTTONEAREST), &mi);
+	    SetWindowPos(m_Window, HWND_TOPMOST,
+	                 mi.rcMonitor.left,
+	                 mi.rcMonitor.top,
+	                 mi.rcMonitor.right - mi.rcMonitor.left,
+	                 mi.rcMonitor.bottom - mi.rcMonitor.top,
+	                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOCOPYBITS);
 	}
 
 	void WindowsWindow::Shutdown()

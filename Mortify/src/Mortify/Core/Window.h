@@ -9,16 +9,25 @@
 
 namespace Mortify
 {
+	enum class WindowMode
+	{
+		Windowed,
+		Fullscreen,
+		Borderless
+	};
+	
 	struct WindowProps
 	{
 		std::string Title;
 		unsigned int Width;
 		unsigned int Height;
+		WindowMode Mode;
 
 		WindowProps(const std::string& title = "Mortify Engine", 
 					unsigned int width = 1280, 
-					unsigned int height = 720)
-			: Title(title), Width(width), Height(height) {}
+					unsigned int height = 720,
+					WindowMode mode = WindowMode::Windowed)
+			: Title(title), Width(width), Height(height), Mode(mode) {}
 	};
 
 	// Window Interface for desktop system windows
@@ -33,6 +42,9 @@ namespace Mortify
 
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
+
+		virtual WindowMode GetWindowMode() const = 0;
+		virtual void SetWindowMode(WindowMode mode) = 0;
 		
 		virtual void* GetNativeWindow() const = 0;
 		virtual const Ref<RenderContext>& GetContext() const = 0;

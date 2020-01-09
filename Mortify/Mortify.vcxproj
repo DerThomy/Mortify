@@ -561,7 +561,6 @@
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
-    <ClInclude Include="src\Platform\Windows\WindowsRenderContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp" />
@@ -578,7 +577,6 @@
     <ClCompile Include="src\Mortify\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Mortify\Rendering\OrthoCameraController.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RenderCommand.cpp" />
-    <ClCompile Include="src\Mortify\Rendering\RenderContext.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Renderer2D.cpp" />
     <ClCompile Include="src\Mortify\Rendering\RendererAPI.cpp" />

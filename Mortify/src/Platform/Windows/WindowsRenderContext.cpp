@@ -1,14 +1,14 @@
 #include "mtpch.h"
 
+#include "Mortify/Rendering/RenderContext.h"
 #include "Mortify/Rendering/Renderer.h"
-#include "WindowsRenderContext.h"
 #include "Mortify/Core/Window.h"
 
 #include "RenderContexts/WindowsGLRenderContext.h"
 
 namespace Mortify
 {
-	Ref<RenderContext> WindowsRenderContext::Create(Window* window)
+	Ref<RenderContext> RenderContext::Create(Window* window)
 	{
 		switch (Renderer::GetAPI())
 		{

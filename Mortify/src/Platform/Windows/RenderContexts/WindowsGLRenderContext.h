@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Platform/Windows/WindowsRenderContext.h"
+#include "Mortify/Rendering/RenderContext.h"
 
 namespace Mortify
 {
 	typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC)(int);
 
-	class WindowsGLRenderContext : public WindowsRenderContext
+	class WindowsGLRenderContext : public RenderContext
 	{
 	public:
 		WindowsGLRenderContext(Window* window);
