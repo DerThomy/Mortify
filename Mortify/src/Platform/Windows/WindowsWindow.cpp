@@ -263,11 +263,10 @@ namespace Mortify
 
 		MT_ASSERT(RegisterClassEx(&m_Class), "Failed to register class");
 
-		std::wstring title = OS::GetOS()->WideCharFromUTF8(props.Title);
+		std::wstring title = m_OS->WideCharFromUTF8(props.Title);
 		m_Window = CreateWindowEx(NULL, class_name.c_str(), title.c_str(),
 			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, props.Width, props.Height, NULL, NULL, GetModuleHandleW(NULL), NULL);
 		MT_CORE_ASSERT(m_Window, "WindowsWindow creation failed");
-		m_Data.hwnd = &m_Window;
 
 		windowCount++;
 		SetWindowLongPtr(m_Window, GWLP_USERDATA, (LONG_PTR)this);

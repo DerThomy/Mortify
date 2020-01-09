@@ -29,7 +29,7 @@ namespace Mortify
 		inline const Ref<RenderContext>& GetContext() const override { return m_RenderContext; }
 		inline void SetContext(const Ref<RenderContext>& context) override { m_RenderContext = context; };
 		
-		inline virtual void* GetNativeWindow() const override { return m_Window; }
+		inline void* GetNativeWindow() const override { return m_Window; }
 
 		// Window attributes
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
@@ -65,7 +65,6 @@ namespace Mortify
 			bool UseImGUI;
 			std::unordered_map<KeyCode, bool> m_Keys;
 			std::unordered_map<MouseCode, bool> m_MouseButtons;
-			HWND* hwnd;
 
 			EventCallbackFn EventCallback;
 		};
