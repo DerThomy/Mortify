@@ -50,6 +50,8 @@ namespace Mortify
 		int status = gladLoadGLLoader((GLADloadproc)getGLProcAddress);
 		MT_CORE_ASSERT(status, "Failed to initizalize Glad!");
 
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+
 		MT_CORE_INFO("OpenGL Info:");
 		MT_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
 		MT_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
@@ -68,7 +70,6 @@ namespace Mortify
 	void WindowsGLRenderContext::MakeContextCurrent()
 	{
 		MT_CORE_ASSERT(wglMakeCurrent(m_DeviceContextHandler, m_OpenGLRenderContextHandler), "Failed to make context current");
-		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
 	}
 
 	RenderContext::procAdr WindowsGLRenderContext::getGLProcAddress(const char* procname)
