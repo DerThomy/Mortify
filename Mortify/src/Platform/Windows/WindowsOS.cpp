@@ -11,10 +11,24 @@ namespace Mortify
 		WindowsOS::Init();
 	}
 
+	WindowsOS::~WindowsOS()
+	{
+		FreeLibrary(m_Libraries.User32.Instance);
+		FreeLibrary(m_Libraries.Shcore.Instance);
+		FreeLibrary(m_Libraries.Ntdll.Instance);
+	}
+
 	void WindowsOS::Init()
 	{
 		LoadLibraries();
 		InitTimer();
+
+		if(IsWindows10AnniversaryUpdateOrGreater())
+			m_Libraries.User32.SetProcessDpiAwarnessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		else if (IsWindows8Point1OrGreater())
+			m_Libraries.Shcore.SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+		else if (IsWindowsVistaOrGreater())
+			m_Libraries.User32.SetProcessDPIAware();
 	}
 
 	double WindowsOS::GetTime() const
@@ -42,6 +56,21 @@ namespace Mortify
 		MT_CORE_ASSERT(MultiByteToWideChar(CP_UTF8 , MB_ERR_INVALID_CHARS , utf8_string.c_str() , utf8_string.length(), &wstr[0] , count )
 			, "Failed to convert utf8 string to widestring");
 		return wstr;
+	}
+
+	std::string WindowsOS::UTF8FromWideString(const std::wstring& wide_string) const
+	{
+		if (wide_string.empty())
+		{
+			return std::string();
+		}
+		int count = WideCharToMultiByte( CP_UTF8 , MB_ERR_INVALID_CHARS , wide_string.c_str() , -1, NULL, 0, NULL, NULL);
+		MT_CORE_ASSERT(count, "Failed to count ut8_string");
+		std::string utf8str;
+		utf8str.resize(count);
+		MT_CORE_ASSERT(WideCharToMultiByte(CP_UTF8 , MB_ERR_INVALID_CHARS , wide_string.c_str() , wide_string.length(), &utf8str[0] , count, NULL, NULL)
+			, "Failed to convert utf8 string to widestring");
+		return utf8str;
 	}
 
 	BOOL WindowsOS::IsWindowsXPOrGreater()
@@ -99,11 +128,49 @@ namespace Mortify
 
 	void WindowsOS::LoadLibraries()
 	{
+		// User32
+		m_Libraries.User32.Instance = LoadLibraryA("user32.dll");
+		MT_CORE_ASSERT(m_Libraries.User32.Instance, "Failed to load user32");
+		m_Libraries.User32.AdjustWindowRectExForDpi = (PFN_AdjustWindowRectExForDpi)
+			GetProcAddress(m_Libraries.User32.Instance,"AdjustWindowRectExForDpi");
+		m_Libraries.User32.ChangeWindowMessageFilterEx = (PFN_ChangeWindowMessageFilterEx)
+			GetProcAddress(m_Libraries.User32.Instance,"ChangeWindowMessageFilterEx");
+		m_Libraries.User32.EnableNonClientDpiScaling = (PFN_EnableNonClientDpiScaling)
+			GetProcAddress(m_Libraries.User32.Instance,"EnableNonClientDpiScaling");
+		m_Libraries.User32.GetDpiForWindow = (PFN_GetDpiForWindow)
+			GetProcAddress(m_Libraries.User32.Instance,"GetDpiForWindow");
+		m_Libraries.User32.SetProcessDPIAware = (PFN_SetProcessDPIAware)
+			GetProcAddress(m_Libraries.User32.Instance,"SetProcessDPIAware");
+		m_Libraries.User32.SetProcessDpiAwarnessContext = (PFN_SetProcessDpiAwarenessContext)
+			GetProcAddress(m_Libraries.User32.Instance,"SetProcessDpiAwarenessContext");
+		
+		// Shcore
+		m_Libraries.Shcore.Instance = LoadLibraryA("shcore.dll");
+		MT_CORE_ASSERT(m_Libraries.Shcore.Instance, "Failed to load shcore");
+		m_Libraries.Shcore.GetDpiForMonitor = (PFN_GetDpiForMonitor)
+			GetProcAddress(m_Libraries.Shcore.Instance,"GetDpiForMonitor");
+		m_Libraries.Shcore.SetProcessDpiAwareness = (PFN_SetProcessDpiAwareness)
+			GetProcAddress(m_Libraries.Shcore.Instance,"SetProcessDpiAwareness");
+		
 		// Ntdll
-		m_Libraries.Ntdll.instance = LoadLibraryA("ntdll.dll");
-		MT_CORE_ASSERT(m_Libraries.Ntdll.instance, "Failed to load ntdll");
+		m_Libraries.Ntdll.Instance = LoadLibraryA("ntdll.dll");
+		MT_CORE_ASSERT(m_Libraries.Ntdll.Instance, "Failed to load ntdll");
 		m_Libraries.Ntdll.RtlVerifyVersionInfo = (PFN_RtlVerifyVersionInfo)
-			GetProcAddress(m_Libraries.Ntdll.instance,"RtlVerifyVersionInfo");
+			GetProcAddress(m_Libraries.Ntdll.Instance,"RtlVerifyVersionInfo");
+	}
+
+	void WindowsOS::getFullWindowSize(DWORD style, DWORD exStyle, int contentWidth, int contentHeight, int* fullWidth,
+		int* fullHeight, UINT dpi)
+	{
+		 RECT rect = { 0, 0, contentWidth, contentHeight };
+
+    if (IsWindows10AnniversaryUpdateOrGreater())
+        AdjustWindowRectExForDpi(&rect, style, FALSE, exStyle, dpi);
+    else
+        AdjustWindowRectEx(&rect, style, FALSE, exStyle);
+
+    *fullWidth = rect.right - rect.left;
+    *fullHeight = rect.bottom - rect.top;
 	}
 
 	BOOL WindowsOS::IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp)
