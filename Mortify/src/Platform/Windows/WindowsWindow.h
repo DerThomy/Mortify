@@ -45,6 +45,10 @@ namespace Mortify
 		virtual void Shutdown();
 
 		void FitToMonitor();
+		void getFullWindowSize(DWORD style, DWORD exStyle,
+			int contentWidth, int contentHeight,
+			int* fullWidth, int* fullHeight,
+			UINT dpi);
 
 	private:
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);

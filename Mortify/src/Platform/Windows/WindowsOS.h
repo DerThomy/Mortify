@@ -86,11 +86,6 @@ namespace Mortify
 	private:
 		void InitTimer();
 		void LoadLibraries();
-
-		void getFullWindowSize(DWORD style, DWORD exStyle,
-                              int contentWidth, int contentHeight,
-                              int* fullWidth, int* fullHeight,
-                              UINT dpi);
 		
 		BOOL IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp);
 		BOOL IsWindows10BuildOrGreater(WORD build);

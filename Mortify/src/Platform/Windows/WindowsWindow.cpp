@@ -328,6 +328,17 @@ namespace Mortify
 		MT_CORE_INFO("Creating window {0} ({1}(w), {2}(h))", props.Title, props.Width, props.Height);
 
 		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(windowCount));
+		int xpos, ypos, width, height;
+		DWORD style = WS_OVERLAPPEDWINDOW;
+		DWORD exstyle = NULL;
+
+		xpos = CW_USEDEFAULT;
+		ypos = CW_USEDEFAULT;
+
+		if (props.Mode == WindowMode::Fullscreen)
+			style |= WS_MAXIMIZE;
+
+		getFullWindowSize(style, exstyle, props.Width, props.Height, &width, &height, USER_DEFAULT_SCREEN_DPI);
 
 		m_Class.cbClsExtra = NULL;
 		m_Class.cbSize = sizeof(m_Class);
@@ -346,8 +357,8 @@ namespace Mortify
 		MT_ASSERT(RegisterClassEx(&m_Class), "Failed to register class");
 
 		std::wstring title = m_OS->WideCharFromUTF8(props.Title);
-		m_Window = CreateWindowEx(NULL, class_name.c_str(), title.c_str(),
-			WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, props.Width, props.Height, NULL, NULL, GetModuleHandleW(NULL), NULL);
+		m_Window = CreateWindowEx(exstyle, class_name.c_str(), title.c_str(),
+			style, xpos, ypos, width, height, NULL, NULL, GetModuleHandleW(NULL), NULL);
 		MT_CORE_ASSERT(m_Window, "WindowsWindow creation failed");
 
 		windowCount++;
@@ -399,6 +410,19 @@ namespace Mortify
 	                 mi.rcMonitor.right - mi.rcMonitor.left,
 	                 mi.rcMonitor.bottom - mi.rcMonitor.top,
 	                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOCOPYBITS);
+	}
+
+	void WindowsWindow::getFullWindowSize(DWORD style, DWORD exStyle, int contentWidth, int contentHeight, int* fullWidth, int* fullHeight, UINT dpi)
+	{
+		RECT rect = { 0, 0, contentWidth, contentHeight };
+
+		if (m_OS->IsWindows10AnniversaryUpdateOrGreater())
+			AdjustWindowRectExForDpi(&rect, style, FALSE, exStyle, dpi);
+		else
+			AdjustWindowRectEx(&rect, style, FALSE, exStyle);
+
+		*fullWidth = rect.right - rect.left;
+		*fullHeight = rect.bottom - rect.top;
 	}
 
 	void WindowsWindow::Shutdown()

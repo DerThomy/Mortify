@@ -159,20 +159,6 @@ namespace Mortify
 			GetProcAddress(m_Libraries.Ntdll.Instance,"RtlVerifyVersionInfo");
 	}
 
-	void WindowsOS::getFullWindowSize(DWORD style, DWORD exStyle, int contentWidth, int contentHeight, int* fullWidth,
-		int* fullHeight, UINT dpi)
-	{
-		 RECT rect = { 0, 0, contentWidth, contentHeight };
-
-    if (IsWindows10AnniversaryUpdateOrGreater())
-        AdjustWindowRectExForDpi(&rect, style, FALSE, exStyle, dpi);
-    else
-        AdjustWindowRectEx(&rect, style, FALSE, exStyle);
-
-    *fullWidth = rect.right - rect.left;
-    *fullHeight = rect.bottom - rect.top;
-	}
-
 	BOOL WindowsOS::IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp)
 	{
 		OSVERSIONINFOEXW osinfo = {sizeof(osinfo), major, minor, 0, 0, {0}, sp};
