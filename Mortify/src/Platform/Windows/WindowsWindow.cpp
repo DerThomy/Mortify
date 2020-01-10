@@ -67,6 +67,24 @@ namespace Mortify
 			}
 		}
 
+		if (!window)
+		{
+			switch(msg)
+			{
+				case WM_NCCREATE:
+				{
+					Ref<WindowsOS> os = std::dynamic_pointer_cast<WindowsOS>(OS::GetOS());
+						
+					if (os->IsWindows10AnniversaryUpdateOrGreater())
+						os->GetLibraries().User32.EnableNonClientDpiScaling(hwnd);
+
+					break;
+				}
+			}
+
+			return DefWindowProc(hwnd, msg, wparam, lparam);
+		}
+
 		switch (msg)
 		{
 
@@ -85,6 +103,27 @@ namespace Mortify
 			}
 			return 0;
 		}
+
+		case WM_DPICHANGED:
+        {
+            const float xscale = HIWORD(wparam) / (float) USER_DEFAULT_SCREEN_DPI;
+            const float yscale = LOWORD(wparam) / (float) USER_DEFAULT_SCREEN_DPI;
+
+            // Only apply the suggested size if the OS is new enough to have
+            // sent a WM_GETDPISCALEDSIZE before this
+            if (window->m_OS->IsWindows10CreatorsUpdateOrGreater())
+            {
+                RECT* suggested = (RECT*) lparam;
+                SetWindowPos(hwnd, HWND_TOP,
+                             suggested->left,
+                             suggested->top,
+                             suggested->right - suggested->left,
+                             suggested->bottom - suggested->top,
+                             SWP_NOACTIVATE | SWP_NOZORDER);
+            }
+
+            break;
+        }
 
 		case WM_SETFOCUS:
 		{
@@ -335,7 +374,7 @@ namespace Mortify
 		xpos = CW_USEDEFAULT;
 		ypos = CW_USEDEFAULT;
 
-		if (props.Mode == WindowMode::Fullscreen)
+		if (props.Mode == WindowMode::Maximized)
 			style |= WS_MAXIMIZE;
 
 		getFullWindowSize(style, exstyle, props.Width, props.Height, &width, &height, USER_DEFAULT_SCREEN_DPI);
@@ -389,15 +428,10 @@ namespace Mortify
 
 	void WindowsWindow::SetWindowMode(WindowMode mode)
 	{
-		switch(mode)
-		{
-			case WindowMode::Fullscreen:
-			{
-				FitToMonitor();
-				break;
-			}
-			
-		}
+		m_Mode = mode;
+
+		if (mode == WindowMode::Maximized)
+			ShowWindow(m_Window, SW_MAXIMIZE);
 	}
 
 	void WindowsWindow::FitToMonitor()

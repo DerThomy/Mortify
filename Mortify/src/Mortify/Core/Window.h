@@ -12,8 +12,9 @@ namespace Mortify
 	enum class WindowMode
 	{
 		Windowed,
-		Fullscreen,
-		Borderless
+		Borderless,
+		Maximized,
+		Fullscreen
 	};
 	
 	struct WindowProps
@@ -26,7 +27,7 @@ namespace Mortify
 		WindowProps(const std::string& title = "Mortify Engine", 
 					unsigned int width = 1280, 
 					unsigned int height = 720,
-					WindowMode mode = WindowMode::Windowed)
+					WindowMode mode = WindowMode::Maximized)
 			: Title(title), Width(width), Height(height), Mode(mode) {}
 	};
 
