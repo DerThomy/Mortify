@@ -15,6 +15,19 @@ namespace Mortify
 		Borderless,
 		Fullscreen
 	};
+
+	struct WindowLimits
+	{
+		int MinWidth;
+		int MinHeight;
+		int MaxWidth;
+		int MaxHeight;
+
+		WindowLimits(int minWidht = MT_DONT_CARE, int minHeight = MT_DONT_CARE,
+			int maxWidth = MT_DONT_CARE, int maxHeight = MT_DONT_CARE)
+			: MinWidth(minWidht), MinHeight(minHeight), MaxWidth(maxWidth), MaxHeight(maxHeight)
+		{}
+	};
 	
 	struct WindowProps
 	{
@@ -70,6 +83,8 @@ namespace Mortify
 		virtual bool IsResizeable() const = 0;
 		virtual void SetKeepAspectRatio(bool keepAspect) = 0;
 		virtual bool KeepAspectRatio() const = 0;
+		virtual void LimitWindowSize(WindowLimits limits = WindowLimits()) = 0;
+		
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
 	};

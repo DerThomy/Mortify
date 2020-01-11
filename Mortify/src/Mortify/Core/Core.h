@@ -38,7 +38,6 @@
 	#error "Unknown platform!"
 #endif
 
-
 #ifdef MT_DEBUG
 	#define MT_ENABLE_ASSERTS
 #endif
@@ -50,6 +49,8 @@
 	#define MT_ASSERT(x, ...)
 	#define MT_CORE_ASSERT(x, ...)
 #endif
+
+#define MT_DONT_CARE -1
 
 #define BIT(x) (1 << x)
 

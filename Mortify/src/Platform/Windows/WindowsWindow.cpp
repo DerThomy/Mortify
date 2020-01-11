@@ -51,7 +51,7 @@ namespace Mortify
 
 		if (window != nullptr && window->m_UsesImGUI)
 		{
-			if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
+			if (ImGui_ImplWin32_WndProcHandler(window->m_Window, msg, wparam, lparam))
 				return true;
 			else if (msg == WM_DPICHANGED)
 			{
@@ -60,7 +60,7 @@ namespace Mortify
 					//const int dpi = HIWORD(wParam);
 					//printf("WM_DPICHANGED to %d (%.0f%%)\n", dpi, (float)dpi / 96.0f * 100.0f);
 					const RECT* suggested_rect = (RECT*)lparam;
-					::SetWindowPos(hwnd, NULL, suggested_rect->left, suggested_rect->top,
+					::SetWindowPos(window->m_Window, NULL, suggested_rect->left, suggested_rect->top,
 						suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top,
 						SWP_NOZORDER | SWP_NOACTIVATE);
 				}
@@ -93,6 +93,8 @@ namespace Mortify
 			const bool maximized = wparam == SIZE_MAXIMIZED ||
                                        (window->m_Maximized &&
                                         wparam != SIZE_RESTORED);
+
+			window->m_Maximized = maximized;
 				
 			int width = LOWORD(lparam);
 			int height = HIWORD(lparam);
@@ -116,6 +118,54 @@ namespace Mortify
 			window->ApplyAspectRatio((int) wparam, (RECT*) lparam);
 			return true;
 		}
+
+		case WM_GETMINMAXINFO:
+        {
+            int xoff, yoff;
+            UINT dpi = USER_DEFAULT_SCREEN_DPI;
+            MINMAXINFO* mmi = (MINMAXINFO*) lparam;
+
+            if (window->GetWindowMode() == WindowMode::Fullscreen)
+                break;
+
+            if (window->m_OS->IsWindows10AnniversaryUpdateOrGreater())
+                dpi = GetDpiForWindow(window->m_Window);
+
+            window->GetFullWindowSize(window->GetWindowStyle(), window->GetWindowStyleEx(),
+                              0, 0, &xoff, &yoff, dpi);
+
+            if (window->m_Limits.MinWidth != MT_DONT_CARE &&
+                window->m_Limits.MinHeight != MT_DONT_CARE)
+            {
+                mmi->ptMinTrackSize.x = window->m_Limits.MinWidth + xoff;
+                mmi->ptMinTrackSize.y = window->m_Limits.MinHeight + yoff;
+            }
+
+            if (window->m_Limits.MaxWidth != MT_DONT_CARE &&
+                window->m_Limits.MaxHeight != MT_DONT_CARE)
+            {
+                mmi->ptMaxTrackSize.x = window->m_Limits.MaxWidth + xoff;
+                mmi->ptMaxTrackSize.y = window->m_Limits.MaxHeight + yoff;
+            }
+
+            if (window->GetWindowMode() == WindowMode::Borderless)
+            {
+                MONITORINFO mi;
+                const HMONITOR mh = MonitorFromWindow(window->m_Window,
+                                                      MONITOR_DEFAULTTONEAREST);
+
+                ZeroMemory(&mi, sizeof(mi));
+                mi.cbSize = sizeof(mi);
+                GetMonitorInfo(mh, &mi);
+
+                mmi->ptMaxPosition.x = mi.rcWork.left - mi.rcMonitor.left;
+                mmi->ptMaxPosition.y = mi.rcWork.top - mi.rcMonitor.top;
+                mmi->ptMaxSize.x = mi.rcWork.right - mi.rcWork.left;
+                mmi->ptMaxSize.y = mi.rcWork.bottom - mi.rcWork.top;
+            }
+
+            return 0;
+        }
 			
 		case WM_DPICHANGED:
         {
@@ -127,7 +177,7 @@ namespace Mortify
             if (window->m_OS->IsWindows10CreatorsUpdateOrGreater())
             {
                 RECT* suggested = (RECT*) lparam;
-                SetWindowPos(hwnd, HWND_TOP,
+                SetWindowPos(window->m_Window, HWND_TOP,
                              suggested->left,
                              suggested->top,
                              suggested->right - suggested->left,
@@ -148,7 +198,7 @@ namespace Mortify
 
                 AdjustWindowRectExForDpi(&source, window->GetWindowStyle(),
                                          FALSE, window->GetWindowStyleEx(),
-                                         GetDpiForWindow(hwnd));
+                                         GetDpiForWindow(window->m_Window));
                 AdjustWindowRectExForDpi(&target, window->GetWindowStyle(),
                                          FALSE, window->GetWindowStyleEx(),
                                          LOWORD(wparam));
@@ -212,7 +262,7 @@ namespace Mortify
 
 				// User trying to access application menu using ALT?
 				case SC_KEYMENU:
-				return 0;
+					return 0;
 			}
 			break;
 		}
@@ -386,11 +436,7 @@ namespace Mortify
 	void WindowsWindow::Maximize()
 	{
 		if (!m_Maximized)
-		{
-			m_Maximized = true;
 			ShowWindow(m_Window, SW_MAXIMIZE);
-		}
-		return;
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
@@ -410,6 +456,8 @@ namespace Mortify
 		m_Resizable = props.Resizeable;
 		m_KeepAspect = props.KeepAspect;
 		m_Mode = props.Mode;
+
+		m_Limits = WindowLimits();
 
 		MT_CORE_INFO("Creating window {0} ({1}(w), {2}(h))", props.Title, props.Width, props.Height);
 

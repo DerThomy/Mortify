@@ -21,7 +21,6 @@ namespace Mortify
 
 		m_OS = OS::Create();
 		m_Window = Window::Create();
-		m_Window->Maximize();
 		m_Window->SetEventCallback(MT_BIND_EVENT_FN(Application::OnEvent));
 		m_Window->SetVSync(true);
 
@@ -45,6 +44,7 @@ namespace Mortify
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(MT_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(MT_BIND_EVENT_FN(Application::OnWindowResize));
+		dispatcher.Dispatch<KeyPressedEvent>(MT_BIND_EVENT_FN(Application::OnKeyPressed));
 
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
@@ -101,6 +101,16 @@ namespace Mortify
 			m_Minimized = false;
 		
 		return false;
+	}
+
+	bool Application::OnKeyPressed(KeyPressedEvent& e)
+	{
+		MT_PROFILE_FUNCTION();
+
+		if (e.getKeyCode() == MT_KEY_F11)
+			m_Window->SetWindowMode(WindowMode::Fullscreen);
+
+		return true;
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

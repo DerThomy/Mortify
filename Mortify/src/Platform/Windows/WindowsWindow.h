@@ -44,6 +44,7 @@ namespace Mortify
 		inline bool IsResizeable() const override { return m_Resizable; };
 		inline void SetKeepAspectRatio(bool keepAspect) override { m_KeepAspect = keepAspect; }
 		inline bool KeepAspectRatio() const override { return m_KeepAspect;}
+		inline void LimitWindowSize(WindowLimits limits) override {};
 
 	private:
 		virtual void Init(const WindowProps& props);
@@ -79,6 +80,8 @@ namespace Mortify
 		bool m_Maximized;
 		bool m_Resizable;
 		bool m_KeepAspect;
+
+		WindowLimits m_Limits;
 		
 		std::unordered_map<KeyCode, bool> m_Keys;
 		std::unordered_map<MouseCode, bool> m_MouseButtons;
