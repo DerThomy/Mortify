@@ -21,7 +21,7 @@ namespace Mortify
 
 		m_OS = OS::Create();
 		m_Window = Window::Create();
-		m_Window->SetWindowMode(WindowMode::Fullscreen);
+		m_Window->Maximize();
 		m_Window->SetEventCallback(MT_BIND_EVENT_FN(Application::OnEvent));
 		m_Window->SetVSync(true);
 

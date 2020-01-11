@@ -39,13 +39,24 @@ namespace Mortify
 		inline bool UseImGUI() const override { return m_UsesImGUI; };
 		bool IsKeyPressed(KeyCode code) const override;
 		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_MouseButtons.at(button); };
+		inline void Maximize() override;
+		inline void SetResizeable(bool resizable) override { m_Resizable = resizable;};
+		inline bool IsResizeable() const override { return m_Resizable; };
+		inline void SetKeepAspectRatio(bool keepAspect) override { m_KeepAspect = keepAspect; }
+		inline bool KeepAspectRatio() const override { return m_KeepAspect;}
 
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 
+		DWORD GetWindowStyle();
+		DWORD GetWindowStyleEx();
+
+		void ApplyAspectRatio(int edge, RECT* area);
+		void UpdateWindowStyle();
+
 		void FitToMonitor();
-		void getFullWindowSize(DWORD style, DWORD exStyle,
+		void GetFullWindowSize(DWORD style, DWORD exStyle,
 			int contentWidth, int contentHeight,
 			int* fullWidth, int* fullHeight,
 			UINT dpi);
@@ -65,6 +76,9 @@ namespace Mortify
 		WindowMode m_Mode;
 		bool m_VSync;
 		bool m_UsesImGUI;
+		bool m_Maximized;
+		bool m_Resizable;
+		bool m_KeepAspect;
 		
 		std::unordered_map<KeyCode, bool> m_Keys;
 		std::unordered_map<MouseCode, bool> m_MouseButtons;

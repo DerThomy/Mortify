@@ -13,7 +13,6 @@ namespace Mortify
 	{
 		Windowed,
 		Borderless,
-		Maximized,
 		Fullscreen
 	};
 	
@@ -23,12 +22,19 @@ namespace Mortify
 		unsigned int Width;
 		unsigned int Height;
 		WindowMode Mode;
+		bool Maximized;
+		bool Resizeable;
+		bool KeepAspect;
 
 		WindowProps(const std::string& title = "Mortify Engine", 
 					unsigned int width = 1280, 
 					unsigned int height = 720,
-					WindowMode mode = WindowMode::Maximized)
-			: Title(title), Width(width), Height(height), Mode(mode) {}
+					WindowMode mode = WindowMode::Windowed,
+					bool maximized = false,
+					bool resizable = true,
+					bool keepAspect = false)
+			: Title(title), Width(width), Height(height), Mode(mode), Maximized(maximized),
+			Resizeable(resizable), KeepAspect(keepAspect) {}
 	};
 
 	// Window Interface for desktop system windows
@@ -59,6 +65,11 @@ namespace Mortify
 		virtual bool UseImGUI() const = 0;
 		virtual bool IsKeyPressed(KeyCode code) const = 0;
 		virtual bool IsMouseButtonPressed(MouseCode button) const = 0;
+		virtual void Maximize() = 0;
+		virtual void SetResizeable(bool resizable) = 0;
+		virtual bool IsResizeable() const = 0;
+		virtual void SetKeepAspectRatio(bool keepAspect) = 0;
+		virtual bool KeepAspectRatio() const = 0;
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
 	};
