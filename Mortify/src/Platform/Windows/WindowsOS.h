@@ -66,6 +66,13 @@ namespace Mortify
 	class WindowsOS : public OS
 	{
 	public:
+		struct Libraries
+		{
+			USER32 User32;
+			SHCORE Shcore;
+			NTDLL Ntdll;
+		};
+		
 		WindowsOS();
 		~WindowsOS();
 
@@ -74,6 +81,8 @@ namespace Mortify
 		double GetTime() const override;
 		std::wstring WideCharFromUTF8(const std::string& utf8_string) const override;
 		std::string UTF8FromWideString(const std::wstring& wide_string) const override;
+
+		const Libraries& GetLibraries() const { return m_Libraries; };
 
 		BOOL IsWindowsXPOrGreater();
 		BOOL IsWindowsVistaOrGreater();
@@ -94,13 +103,6 @@ namespace Mortify
 		uint64_t	m_Offset;
 		uint64_t	m_Frequency;
 		bool		m_hasPC;
-
-		struct Libraries
-		{
-			USER32 User32;
-			SHCORE Shcore;
-			NTDLL Ntdll;
-		};
 
 		Libraries m_Libraries;
 	};

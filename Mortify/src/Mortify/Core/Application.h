@@ -31,6 +31,7 @@ namespace Mortify
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
 		Mortify::Scope<Window> m_Window;
 		Mortify::Ref<OS> m_OS;
