@@ -18,6 +18,11 @@ namespace Mortify
 		FreeLibrary(m_Libraries.Ntdll.Instance);
 	}
 
+	Ref<OS> OS::Create() 
+	{
+		return CreateRef<WindowsOS>();
+	}
+
 	void WindowsOS::Init()
 	{
 		LoadLibraries();

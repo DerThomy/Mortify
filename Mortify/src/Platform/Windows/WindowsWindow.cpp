@@ -32,7 +32,6 @@ namespace Mortify
 		MT_PROFILE_FUNCTION();
 
 		m_OS = std::dynamic_pointer_cast<WindowsOS>(OS::GetOS());
-		MT_CORE_ASSERT(m_OS, "OS must be initialized before creating a window!");
 		
 		Init(props);
 	}
