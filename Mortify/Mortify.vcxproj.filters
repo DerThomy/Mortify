@@ -1326,9 +1326,6 @@
     <ClCompile Include="src\Mortify\Core\Log.cpp">
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mortify\Core\OS.cpp">
-      <Filter>src\Mortify\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mortify\Core\Resource.cpp">
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
@@ -1409,5 +1406,6 @@
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsRenderContext.cpp" />
+    <ClCompile Include="src\Mortify\Core\OS.cpp" />
   </ItemGroup>
 </Project>
