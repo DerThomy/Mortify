@@ -60,7 +60,7 @@ namespace Mortify
 		void GetFullWindowSize(DWORD style, DWORD exStyle,
 			int contentWidth, int contentHeight,
 			int* fullWidth, int* fullHeight,
-			UINT dpi);
+			UINT dpi) const;
 
 	private:
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
@@ -80,6 +80,7 @@ namespace Mortify
 		bool m_Maximized;
 		bool m_Resizable;
 		bool m_KeepAspect;
+		bool m_Decorated;
 
 		WindowLimits m_Limits;
 		

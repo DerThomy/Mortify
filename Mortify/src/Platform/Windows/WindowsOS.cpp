@@ -73,6 +73,31 @@ namespace Mortify
 		return utf8str;
 	}
 
+	// From: https://stackoverflow.com/questions/794632/programmatically-get-the-cache-line-size
+	size_t WindowsOS::GetCacheLineSize() const
+	{
+		size_t lineSize = 0;
+		DWORD bufferSize = 0;
+		DWORD i = 0;
+		SYSTEM_LOGICAL_PROCESSOR_INFORMATION* buffer = nullptr;
+
+		GetLogicalProcessorInformation(0, &bufferSize);
+		buffer = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION*) malloc(bufferSize);
+		GetLogicalProcessorInformation(&buffer[0], &bufferSize);
+
+		for (i = 0; i < bufferSize / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION); ++i)
+		{
+			if (buffer[i].Relationship == RelationCache && buffer[i].Cache.Level == 1)
+			{
+				lineSize = buffer[i].Cache.LineSize;
+				break;
+			}
+		}
+
+		free(buffer);
+		return lineSize;
+	}
+
 	BOOL WindowsOS::IsWindowsXPOrGreater()
 	{
 		return IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WINXP), LOBYTE(_WIN32_WINNT_WINXP), 0);

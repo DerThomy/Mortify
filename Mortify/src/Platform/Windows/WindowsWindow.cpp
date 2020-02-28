@@ -148,7 +148,7 @@ namespace Mortify
                 mmi->ptMaxTrackSize.y = window->m_Limits.MaxHeight + yoff;
             }
 
-            if (window->GetWindowMode() == WindowMode::Borderless)
+            if (!window->m_Decorated)
             {
                 MONITORINFO mi;
                 const HMONITOR mh = MonitorFromWindow(window->m_Window,
@@ -226,7 +226,7 @@ namespace Mortify
 		case WM_NCACTIVATE:
 		case WM_NCPAINT:
 		{
-			if (window->m_Mode == WindowMode::Borderless)
+			if (!window->m_Decorated)
 				return true;
 
 			break;
@@ -435,7 +435,7 @@ namespace Mortify
 
 	void WindowsWindow::Maximize()
 	{
-		if (!m_Maximized)
+		if (!m_Maximized && m_Mode != WindowMode::Fullscreen)
 			ShowWindow(m_Window, SW_MAXIMIZE);
 	}
 
@@ -524,7 +524,70 @@ namespace Mortify
 	void WindowsWindow::SetWindowMode(WindowMode mode)
 	{
 		m_Mode = mode;
-		UpdateWindowStyle();
+		m_Decorated = mode == WindowMode::Fullscreen || mode == WindowMode::Borderless ? false : true;
+
+		if (mode == WindowMode::Fullscreen)
+		{
+			MONITORINFO mi = { sizeof(mi) };
+			UINT flags = SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOCOPYBITS;
+
+	        if (m_Decorated)
+	        {
+	            DWORD style = GetWindowLongW(m_Window, GWL_STYLE);
+	            style &= ~WS_OVERLAPPEDWINDOW;
+	            style |= GetWindowStyle();
+	            SetWindowLongW(m_Window, GWL_STYLE, style);
+	            flags |= SWP_FRAMECHANGED;
+	        }
+
+			GetMonitorInfo(MonitorFromWindow(m_Window, MONITOR_DEFAULTTONEAREST), &mi);
+	        SetWindowPos(m_Window, HWND_TOPMOST,
+	                     mi.rcMonitor.left,
+	                     mi.rcMonitor.top,
+	                     mi.rcMonitor.right - mi.rcMonitor.left,
+	                     mi.rcMonitor.bottom - mi.rcMonitor.top,
+	                     flags);
+		}
+		else
+		{
+			/*
+			HWND after;
+	        RECT rect = { xpos, ypos, xpos + width, ypos + height };
+	        DWORD style = GetWindowLongW(window->win32.handle, GWL_STYLE);
+	        UINT flags = SWP_NOACTIVATE | SWP_NOCOPYBITS;
+
+	        if (window->decorated)
+	        {
+	            style &= ~WS_POPUP;
+	            style |= getWindowStyle(window);
+	            SetWindowLongW(window->win32.handle, GWL_STYLE, style);
+
+	            flags |= SWP_FRAMECHANGED;
+	        }
+
+	        if (window->floating)
+	            after = HWND_TOPMOST;
+	        else
+	            after = HWND_NOTOPMOST;
+
+	        if (_glfwIsWindows10AnniversaryUpdateOrGreaterWin32())
+	        {
+	            AdjustWindowRectExForDpi(&rect, getWindowStyle(window),
+	                                     FALSE, getWindowExStyle(window),
+	                                     GetDpiForWindow(window->win32.handle));
+	        }
+	        else
+	        {
+	            AdjustWindowRectEx(&rect, getWindowStyle(window),
+	                               FALSE, getWindowExStyle(window));
+	        }
+
+	        SetWindowPos(window->win32.handle, after,
+	                     rect.left, rect.top,
+	                     rect.right - rect.left, rect.bottom - rect.top,
+	                     flags);
+	                     */
+		}
 	}
 
 	void WindowsWindow::FitToMonitor()
@@ -539,7 +602,7 @@ namespace Mortify
 	                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOCOPYBITS);
 	}
 
-	void WindowsWindow::GetFullWindowSize(DWORD style, DWORD exStyle, int contentWidth, int contentHeight, int* fullWidth, int* fullHeight, UINT dpi)
+	void WindowsWindow::GetFullWindowSize(DWORD style, DWORD exStyle, int contentWidth, int contentHeight, int* fullWidth, int* fullHeight, UINT dpi) const
 	{
 		RECT rect = { 0, 0, contentWidth, contentHeight };
 
@@ -579,7 +642,7 @@ namespace Mortify
 		{
 			style |= WS_SYSMENU | WS_MINIMIZEBOX;
 
-			if (m_Mode != WindowMode::Borderless)
+			if (m_Decorated)
 			{
 				style |= WS_CAPTION;
 

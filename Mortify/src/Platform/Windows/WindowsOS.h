@@ -82,6 +82,8 @@ namespace Mortify
 		std::wstring WideCharFromUTF8(const std::string& utf8_string) const override;
 		std::string UTF8FromWideString(const std::wstring& wide_string) const override;
 
+		size_t GetCacheLineSize() const override;
+
 		const Libraries& GetLibraries() const { return m_Libraries; };
 
 		BOOL IsWindowsXPOrGreater();
