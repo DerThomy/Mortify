@@ -7,6 +7,8 @@ namespace Mortify
 	class RenderContext
 	{
 	public:
+		virtual ~RenderContext() = default;
+		
 		typedef void (*procAdr) (void);
 		typedef procAdr(*procFunc)(const char*);
 
