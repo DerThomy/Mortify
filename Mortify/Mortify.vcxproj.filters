@@ -34,6 +34,9 @@
     <Filter Include="src\Platform\Windows">
       <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Platform\Windows\RenderContexts">
+      <UniqueIdentifier>{C2C792F4-2E81-FD9E-B7E0-17792399B30E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
@@ -185,6 +188,9 @@
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.h">
+      <Filter>src\Platform\Windows\RenderContexts</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsFile.h">
       <Filter>src\Platform\Windows</Filter>
@@ -1308,7 +1314,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp">
@@ -1324,6 +1329,9 @@
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Core\Log.cpp">
+      <Filter>src\Mortify\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mortify\Core\OS.cpp">
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Core\Resource.cpp">
@@ -1386,6 +1394,9 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.cpp">
+      <Filter>src\Platform\Windows\RenderContexts</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsFile.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
@@ -1393,6 +1404,9 @@
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsOS.cpp">
+      <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WindowsRenderContext.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
@@ -1404,8 +1418,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.cpp" />
-    <ClCompile Include="src\Platform\Windows\WindowsRenderContext.cpp" />
-    <ClCompile Include="src\Mortify\Core\OS.cpp" />
   </ItemGroup>
 </Project>

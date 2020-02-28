@@ -19,12 +19,12 @@ namespace Mortify
 		MT_CORE_ASSERT(!s_Instance, "Application already exists!")
 		s_Instance = this;
 
-		m_OS = OS::Create();
+		m_OS = OS::GetOS();
+		MT_CORE_INFO("Cache Line size: " + std::to_string(m_OS->GetCacheLineSize()));
 		m_Window = Window::Create();
-		m_Window->SetWindowMode(WindowMode::Fullscreen);
+		//m_Window->SetWindowMode(WindowMode::Fullscreen);
 		m_Window->SetEventCallback(MT_BIND_EVENT_FN(Application::OnEvent));
 		m_Window->SetVSync(true);
-		m_OS = 
 		Renderer::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();

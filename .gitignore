@@ -3,6 +3,9 @@
 /bin/
 bin-int/
 
+# Hazel files
+*.log
+
 # Files
 *.user
 *.json
