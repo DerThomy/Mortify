@@ -87,9 +87,6 @@
     <ClInclude Include="src\Mortify\Core\Events\MouseEvent.h">
       <Filter>src\Mortify\Core\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mortify\Core\IO\File.h">
-      <Filter>src\Mortify\Core\IO</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mortify\Core\Input.h">
       <Filter>src\Mortify\Core</Filter>
     </ClInclude>
@@ -191,9 +188,6 @@
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.h">
       <Filter>src\Platform\Windows\RenderContexts</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\Windows\WindowsFile.h">
-      <Filter>src\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>src\Platform\Windows</Filter>
@@ -1319,9 +1313,6 @@
     <ClCompile Include="src\Mortify\Core\Application.cpp">
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mortify\Core\IO\File.cpp">
-      <Filter>src\Mortify\Core\IO</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mortify\Core\Layer.cpp">
       <Filter>src\Mortify\Core</Filter>
     </ClCompile>
@@ -1396,9 +1387,6 @@
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\RenderContexts\WindowsGLRenderContext.cpp">
       <Filter>src\Platform\Windows\RenderContexts</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\Windows\WindowsFile.cpp">
-      <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>

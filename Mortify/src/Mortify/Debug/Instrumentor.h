@@ -113,8 +113,8 @@ namespace Mortify
 			long double start = static_cast<long double>(std::chrono::time_point_cast<std::chrono::nanoseconds>(m_StartTimepoint).time_since_epoch().count());
 			long double end = static_cast<long double>(std::chrono::time_point_cast<std::chrono::nanoseconds>(endTimepoint).time_since_epoch().count());
 
-			uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-			Instrumentor::Get().WriteProfile({ m_Name, start, end, threadID });
+			size_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
+			Instrumentor::Get().WriteProfile({ m_Name, start, end, static_cast<uint32_t>(threadID) });
 
 			m_Stopped = true;
 		}

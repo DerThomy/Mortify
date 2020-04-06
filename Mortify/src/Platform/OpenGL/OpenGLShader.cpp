@@ -349,7 +349,7 @@ namespace Mortify
 
 		if (outPosition)
 			* outPosition = end;
-		uint32_t length = end - str + 1;
+		int64_t length = end - str + 1;
 		return std::string(str, length);
 	}
 
@@ -361,7 +361,7 @@ namespace Mortify
 
 		if (outPosition)
 			* outPosition = end;
-		uint32_t length = end - str + 1;
+		int64_t length = end - str + 1;
 		return std::string(str, length);
 	}
 

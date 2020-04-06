@@ -393,7 +393,7 @@ namespace Mortify
 		{
 			if (window->m_EventCallback)
 			{
-				MouseScrolledEvent mouseVScrolledEvent(0.0f, (SHORT)HIWORD(wparam) / (double)WHEEL_DELTA);
+				MouseScrolledEvent mouseVScrolledEvent(0.0f, (SHORT)HIWORD(wparam) / (float)WHEEL_DELTA);
 				window->m_EventCallback(mouseVScrolledEvent);
 			}
 			return 0;
@@ -403,7 +403,7 @@ namespace Mortify
 		{
 			if (window->m_EventCallback)
 			{
-				MouseScrolledEvent mouseHScrolledEvent((SHORT)HIWORD(wparam) / (double)WHEEL_DELTA, 0.0f);
+				MouseScrolledEvent mouseHScrolledEvent((SHORT)HIWORD(wparam) / (float)WHEEL_DELTA, 0.0f);
 				window->m_EventCallback(mouseHScrolledEvent);
 			}
 			return 0;
@@ -411,8 +411,8 @@ namespace Mortify
 
 		case WM_MOUSEMOVE:
 		{
-			const int x = (int)(short)LOWORD(lparam);
-			const int y = (int)(short)HIWORD(lparam);
+			const float x = (float)(short)LOWORD(lparam);
+			const float y = (float)(short)HIWORD(lparam);
 
 			if (window->m_EventCallback)
 			{

@@ -54,7 +54,7 @@ namespace Mortify
 		{
 			return std::wstring();
 		}
-		int count = MultiByteToWideChar( CP_UTF8 , MB_ERR_INVALID_CHARS , utf8_string.c_str() , -1, NULL , 0 );
+		size_t count = MultiByteToWideChar( CP_UTF8 , MB_ERR_INVALID_CHARS , utf8_string.c_str() , -1, NULL , 0 );
 		MT_CORE_ASSERT(count, "Failed to count ut8_string");
 		std::wstring wstr;
 		wstr.resize(count);
@@ -69,7 +69,7 @@ namespace Mortify
 		{
 			return std::string();
 		}
-		int count = WideCharToMultiByte( CP_UTF8 , MB_ERR_INVALID_CHARS , wide_string.c_str() , -1, NULL, 0, NULL, NULL);
+		size_t count = WideCharToMultiByte( CP_UTF8 , MB_ERR_INVALID_CHARS , wide_string.c_str() , -1, NULL, 0, NULL, NULL);
 		MT_CORE_ASSERT(count, "Failed to count ut8_string");
 		std::string utf8str;
 		utf8str.resize(count);
@@ -151,7 +151,7 @@ namespace Mortify
 		else
 		{
 			m_hasPC = false;
-			m_Frequency = 1000.0;
+			m_Frequency = 1000;
 			m_Offset = (uint64_t)timeGetTime();
 		}
 	}

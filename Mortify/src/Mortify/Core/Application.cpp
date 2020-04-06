@@ -63,7 +63,7 @@ namespace Mortify
 		{
 			MT_PROFILE_SCOPE("RunLoop");
 			
-			float time = m_OS->GetTime();
+			double time = m_OS->GetTime();
 			Timestep ts = time - m_TimeFromLastFrame;
 			m_TimeFromLastFrame = time;
 
