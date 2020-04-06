@@ -39,7 +39,7 @@ namespace Mortify
 		LayerStack m_LayerStack;
 		bool m_Running = true;
 		bool m_Minimized = false;
-		float m_TimeFromLastFrame = 0.0f;
+		double m_TimeFromLastFrame = 0.0;
 	private:
 		static Application* s_Instance;
 	};

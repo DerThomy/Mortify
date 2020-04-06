@@ -54,11 +54,11 @@ namespace Mortify
 		{
 			return std::wstring();
 		}
-		size_t count = MultiByteToWideChar( CP_UTF8 , MB_ERR_INVALID_CHARS , utf8_string.c_str() , -1, NULL , 0 );
+		uint32_t count = MultiByteToWideChar( CP_UTF8 , MB_ERR_INVALID_CHARS , utf8_string.c_str() , -1, NULL , 0 );
 		MT_CORE_ASSERT(count, "Failed to count ut8_string");
 		std::wstring wstr;
 		wstr.resize(count);
-		MT_CORE_ASSERT(MultiByteToWideChar(CP_UTF8 , MB_ERR_INVALID_CHARS , utf8_string.c_str() , utf8_string.length(), &wstr[0] , count )
+		MT_CORE_ASSERT(MultiByteToWideChar(CP_UTF8 , MB_ERR_INVALID_CHARS , utf8_string.c_str() , static_cast<int>(utf8_string.length()), &wstr[0] , count )
 			, "Failed to convert utf8 string to widestring");
 		return wstr;
 	}
@@ -69,11 +69,11 @@ namespace Mortify
 		{
 			return std::string();
 		}
-		size_t count = WideCharToMultiByte( CP_UTF8 , MB_ERR_INVALID_CHARS , wide_string.c_str() , -1, NULL, 0, NULL, NULL);
+		uint32_t count = WideCharToMultiByte( CP_UTF8 , MB_ERR_INVALID_CHARS , wide_string.c_str() , -1, NULL, 0, NULL, NULL);
 		MT_CORE_ASSERT(count, "Failed to count ut8_string");
 		std::string utf8str;
 		utf8str.resize(count);
-		MT_CORE_ASSERT(WideCharToMultiByte(CP_UTF8 , MB_ERR_INVALID_CHARS , wide_string.c_str() , wide_string.length(), &utf8str[0] , count, NULL, NULL)
+		MT_CORE_ASSERT(WideCharToMultiByte(CP_UTF8 , MB_ERR_INVALID_CHARS , wide_string.c_str() , static_cast<int>(wide_string.length()), &utf8str[0] , count, NULL, NULL)
 			, "Failed to convert utf8 string to widestring");
 		return utf8str;
 	}

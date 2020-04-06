@@ -5,15 +5,15 @@ namespace Mortify
 	class Timestep
 	{
 	public:
-		Timestep(float time = 0.0f)
+		Timestep(double time = 0.0f)
 			: m_Time(time)
 		{}
 
-		operator float() { return m_Time; }
+		operator double() { return m_Time; }
 
-		inline float GetSeconds() const { return m_Time; }
-		inline float GetMilliseconds() const { return m_Time * 1000.0f; }
+		inline double GetSeconds() const { return m_Time; }
+		inline double GetMilliseconds() const { return m_Time * 1000.0f; }
 	private:
-		float m_Time;
+		double m_Time;
 	};
 }
