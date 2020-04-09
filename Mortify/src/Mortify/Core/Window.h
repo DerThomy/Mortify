@@ -12,7 +12,7 @@ namespace Mortify
 	enum class WindowMode
 	{
 		Windowed,
-		Borderless,
+		BorderlessWindow,
 		Fullscreen
 	};
 
@@ -42,7 +42,7 @@ namespace Mortify
 		WindowProps(const std::string& title = "Mortify Engine", 
 					unsigned int width = 1280, 
 					unsigned int height = 720,
-					WindowMode mode = WindowMode::Windowed,
+					WindowMode mode = WindowMode::BorderlessWindow,
 					bool maximized = false,
 					bool resizable = true,
 					bool keepAspect = false)
@@ -79,13 +79,16 @@ namespace Mortify
 		virtual bool IsKeyPressed(KeyCode code) const = 0;
 		virtual bool IsMouseButtonPressed(MouseCode button) const = 0;
 		virtual void Maximize() = 0;
+		virtual void Minimize() = 0;
+		virtual void Restore() = 0;
+		virtual void Close() = 0;
 		virtual void SetResizeable(bool resizable) = 0;
 		virtual bool IsResizeable() const = 0;
-		virtual void SetKeepAspectRatio(bool keepAspect) = 0;
-		virtual bool KeepAspectRatio() const = 0;
+		virtual void KeepAspectRatio(bool keepAspect) = 0;
+		virtual bool KeepsAspectRatio() const = 0;
 		virtual void LimitWindowSize(WindowLimits limits = WindowLimits()) = 0;
 		
 
-		static Scope<Window> Create(const WindowProps& props = WindowProps());
+		static Scope<Window> Create(const WindowProps& props = WindowProps(), const EventCallbackFn& callback = nullptr);
 	};
 }

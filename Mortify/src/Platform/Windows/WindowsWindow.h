@@ -15,7 +15,7 @@ namespace Mortify
 		friend class WindowsGLRenderContext;
 		friend LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 	public:
-		WindowsWindow(const WindowProps& props);
+		WindowsWindow(const WindowProps& props, const EventCallbackFn& callback = nullptr);
 		virtual ~WindowsWindow();
 
 		void OnUpdate() override;
@@ -39,11 +39,15 @@ namespace Mortify
 		inline bool UseImGUI() const override { return m_UsesImGUI; };
 		bool IsKeyPressed(KeyCode code) const override;
 		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_MouseButtons.at(button); };
-		inline void Maximize() override;
+
+		void Maximize() override;
+		void Minimize() override;
+		void Restore() override;
+		void Close() override;
 		inline void SetResizeable(bool resizable) override { m_Resizable = resizable;};
 		inline bool IsResizeable() const override { return m_Resizable; };
-		inline void SetKeepAspectRatio(bool keepAspect) override { m_KeepAspect = keepAspect; }
-		inline bool KeepAspectRatio() const override { return m_KeepAspect;}
+		inline void KeepAspectRatio(bool keepAspect) override { m_KeepAspect = keepAspect; }
+		inline bool KeepsAspectRatio() const override { return m_KeepAspect;}
 		inline void LimitWindowSize(WindowLimits limits) override {};
 
 	private:
@@ -61,6 +65,8 @@ namespace Mortify
 			int contentWidth, int contentHeight,
 			int* fullWidth, int* fullHeight,
 			UINT dpi) const;
+
+		void ChangeDecorated();
 
 	private:
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
@@ -81,6 +87,16 @@ namespace Mortify
 		bool m_Resizable;
 		bool m_KeepAspect;
 		bool m_Decorated;
+
+		struct SavedInfo
+		{
+			bool	Maximized;
+			DWORD	Style;
+			DWORD	ExStyle;
+			RECT	Rect;
+		};
+
+		SavedInfo m_SavedInfo{};
 
 		WindowLimits m_Limits;
 		

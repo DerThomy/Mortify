@@ -190,6 +190,7 @@
     <ClInclude Include="src\Platform\Windows\WindowsOS.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\mtpch.h" />
+    <ClInclude Include="src\Platform\Windows\WinodowsCore.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />

@@ -21,9 +21,7 @@ namespace Mortify
 
 		m_OS = OS::GetOS();
 		MT_CORE_INFO("Cache Line size: " + std::to_string(m_OS->GetCacheLineSize()));
-		m_Window = Window::Create();
-		//m_Window->SetWindowMode(WindowMode::Fullscreen);
-		m_Window->SetEventCallback(MT_BIND_EVENT_FN(Application::OnEvent));
+		m_Window = Window::Create(WindowProps(), MT_BIND_EVENT_FN(Application::OnEvent));
 		m_Window->SetVSync(true);
 		Renderer::Init();
 
@@ -108,8 +106,16 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 
-		if (e.getKeyCode() == MT_KEY_F11)
+		if (e.getKeyCode() == MT_KEY_R)
+			m_Window->Restore();
+		else if (e.getKeyCode() == MT_KEY_M)
+			m_Window->Maximize();
+		else if (e.getKeyCode() == MT_KEY_F11)
 			m_Window->SetWindowMode(WindowMode::Fullscreen);
+		else if (e.getKeyCode() == MT_KEY_ESCAPE)
+			m_Window->SetWindowMode(WindowMode::Windowed);
+		else if (e.getKeyCode() == MT_KEY_B)
+			m_Window->SetWindowMode(WindowMode::BorderlessWindow);
 
 		return true;
 	}
