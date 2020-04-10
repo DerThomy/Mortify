@@ -18,14 +18,14 @@ namespace Mortify
 
 	struct WindowLimits
 	{
-		int MinWidth;
-		int MinHeight;
-		int MaxWidth;
-		int MaxHeight;
+		std::optional<unsigned int> MinWidth;
+		std::optional<unsigned int> MinHeight;
+		std::optional<unsigned int> MaxWidth;
+		std::optional<unsigned int> MaxHeight;
 
-		WindowLimits(int minWidht = MT_DONT_CARE, int minHeight = MT_DONT_CARE,
-			int maxWidth = MT_DONT_CARE, int maxHeight = MT_DONT_CARE)
-			: MinWidth(minWidht), MinHeight(minHeight), MaxWidth(maxWidth), MaxHeight(maxHeight)
+		WindowLimits(std::optional<unsigned int> minWidth = std::nullopt, std::optional<unsigned int> minHeight = std::nullopt,
+			std::optional<unsigned int> maxWidth = std::nullopt, std::optional<unsigned int> maxHeight = std::nullopt)
+			: MinWidth(minWidth), MinHeight(minHeight), MaxWidth(maxWidth), MaxHeight(maxHeight)
 		{}
 	};
 	
@@ -42,7 +42,7 @@ namespace Mortify
 		WindowProps(const std::string& title = "Mortify Engine", 
 					unsigned int width = 1280, 
 					unsigned int height = 720,
-					WindowMode mode = WindowMode::BorderlessWindow,
+					WindowMode mode = WindowMode::Windowed,
 					bool maximized = false,
 					bool resizable = true,
 					bool keepAspect = false)
@@ -79,7 +79,9 @@ namespace Mortify
 		virtual bool IsKeyPressed(KeyCode code) const = 0;
 		virtual bool IsMouseButtonPressed(MouseCode button) const = 0;
 		virtual void Maximize() = 0;
+		virtual bool IsMaximized() const = 0;
 		virtual void Minimize() = 0;
+		virtual bool IsMinimized() const = 0;
 		virtual void Restore() = 0;
 		virtual void Close() = 0;
 		virtual void SetResizeable(bool resizable) = 0;

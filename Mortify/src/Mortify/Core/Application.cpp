@@ -65,7 +65,7 @@ namespace Mortify
 			Timestep ts = time - m_TimeFromLastFrame;
 			m_TimeFromLastFrame = time;
 
-			if (!m_Minimized)
+			if (!m_Window->IsMinimized())
 			{
 				{
 					MT_PROFILE_SCOPE("LayerStack OnUpdate");
@@ -93,11 +93,6 @@ namespace Mortify
 		MT_PROFILE_FUNCTION();
 		
 		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
-		
-		if (e.GetWidth() == 0 || e.GetHeight() == 0)
-			m_Minimized = true;
-		else
-			m_Minimized = false;
 		
 		return false;
 	}

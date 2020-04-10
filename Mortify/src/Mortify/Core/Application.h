@@ -38,7 +38,6 @@ namespace Mortify
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;
-		bool m_Minimized = false;
 		double m_TimeFromLastFrame = 0.0;
 	private:
 		static Application* s_Instance;

@@ -14,6 +14,7 @@
 #include <locale>
 #include <codecvt>
 #include <memory>
+#include <algorithm>
 
 #include <imgui.h>
 #include <examples/imgui_impl_win32.h>
@@ -37,6 +38,7 @@ namespace Mortify
 			m_EventCallback = callback;
 
 		Init(props);
+		SetWindowMode(props.Mode);
 	}
 
 	WindowsWindow::~WindowsWindow()
@@ -124,18 +126,18 @@ namespace Mortify
             window->GetFullWindowSize(window->GetWindowStyle(), window->GetWindowStyleEx(),
                               0, 0, &xoff, &yoff, dpi);
 
-            if (window->m_Limits.MinWidth != MT_DONT_CARE &&
-                window->m_Limits.MinHeight != MT_DONT_CARE)
+            if (window->m_Limits.MinWidth.has_value() &&
+                window->m_Limits.MinHeight.has_value())
             {
-                mmi->ptMinTrackSize.x = window->m_Limits.MinWidth + xoff;
-                mmi->ptMinTrackSize.y = window->m_Limits.MinHeight + yoff;
+                mmi->ptMinTrackSize.x = window->m_Limits.MinWidth.value() + xoff;
+                mmi->ptMinTrackSize.y = window->m_Limits.MinHeight.value() + yoff;
             }
 
-            if (window->m_Limits.MaxWidth != MT_DONT_CARE &&
-                window->m_Limits.MaxHeight != MT_DONT_CARE)
+            if (window->m_Limits.MaxWidth.has_value() &&
+                window->m_Limits.MaxHeight.has_value())
             {
-                mmi->ptMaxTrackSize.x = window->m_Limits.MaxWidth + xoff;
-                mmi->ptMaxTrackSize.y = window->m_Limits.MaxHeight + yoff;
+                mmi->ptMaxTrackSize.x = window->m_Limits.MaxWidth.value() + xoff;
+                mmi->ptMaxTrackSize.y = window->m_Limits.MaxHeight.value() + yoff;
             }
 
             if (!window->m_Decorated)
@@ -254,6 +256,19 @@ namespace Mortify
 				case SC_KEYMENU:
 					return 0;
 			}
+
+			if (wparam == SC_MAXIMIZE)
+				window->m_Maximized = true;
+			else if (wparam == SC_MINIMIZE)
+				window->m_Minimized = true;
+			else if (wparam == SC_RESTORE)
+			{
+				if (window->m_Maximized)
+					window->m_Maximized = false;
+				if (window->m_Minimized)
+					window->m_Minimized = false;
+			}
+
 			break;
 		}
 		case WM_SYSKEYDOWN:
@@ -425,26 +440,31 @@ namespace Mortify
 
 	void WindowsWindow::Maximize()
 	{
-		if (!m_Maximized && m_Mode != WindowMode::Fullscreen)
+		if (!m_Maximized && m_Mode != WindowMode::Fullscreen && m_Resizable)
 		{
 			SendMessage(m_Window, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-			m_Maximized = true;
 		}
 	}
 
 	void WindowsWindow::Minimize()
 	{
-		SendMessage(m_Window, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+		if (!m_Minimized)
+		{
+			SendMessage(m_Window, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+		}
 	}
 
 	void WindowsWindow::Restore()
 	{
-		SendMessage(m_Window, WM_SYSCOMMAND, SC_RESTORE, 0);
-		m_Maximized = IsZoomed(m_Window);
+		if (!(m_Maximized && !m_Resizable)  && m_Mode != WindowMode::Fullscreen)
+		{
+			SendMessage(m_Window, WM_SYSCOMMAND, SC_RESTORE, 0);
+		}
 	}
 
 	void WindowsWindow::Close()
 	{
+		
 		SendMessage(m_Window, WM_SYSCOMMAND, SC_CLOSE, 0);
 	}
 
@@ -458,6 +478,8 @@ namespace Mortify
 		for (const auto& button : MouseCode())
 			m_MouseButtons[button] = false;
 
+		m_Limits = WindowLimits(50, 50, 500, 500);
+
 		m_Title = props.Title;
 		m_Width = props.Width;
 		m_Height = props.Height;
@@ -465,9 +487,13 @@ namespace Mortify
 		m_Resizable = props.Resizeable;
 		m_KeepAspect = props.KeepAspect;
 
-		m_Limits = WindowLimits();
+		// TODO: Handle gl context getting initialized with the wrong size (same for Fullscreen)
+		ClipSize();
 
-		MT_CORE_INFO("Creating window {0} ({1}(w), {2}(h))", props.Title, props.Width, props.Height);
+		m_Minimized = false;
+		m_Mode = WindowMode::Windowed;
+
+		MT_CORE_INFO("Creating window {0} ({1}(w), {2}(h))", props.Title, m_Width, m_Height);
 
 		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(windowCount));
 		int xpos, ypos, width, height;
@@ -477,10 +503,10 @@ namespace Mortify
 		xpos = CW_USEDEFAULT;
 		ypos = CW_USEDEFAULT;
 
-		if (m_Maximized)
+		if (m_Maximized && m_Resizable)
 			style |= WS_MAXIMIZE;
 
-		GetFullWindowSize(style, exstyle, props.Width, props.Height, &width, &height, USER_DEFAULT_SCREEN_DPI);
+		GetFullWindowSize(style, exstyle, m_Width, m_Height, &width, &height, USER_DEFAULT_SCREEN_DPI);
 
 		m_Class.cbClsExtra = NULL;
 		m_Class.cbSize = sizeof(m_Class);
@@ -512,8 +538,6 @@ namespace Mortify
 		m_RenderContext->Init();
 
 		ShowWindow(m_Window, SW_SHOW);
-
-		SetWindowMode(props.Mode);
 	}
 
 	void WindowsWindow::OnUpdate()
@@ -585,6 +609,11 @@ namespace Mortify
 				SetWindowLong(m_Window, GWL_EXSTYLE, m_SavedInfo.ExStyle);
 			}
 
+			SetWindowPos(m_Window, NULL,
+				m_SavedInfo.Rect.left, m_SavedInfo.Rect.top,
+				m_SavedInfo.Rect.right - m_SavedInfo.Rect.left, m_SavedInfo.Rect.bottom - m_SavedInfo.Rect.top,
+				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
 			if (m_OS->IsWindows10AnniversaryUpdateOrGreater())
 			{
 				AdjustWindowRectExForDpi(&m_SavedInfo.Rect, m_SavedInfo.Style,
@@ -597,11 +626,6 @@ namespace Mortify
 									FALSE, m_SavedInfo.ExStyle);
 			}
 
-			SetWindowPos(m_Window, NULL,
-				m_SavedInfo.Rect.left, m_SavedInfo.Rect.top,
-				m_SavedInfo.Rect.right - m_SavedInfo.Rect.left, m_SavedInfo.Rect.bottom - m_SavedInfo.Rect.top,
-				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-
 			if (m_SavedInfo.Maximized)
 				Maximize();
 		}
@@ -611,6 +635,11 @@ namespace Mortify
 
 			DWORD style;
 			DWORD ex_style;
+
+			bool maximized = m_Maximized;
+
+			if (maximized)
+				Restore();
 
 			if (mode == WindowMode::BorderlessWindow)
 			{
@@ -633,11 +662,10 @@ namespace Mortify
 			RECT rect;
 			GetWindowRect(m_Window, &rect);
 
-			if (mode == WindowMode::BorderlessWindow)
-			{
-				SetWindowPos(m_Window, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
-					SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-			}
+			
+			SetWindowPos(m_Window, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+			
 
 			if (m_OS->IsWindows10AnniversaryUpdateOrGreater())
 			{
@@ -650,6 +678,9 @@ namespace Mortify
 				AdjustWindowRectEx(&rect, style,
 					FALSE, ex_style);
 			}
+
+			if (maximized)
+				Maximize();
 		}
 	}
 
@@ -677,6 +708,19 @@ namespace Mortify
 
 		*fullWidth = rect.right - rect.left;
 		*fullHeight = rect.bottom - rect.top;
+	}
+
+	void WindowsWindow::ClipSize()
+	{
+		if (m_Limits.MinWidth.has_value())
+			m_Width = std::min(m_Width, m_Limits.MinWidth.value());
+		if (m_Limits.MaxWidth.has_value())
+			m_Width = std::max(m_Width, m_Limits.MaxWidth.value());
+
+		if (m_Limits.MinHeight.has_value())
+			m_Height = std::min(m_Height, m_Limits.MinHeight.value());
+		if (m_Limits.MaxHeight.has_value())
+			m_Height = std::max(m_Height, m_Limits.MaxHeight.value());
 	}
 
 	void WindowsWindow::Shutdown()

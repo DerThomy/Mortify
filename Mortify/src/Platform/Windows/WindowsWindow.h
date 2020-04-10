@@ -14,6 +14,7 @@ namespace Mortify
 	private:
 		friend class WindowsGLRenderContext;
 		friend LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
 	public:
 		WindowsWindow(const WindowProps& props, const EventCallbackFn& callback = nullptr);
 		virtual ~WindowsWindow();
@@ -41,7 +42,9 @@ namespace Mortify
 		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_MouseButtons.at(button); };
 
 		void Maximize() override;
+		inline bool IsMaximized() const override { return m_Maximized; }
 		void Minimize() override;
+		inline bool IsMinimized() const override { return m_Minimized; }
 		void Restore() override;
 		void Close() override;
 		inline void SetResizeable(bool resizable) override { m_Resizable = resizable;};
@@ -66,7 +69,7 @@ namespace Mortify
 			int* fullWidth, int* fullHeight,
 			UINT dpi) const;
 
-		void ChangeDecorated();
+		void ClipSize();
 
 	private:
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
@@ -84,6 +87,7 @@ namespace Mortify
 		bool m_VSync;
 		bool m_UsesImGUI;
 		bool m_Maximized;
+		bool m_Minimized;
 		bool m_Resizable;
 		bool m_KeepAspect;
 		bool m_Decorated;
