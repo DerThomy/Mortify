@@ -5,7 +5,7 @@
 class Sandbox2D : public Mortify::Layer
 {
 public:
-	Sandbox2D();
+	Sandbox2D(Mortify::Window& window);
 	virtual ~Sandbox2D() = default;
 
 	virtual void OnAttach() override;

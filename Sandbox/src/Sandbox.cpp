@@ -9,7 +9,7 @@ class Sandbox : public Mortify::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new Sandbox2D());
+		PushLayer(new Sandbox2D(Application::GetWindow()));
 	}
 
 	~Sandbox()

@@ -23,6 +23,7 @@ namespace Mortify
 
 		inline unsigned int GetWidth() const override { return m_Width; }
 		inline unsigned int GetHeight() const override { return m_Height; }
+		inline float GetAspectRatio() const override { return static_cast<float>(m_Width) / static_cast<float>(m_Height); }
 
 		inline WindowMode GetWindowMode() const override { return m_Mode; }
 		void SetWindowMode(WindowMode mode) override;

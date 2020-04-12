@@ -62,6 +62,7 @@ namespace Mortify
 
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
+		virtual float GetAspectRatio() const = 0;
 
 		virtual WindowMode GetWindowMode() const = 0;
 		virtual void SetWindowMode(WindowMode mode) = 0;

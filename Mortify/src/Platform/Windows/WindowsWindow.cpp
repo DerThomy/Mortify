@@ -713,14 +713,14 @@ namespace Mortify
 	void WindowsWindow::ClipSize()
 	{
 		if (m_Limits.MinWidth.has_value())
-			m_Width = std::min(m_Width, m_Limits.MinWidth.value());
+			m_Width = std::max(m_Width, m_Limits.MinWidth.value());
 		if (m_Limits.MaxWidth.has_value())
-			m_Width = std::max(m_Width, m_Limits.MaxWidth.value());
+			m_Width = std::min(m_Width, m_Limits.MaxWidth.value());
 
 		if (m_Limits.MinHeight.has_value())
-			m_Height = std::min(m_Height, m_Limits.MinHeight.value());
+			m_Height = std::max(m_Height, m_Limits.MinHeight.value());
 		if (m_Limits.MaxHeight.has_value())
-			m_Height = std::max(m_Height, m_Limits.MaxHeight.value());
+			m_Height = std::min(m_Height, m_Limits.MaxHeight.value());
 	}
 
 	void WindowsWindow::Shutdown()
