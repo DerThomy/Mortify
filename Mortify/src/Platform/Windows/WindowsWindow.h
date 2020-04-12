@@ -95,7 +95,6 @@ namespace Mortify
 
 		struct SavedInfo
 		{
-			bool	Maximized;
 			DWORD	Style;
 			DWORD	ExStyle;
 			RECT	Rect;

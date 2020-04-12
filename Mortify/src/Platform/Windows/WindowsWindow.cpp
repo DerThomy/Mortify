@@ -392,7 +392,7 @@ namespace Mortify
 			if (msg == WM_XBUTTONDOWN || msg == WM_XBUTTONUP)
 				return true;
 
-			return 0;
+return 0;
 		}
 
 		case WM_MOUSEWHEEL:
@@ -442,7 +442,14 @@ namespace Mortify
 	{
 		if (!m_Maximized && m_Mode != WindowMode::Fullscreen && m_Resizable)
 		{
+			bool borderless = m_Mode == WindowMode::BorderlessWindow;
+			if (borderless)
+				SetWindowMode(WindowMode::Windowed);
+
 			SendMessage(m_Window, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+
+			if (borderless)
+				SetWindowMode(WindowMode::BorderlessWindow);
 		}
 	}
 
@@ -456,7 +463,7 @@ namespace Mortify
 
 	void WindowsWindow::Restore()
 	{
-		if (!(m_Maximized && !m_Resizable)  && m_Mode != WindowMode::Fullscreen)
+		if (!(m_Maximized && !m_Resizable) && m_Mode != WindowMode::Fullscreen)
 		{
 			SendMessage(m_Window, WM_SYSCOMMAND, SC_RESTORE, 0);
 		}
@@ -464,7 +471,7 @@ namespace Mortify
 
 	void WindowsWindow::Close()
 	{
-		
+
 		SendMessage(m_Window, WM_SYSCOMMAND, SC_CLOSE, 0);
 	}
 
@@ -478,7 +485,7 @@ namespace Mortify
 		for (const auto& button : MouseCode())
 			m_MouseButtons[button] = false;
 
-		m_Limits = WindowLimits(50, 50, 500, 500);
+		m_Limits = props.Limits;
 
 		m_Title = props.Title;
 		m_Width = props.Width;
@@ -487,7 +494,14 @@ namespace Mortify
 		m_Resizable = props.Resizeable;
 		m_KeepAspect = props.KeepAspect;
 
-		// TODO: Handle gl context getting initialized with the wrong size (same for Fullscreen)
+		if ((m_Limits.MaxHeight.has_value() && m_Limits.MaxHeight.value() > m_Height)
+			|| (m_Limits.MaxWidth.has_value() && m_Limits.MaxWidth.value() > m_Width)
+			|| (m_Limits.MinHeight.has_value() && m_Limits.MinHeight.value() < m_Height)
+			|| (m_Limits.MinWidth.has_value() && m_Limits.MinWidth.value() < m_Width))
+		{
+			MT_CORE_WARN("Window {0}: Sizes are outside specified Limits and will thus be clipped to those Limits!");
+		}
+
 		ClipSize();
 
 		m_Minimized = false;
@@ -538,6 +552,12 @@ namespace Mortify
 		m_RenderContext->Init();
 
 		ShowWindow(m_Window, SW_SHOW);
+
+		if (props.Mode == WindowMode::Fullscreen)
+		{
+			m_Width = GetSystemMetrics(SM_CXSCREEN);
+			m_Height = GetSystemMetrics(SM_CYSCREEN);
+		}
 	}
 
 	void WindowsWindow::OnUpdate()
@@ -568,11 +588,6 @@ namespace Mortify
 		if (mode == WindowMode::Fullscreen)
 		{
 			// Switch from windowed or borderless to fullscreen
-
-			m_SavedInfo.Maximized = m_Maximized;
-
-			if (m_SavedInfo.Maximized)
-				Restore();
 
 			if (old_decorated)
 			{
@@ -609,11 +624,6 @@ namespace Mortify
 				SetWindowLong(m_Window, GWL_EXSTYLE, m_SavedInfo.ExStyle);
 			}
 
-			SetWindowPos(m_Window, NULL,
-				m_SavedInfo.Rect.left, m_SavedInfo.Rect.top,
-				m_SavedInfo.Rect.right - m_SavedInfo.Rect.left, m_SavedInfo.Rect.bottom - m_SavedInfo.Rect.top,
-				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-
 			if (m_OS->IsWindows10AnniversaryUpdateOrGreater())
 			{
 				AdjustWindowRectExForDpi(&m_SavedInfo.Rect, m_SavedInfo.Style,
@@ -626,8 +636,10 @@ namespace Mortify
 									FALSE, m_SavedInfo.ExStyle);
 			}
 
-			if (m_SavedInfo.Maximized)
-				Maximize();
+			SetWindowPos(m_Window, NULL,
+				m_SavedInfo.Rect.left, m_SavedInfo.Rect.top,
+				m_SavedInfo.Rect.right - m_SavedInfo.Rect.left, m_SavedInfo.Rect.bottom - m_SavedInfo.Rect.top,
+				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 		}
 		else
 		{
@@ -635,11 +647,6 @@ namespace Mortify
 
 			DWORD style;
 			DWORD ex_style;
-
-			bool maximized = m_Maximized;
-
-			if (maximized)
-				Restore();
 
 			if (mode == WindowMode::BorderlessWindow)
 			{
@@ -662,11 +669,6 @@ namespace Mortify
 			RECT rect;
 			GetWindowRect(m_Window, &rect);
 
-			
-			SetWindowPos(m_Window, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
-				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-			
-
 			if (m_OS->IsWindows10AnniversaryUpdateOrGreater())
 			{
 				AdjustWindowRectExForDpi(&rect, style,
@@ -678,9 +680,9 @@ namespace Mortify
 				AdjustWindowRectEx(&rect, style,
 					FALSE, ex_style);
 			}
-
-			if (maximized)
-				Maximize();
+			
+			SetWindowPos(m_Window, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 		}
 	}
 

@@ -35,6 +35,7 @@ namespace Mortify
 		unsigned int Width;
 		unsigned int Height;
 		WindowMode Mode;
+		WindowLimits Limits;
 		bool Maximized;
 		bool Resizeable;
 		bool KeepAspect;
@@ -42,12 +43,13 @@ namespace Mortify
 		WindowProps(const std::string& title = "Mortify Engine", 
 					unsigned int width = 1280, 
 					unsigned int height = 720,
-					WindowMode mode = WindowMode::Windowed,
+					WindowMode mode = WindowMode::BorderlessWindow,
 					bool maximized = false,
 					bool resizable = true,
-					bool keepAspect = false)
+					bool keepAspect = false,
+					WindowLimits limits = WindowLimits())
 			: Title(title), Width(width), Height(height), Mode(mode), Maximized(maximized),
-			Resizeable(resizable), KeepAspect(keepAspect) {}
+			Resizeable(resizable), KeepAspect(keepAspect), Limits(limits) {}
 	};
 
 	// Window Interface for desktop system windows
