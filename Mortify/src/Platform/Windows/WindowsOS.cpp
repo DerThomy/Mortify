@@ -103,6 +103,26 @@ namespace Mortify
 		return lineSize;
 	}
 
+	float WindowsOS::GetDpiForMonitor(HMONITOR monitor)
+	{
+		UINT xdpi, ydpi;
+
+		if (IsWindows8Point1OrGreater())
+		{
+			m_Libraries.Shcore.GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, &xdpi, &ydpi);
+		}
+		else
+		{
+			const HDC dc = ::GetDC(NULL);
+			xdpi = ::GetDeviceCaps(dc, LOGPIXELSX);
+			ydpi = ::GetDeviceCaps(dc, LOGPIXELSY);
+			::ReleaseDC(NULL, dc);
+		}
+		MT_CORE_ASSERT(xdpi == ydpi, "Wtf happned?");
+
+		return xdpi;
+	}
+
 	BOOL WindowsOS::IsWindowsXPOrGreater()
 	{
 		return IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WINXP), LOBYTE(_WIN32_WINNT_WINXP), 0);
@@ -187,6 +207,15 @@ namespace Mortify
 		MT_CORE_ASSERT(m_Libraries.Ntdll.Instance, "Failed to load ntdll");
 		m_Libraries.Ntdll.RtlVerifyVersionInfo = (PFN_RtlVerifyVersionInfo)
 			GetProcAddress(m_Libraries.Ntdll.Instance,"RtlVerifyVersionInfo");
+	}
+
+	void WindowsOS::InitTaskbarList()
+	{
+		HRESULT hr = ::CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER,
+			IID_PPV_ARGS(&m_TaskbarList));
+
+		if (SUCCEEDED(hr) && FAILED(m_TaskbarList->HrInit()))
+			m_TaskbarList = nullptr;
 	}
 
 	BOOL WindowsOS::IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp)

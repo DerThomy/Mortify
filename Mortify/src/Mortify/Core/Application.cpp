@@ -101,16 +101,16 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 
-		if (e.getKeyCode() == MT_KEY_R)
-			m_Window->Restore();
-		else if (e.getKeyCode() == MT_KEY_M)
-			m_Window->Maximize();
+		if (e.getKeyCode() == MT_KEY_M)
+			m_Window->SetWindowMode(WindowMode::Maximized);
 		else if (e.getKeyCode() == MT_KEY_F11)
 			m_Window->SetWindowMode(WindowMode::Fullscreen);
 		else if (e.getKeyCode() == MT_KEY_ESCAPE)
 			m_Window->SetWindowMode(WindowMode::Windowed);
 		else if (e.getKeyCode() == MT_KEY_B)
-			m_Window->SetWindowMode(WindowMode::BorderlessWindow);
+			m_Window->SetBorderless(true);
+		else if (e.getKeyCode() == MT_KEY_V)
+			m_Window->SetBorderless(false);
 
 		return true;
 	}

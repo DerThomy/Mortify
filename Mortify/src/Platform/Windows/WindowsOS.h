@@ -3,6 +3,9 @@
 #include "Mortify/Core/OS.h"
 #include "Platform/Windows/WinodowsCore.h"
 
+#include <ShObjIdl.h>
+#include <wrl/client.h>
+
 namespace Mortify
 {	
 	class WindowsOS : public OS
@@ -25,8 +28,9 @@ namespace Mortify
 		std::string UTF8FromWideString(const std::wstring& wide_string) const override;
 
 		size_t GetCacheLineSize() const override;
-
+		const Microsoft::WRL::ComPtr<ITaskbarList2>& GetTaskbarList() const { return m_TaskbarList; }
 		const Libraries& GetLibraries() const { return m_Libraries; };
+		float GetDpiForMonitor(HMONITOR monitor);
 
 		BOOL IsWindowsXPOrGreater();
 		BOOL IsWindowsVistaOrGreater();
@@ -39,6 +43,7 @@ namespace Mortify
 	private:
 		void InitTimer();
 		void LoadLibraries();
+		void InitTaskbarList();
 		
 		BOOL IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp);
 		BOOL IsWindows10BuildOrGreater(WORD build);
@@ -49,5 +54,7 @@ namespace Mortify
 		bool		m_hasPC;
 
 		Libraries m_Libraries;
+
+		Microsoft::WRL::ComPtr<ITaskbarList2> m_TaskbarList;
 	};
 }

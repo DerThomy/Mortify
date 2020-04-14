@@ -12,8 +12,17 @@ namespace Mortify
 	enum class WindowMode
 	{
 		Windowed,
-		BorderlessWindow,
+		Maximized,
+		Minimized,
 		Fullscreen
+	};
+
+	static std::unordered_map<WindowMode, std::string> windowModeToString
+	{
+		{WindowMode::Windowed, "Windowed"},
+		{WindowMode::Maximized, "Maximized"},
+		{WindowMode::Minimized, "Minimized"},
+		{WindowMode::Fullscreen, "Fullscreen"},
 	};
 
 	struct WindowLimits
@@ -36,20 +45,32 @@ namespace Mortify
 		unsigned int Height;
 		WindowMode Mode;
 		WindowLimits Limits;
-		bool Maximized;
 		bool Resizeable;
 		bool KeepAspect;
+		bool VSync;
+		bool UseImGUI;
+		
+		// Depend on WindowMode
+		bool Maximized;
+		bool Minimized;
+		bool Fullscreen;
+		bool Borderless;
 
 		WindowProps(const std::string& title = "Mortify Engine", 
 					unsigned int width = 1280, 
 					unsigned int height = 720,
-					WindowMode mode = WindowMode::BorderlessWindow,
-					bool maximized = false,
+					WindowMode mode = WindowMode::Windowed,
+					bool borderless = true,
+					bool vsync = false,
+					bool useImGui = true,
 					bool resizable = true,
 					bool keepAspect = false,
 					WindowLimits limits = WindowLimits())
-			: Title(title), Width(width), Height(height), Mode(mode), Maximized(maximized),
-			Resizeable(resizable), KeepAspect(keepAspect), Limits(limits) {}
+			: Title(title), Width(width), Height(height), Mode(mode),
+			Resizeable(resizable), KeepAspect(keepAspect), Limits(limits), 
+			Fullscreen(mode == WindowMode::Fullscreen), Maximized(mode == WindowMode::Maximized),
+			Minimized(mode == WindowMode::Minimized), Borderless(borderless), VSync(vsync), UseImGUI(useImGui)
+		{}
 	};
 
 	// Window Interface for desktop system windows
@@ -65,6 +86,7 @@ namespace Mortify
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
 		virtual float GetAspectRatio() const = 0;
+		virtual const WindowProps& GetWindowProps() const = 0;
 
 		virtual WindowMode GetWindowMode() const = 0;
 		virtual void SetWindowMode(WindowMode mode) = 0;
@@ -81,11 +103,9 @@ namespace Mortify
 		virtual bool UseImGUI() const = 0;
 		virtual bool IsKeyPressed(KeyCode code) const = 0;
 		virtual bool IsMouseButtonPressed(MouseCode button) const = 0;
-		virtual void Maximize() = 0;
 		virtual bool IsMaximized() const = 0;
-		virtual void Minimize() = 0;
 		virtual bool IsMinimized() const = 0;
-		virtual void Restore() = 0;
+		virtual void SetBorderless(bool borderless) = 0;
 		virtual void Close() = 0;
 		virtual void SetResizeable(bool resizable) = 0;
 		virtual bool IsResizeable() const = 0;

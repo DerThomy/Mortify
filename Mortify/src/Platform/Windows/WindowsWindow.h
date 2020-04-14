@@ -21,11 +21,12 @@ namespace Mortify
 
 		void OnUpdate() override;
 
-		inline unsigned int GetWidth() const override { return m_Width; }
-		inline unsigned int GetHeight() const override { return m_Height; }
-		inline float GetAspectRatio() const override { return static_cast<float>(m_Width) / static_cast<float>(m_Height); }
+		inline unsigned int GetWidth() const override { return m_Props.Width; }
+		inline unsigned int GetHeight() const override { return m_Props.Height; }
+		inline float GetAspectRatio() const override { return static_cast<float>(m_Props.Width) / static_cast<float>(m_Props.Height); }
+		inline const WindowProps& GetWindowProps() const override { return m_Props; }
 
-		inline WindowMode GetWindowMode() const override { return m_Mode; }
+		inline WindowMode GetWindowMode() const override { return m_Props.Mode; }
 		void SetWindowMode(WindowMode mode) override;
 		
 		inline const Ref<RenderContext>& GetContext() const override { return m_RenderContext; }
@@ -37,32 +38,33 @@ namespace Mortify
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
-		inline void SetUseImGUI(bool use) override { m_UsesImGUI = use; };
-		inline bool UseImGUI() const override { return m_UsesImGUI; };
+		inline void SetUseImGUI(bool use) override { m_Props.UseImGUI = use; };
+		inline bool UseImGUI() const override { return m_Props.UseImGUI; };
 		bool IsKeyPressed(KeyCode code) const override;
 		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_MouseButtons.at(button); };
 
-		void Maximize() override;
-		inline bool IsMaximized() const override { return m_Maximized; }
-		void Minimize() override;
-		inline bool IsMinimized() const override { return m_Minimized; }
-		void Restore() override;
+		inline bool IsMaximized() const override { return m_Props.Maximized; }
+		inline bool IsMinimized() const override { return m_Props.Minimized; }
+		void SetBorderless(bool borderless) override;
 		void Close() override;
-		inline void SetResizeable(bool resizable) override { m_Resizable = resizable;};
-		inline bool IsResizeable() const override { return m_Resizable; };
-		inline void KeepAspectRatio(bool keepAspect) override { m_KeepAspect = keepAspect; }
-		inline bool KeepsAspectRatio() const override { return m_KeepAspect;}
+		inline void SetResizeable(bool resizable) override { m_Props.Resizeable = resizable;};
+		inline bool IsResizeable() const override { return m_Props.Resizeable; };
+		inline void KeepAspectRatio(bool keepAspect) override { m_Props.KeepAspect = keepAspect; }
+		inline bool KeepsAspectRatio() const override { return m_Props.KeepAspect;}
 		inline void LimitWindowSize(WindowLimits limits) override {};
 
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 
+		DWORD GetWindowStyle(bool fullscreen, bool borderless, bool resizeable, bool maximized);
 		DWORD GetWindowStyle();
+		DWORD GetWindowStyleEx(bool fullscreen);
 		DWORD GetWindowStyleEx();
 
 		void ApplyAspectRatio(int edge, RECT* area);
-		void UpdateWindowStyle();
+		void UpdateWindowStyle(bool repaint = true);
+		void UpdateWindowStyle(RECT rect);
 
 		void FitToMonitor();
 		void GetFullWindowSize(DWORD style, DWORD exStyle,
@@ -72,8 +74,13 @@ namespace Mortify
 
 		void ClipSize();
 
+		void MarkFullscreen(bool fullscreen);
+		void MarkFullscreen();
+
 	private:
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
+		static WindowsWindow* s_MainWindow;
 
 	private:
 		HWND m_Window;
@@ -82,22 +89,15 @@ namespace Mortify
 		WNDCLASSEX m_Class;
 		Ref<WindowsOS> m_OS;
 
-		std::string m_Title;
-		unsigned int m_Width, m_Height;
-		WindowMode m_Mode;
-		bool m_VSync;
-		bool m_UsesImGUI;
-		bool m_Maximized;
-		bool m_Minimized;
-		bool m_Resizable;
-		bool m_KeepAspect;
-		bool m_Decorated;
+		DWORD m_Style;
+		DWORD m_StyleEx;
+
+		WindowProps m_Props;
 
 		struct SavedInfo
 		{
-			DWORD	Style;
-			DWORD	ExStyle;
 			RECT	Rect;
+			bool	Maximized;
 		};
 
 		SavedInfo m_SavedInfo{};
