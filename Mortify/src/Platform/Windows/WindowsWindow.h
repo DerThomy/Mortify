@@ -64,6 +64,7 @@ namespace Mortify
 
 		void ApplyAspectRatio(int edge, RECT* area);
 		void UpdateWindowStyle();
+		void UpdateWindowStyle(int widht, int height, int xpos = 0, int ypos = 0);
 		void ClientToWindowRect(RECT* rect, DWORD style, BOOL iwas, DWORD exstyle) const;
 
 		void FitToMonitor();
@@ -97,8 +98,8 @@ namespace Mortify
 
 		struct SavedInfo
 		{
-			RECT	Rect;
-			bool	Maximized;
+			int		XPos, YPos;
+			int		Width, Height;
 		};
 
 		SavedInfo m_SavedInfo{};

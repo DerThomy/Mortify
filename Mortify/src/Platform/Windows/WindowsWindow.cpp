@@ -88,6 +88,8 @@ namespace Mortify
 			int width = LOWORD(lparam);
 			int height = HIWORD(lparam);
 
+			MT_CORE_INFO("Size msg: {0}, {1}", width, height);
+
 			window->m_Props.Width = width;
 			window->m_Props.Height = height;
 
@@ -495,11 +497,11 @@ namespace Mortify
 		// If Fullscreen set Saved Info to window mode
 		if (m_Props.Fullscreen)
 		{
-			m_SavedInfo.Rect = { 0, 0, static_cast<LONG>(m_Props.Width), static_cast<LONG>(m_Props.Height) };
-			m_SavedInfo.Maximized = m_Props.Maximized;
+			m_SavedInfo.Width = static_cast<LONG>(m_Props.Width);
+			m_SavedInfo.Height = static_cast<LONG>(m_Props.Height);
 			
-			xpos = 0;
-			ypos = 0;
+			m_SavedInfo.XPos = xpos = 0;
+			m_SavedInfo.YPos = ypos = 0;
 		}
 		else
 		{
@@ -548,7 +550,7 @@ namespace Mortify
 			RECT rect = { 0, 0, m_Props.Width, m_Props.Height };
 
 			// TODO: Make controllable
-			MT_CORE_INFO("Sacling window {0} to monitor", windowCount);
+			MT_CORE_INFO("Sacling window {0} ({1}) to monitor", windowCount, m_Props.Title);
 			auto scale = GetContentScale();
 			rect.right = (int)(rect.right * scale.first);
 			rect.bottom = (int)(rect.bottom * scale.second);
@@ -602,15 +604,9 @@ namespace Mortify
 		{
 			m_Props.Fullscreen = false;
 
-			m_Props.Maximized = m_SavedInfo.Maximized;
+			UpdateWindowStyle(m_SavedInfo.Width, m_SavedInfo.Height, m_SavedInfo.XPos, m_SavedInfo.YPos);
 
 			MarkFullscreen(false);
-
-			RECT rect = m_SavedInfo.Rect;
-			SetWindowPos(m_Window, HWND_TOP, rect.left, rect.top,
-				rect.right - rect.left, rect.bottom - rect.top, SWP_FRAMECHANGED | SWP_NOACTIVATE);	
-
-			UpdateWindowStyle();
 		}
 
 		if (mode == WindowMode::Maximized)
@@ -636,12 +632,16 @@ namespace Mortify
 
 		if (mode == WindowMode::Fullscreen)
 		{
-			if (m_Props.Minimized)
+			if (m_Props.Minimized || m_Props.Maximized)
 				ShowWindow(m_Window, SW_RESTORE);
 			
-			m_SavedInfo.Maximized = m_Props.Maximized;
+			m_SavedInfo.Width = m_Props.Width;
+			m_SavedInfo.Height = m_Props.Height;
 
-			GetWindowRect(m_Window, &m_SavedInfo.Rect);
+			RECT wndrect;
+			GetWindowRect(m_Window, &wndrect);
+			m_SavedInfo.XPos = wndrect.left;
+			m_SavedInfo.YPos = wndrect.top;
 
 			m_Props.Fullscreen = true;
 			m_Props.Maximized = false;
@@ -649,11 +649,7 @@ namespace Mortify
 
 			MONITORINFO mi = { sizeof(mi) };
 			GetMonitorInfo(MonitorFromWindow(m_Window, MONITOR_DEFAULTTONEAREST), &mi);
-			UpdateWindowStyle();
-
-			SetWindowPos(m_Window, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
-				mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
-				SWP_FRAMECHANGED | SWP_NOCOPYBITS);
+			UpdateWindowStyle(mi.rcMonitor.right, mi.rcMonitor.bottom);
 
 			MarkFullscreen(true);
 		}
@@ -738,7 +734,7 @@ namespace Mortify
 
 	DWORD WindowsWindow::GetWindowStyle(bool fullscreen, bool borderless, bool resizeable, bool maximized)
 	{
-		DWORD style = 0;
+		DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
 		if (fullscreen) {
 			style |= WS_POPUP;
@@ -758,8 +754,6 @@ namespace Mortify
 				style |= WS_POPUP;
 		}
 
-		style |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-
 		return style;
 	}
 
@@ -770,10 +764,10 @@ namespace Mortify
 
 	DWORD WindowsWindow::GetWindowStyleEx(bool fullscreen)
 	{
-		DWORD style_ex = WS_EX_WINDOWEDGE;
+		DWORD style_ex = WS_EX_APPWINDOW;
 
-		if (this == s_MainWindow)
-			style_ex |= WS_EX_APPWINDOW;
+		if (fullscreen)
+			style_ex |= WS_EX_TOPMOST;
 
 		return style_ex;
 	}
@@ -834,7 +828,29 @@ namespace Mortify
 		SetWindowPos(m_Window, HWND_TOP,
 			rect.left, rect.top,
 			rect.right - rect.left, rect.bottom - rect.top,
-			SWP_FRAMECHANGED | SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
+			SWP_FRAMECHANGED | SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_NOMOVE);
+	}
+
+	void WindowsWindow::UpdateWindowStyle(int width, int height, int xpos, int ypos)
+	{
+		MT_CORE_ASSERT(IsWindow(m_Window), "Window handle not valid");
+
+		DWORD style = GetWindowStyle();
+		DWORD style_ex = GetWindowStyleEx();
+
+		SetWindowLong(m_Window, GWL_STYLE, style);
+		SetWindowLong(m_Window, GWL_EXSTYLE, style_ex);
+
+		int fullwidth, fullheight;
+		GetFullWindowSize(style, style_ex, width, height, &fullwidth, &fullheight, GetDpiForWindow(m_Window));
+
+		MT_CORE_INFO("xpos: {0}, ypos: {1}", xpos, ypos);
+		MT_CORE_INFO("width: {0}, height: {1}", width, height);
+		MT_CORE_INFO("fwidth: {0}, fheight: {1}", fullwidth, fullheight);
+
+		DWORD flags = SWP_FRAMECHANGED | SWP_NOACTIVATE | (m_Props.Fullscreen ? SWP_SHOWWINDOW : SWP_NOZORDER);
+
+		SetWindowPos(m_Window, HWND_TOP, xpos, ypos, fullwidth, fullheight, flags);
 	}
 
 	void WindowsWindow::ClientToWindowRect(RECT* rect, DWORD style, BOOL menu, DWORD exstyle) const
