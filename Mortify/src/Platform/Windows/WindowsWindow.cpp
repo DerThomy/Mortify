@@ -83,7 +83,6 @@ namespace Mortify
 
 		switch (msg)
 		{
-
 		case WM_SIZE:
 		{
 			int width = LOWORD(lparam);
@@ -175,6 +174,9 @@ namespace Mortify
 			
 		case WM_DPICHANGED:
         {
+			if (window->m_Props.Fullscreen)
+				break;
+
             const float xscale = HIWORD(wparam) / (float) USER_DEFAULT_SCREEN_DPI;
             const float yscale = LOWORD(wparam) / (float) USER_DEFAULT_SCREEN_DPI;
 
@@ -183,6 +185,10 @@ namespace Mortify
             if (window->m_OS->IsWindows10CreatorsUpdateOrGreater())
             {
                 RECT* suggested = (RECT*) lparam;
+
+				MT_CORE_INFO("suggested width: " + std::to_string(suggested->right - suggested->left));
+				MT_CORE_INFO("suggested height: " + std::to_string(suggested->bottom - suggested->top));
+
                 SetWindowPos(window->m_Window, HWND_TOP,
                              suggested->left,
                              suggested->top,
@@ -213,6 +219,10 @@ namespace Mortify
                             (source.right - source.left);
                 size->cy += (target.bottom - target.top) -
                             (source.bottom - source.top);
+
+				MT_CORE_INFO("cx: " + std::to_string(size->cx));
+				MT_CORE_INFO("cy: " + std::to_string(size->cy));
+
                 return TRUE;
             }
 
@@ -226,6 +236,8 @@ namespace Mortify
 			
 		case WM_KILLFOCUS:
 		{
+			ReleaseCapture();
+
 			break;
 		}
 			
@@ -394,7 +406,7 @@ namespace Mortify
 			if (msg == WM_XBUTTONDOWN || msg == WM_XBUTTONUP)
 				return true;
 
-return 0;
+			return 0;
 		}
 
 		case WM_MOUSEWHEEL:
@@ -442,7 +454,7 @@ return 0;
 
 	void WindowsWindow::SetBorderless(bool borderless)
 	{
-		m_Props.Borderless = true;
+		m_Props.Borderless = borderless;
 
 		UpdateWindowStyle();
 	}
@@ -480,34 +492,20 @@ return 0;
 
 		MT_CORE_INFO("Creating window {0} ({1}(w), {2}(h))", m_Props.Title, m_Props.Width, m_Props.Height);
 
-		HMONITOR primaryMonitor = MonitorFromWindow(GetDesktopWindow(), MONITOR_DEFAULTTOPRIMARY);
-
-		MONITORINFO mi = { sizeof(mi) };
-		GetMonitorInfo(primaryMonitor, &mi);
-
 		// If Fullscreen set Saved Info to window mode
 		if (m_Props.Fullscreen)
 		{
-			GetFullWindowSize(GetWindowStyle(false, m_Props.Borderless, m_Props.Resizeable, m_Props.Maximized),
-				GetWindowStyleEx(false), m_Props.Width, m_Props.Height, &fullwidth, &fullheight, m_OS->GetDpiForMonitor(primaryMonitor));
-
-			xpos = (mi.rcMonitor.right - fullwidth) / 2;
-			ypos = (mi.rcMonitor.bottom - fullheight) / 2;
-
-			m_SavedInfo.Rect = { xpos, ypos, xpos + static_cast<LONG>(fullwidth), ypos + static_cast<LONG>(fullheight) };
+			m_SavedInfo.Rect = { 0, 0, static_cast<LONG>(m_Props.Width), static_cast<LONG>(m_Props.Height) };
 			m_SavedInfo.Maximized = m_Props.Maximized;
 			
-			m_Props.Width = fullwidth = mi.rcMonitor.right;
-			m_Props.Height = fullheight = mi.rcMonitor.bottom;
 			xpos = 0;
 			ypos = 0;
 		}
 		else
 		{
-			GetFullWindowSize(style, exstyle, m_Props.Width, m_Props.Height, &fullwidth, &fullheight, m_OS->GetDpiForMonitor(primaryMonitor));
+			GetFullWindowSize(style, exstyle, m_Props.Width, m_Props.Height, &fullwidth, &fullheight, USER_DEFAULT_SCREEN_DPI);
 
-			xpos = (mi.rcMonitor.right - fullwidth) / 2;
-			ypos = (mi.rcMonitor.bottom - fullheight) / 2;
+			xpos = ypos = CW_USEDEFAULT;
 		}
 
 		// Create Window Class
@@ -533,27 +531,49 @@ return 0;
 			style, xpos, ypos, fullwidth, fullheight, NULL, NULL, GetModuleHandleW(NULL), NULL);
 		MT_CORE_ASSERT(m_Window, "WindowsWindow creation failed");
 
-		RECT rect;
-		GetClientRect(m_Window, &rect);
-
 		// Set Window User Data to this so the Object is available for the WNDProc function
 		SetWindowLongPtr(m_Window, GWLP_USERDATA, (LONG_PTR)this);
 
-		// Init RenderContext
-		// TODO: Make this controllable
+		// Set Device Context Handler
 		m_DeviceContextHandler = GetDC(m_Window);
-		
+
+		// Init RenderContext
+		// TODO: Outsource this
 		m_RenderContext = RenderContext::Create(this);
 		m_RenderContext->Init();
+
+		// Scale to DPI. Not possible before knowing on which monitor the window was created
+		if (!m_Props.Fullscreen)
+		{
+			RECT rect = { 0, 0, m_Props.Width, m_Props.Height };
+
+			// TODO: Make controllable
+			MT_CORE_INFO("Sacling window {0} to monitor", windowCount);
+			auto scale = GetContentScale();
+			rect.right = (int)(rect.right * scale.first);
+			rect.bottom = (int)(rect.bottom * scale.second);
+
+			ClientToScreen(m_Window, (POINT*)&rect.left);
+			ClientToScreen(m_Window, (POINT*)&rect.right);
+
+			ClientToWindowRect(&rect, style, FALSE, exstyle);
+
+			SetWindowPos(m_Window, NULL,
+				rect.left, rect.top,
+				rect.right - rect.left, rect.bottom - rect.top,
+				SWP_NOACTIVATE | SWP_NOZORDER);
+		}
+		else
+		{
+			FitToMonitor();
+			MarkFullscreen(true);
+		}
 
 		ShowWindow(m_Window, SW_SHOW);
 
 		// TODO: Make controllable
 		SetForegroundWindow(m_Window);
 		SetFocus(m_Window);
-
-		if (m_Props.Fullscreen)
-			MarkFullscreen(true);
 
 		windowCount++;
 	}
@@ -583,9 +603,14 @@ return 0;
 			m_Props.Fullscreen = false;
 
 			m_Props.Maximized = m_SavedInfo.Maximized;
-			UpdateWindowStyle(m_SavedInfo.Rect);
 
 			MarkFullscreen(false);
+
+			RECT rect = m_SavedInfo.Rect;
+			SetWindowPos(m_Window, HWND_TOP, rect.left, rect.top,
+				rect.right - rect.left, rect.bottom - rect.top, SWP_FRAMECHANGED | SWP_NOACTIVATE);	
+
+			UpdateWindowStyle();
 		}
 
 		if (mode == WindowMode::Maximized)
@@ -624,9 +649,13 @@ return 0;
 
 			MONITORINFO mi = { sizeof(mi) };
 			GetMonitorInfo(MonitorFromWindow(m_Window, MONITOR_DEFAULTTONEAREST), &mi);
-			UpdateWindowStyle(mi.rcMonitor);
+			UpdateWindowStyle();
 
-			MarkFullscreen(false);
+			SetWindowPos(m_Window, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+				mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
+				SWP_FRAMECHANGED | SWP_NOCOPYBITS);
+
+			MarkFullscreen(true);
 		}
 
 		m_Props.Mode = mode;
@@ -649,15 +678,18 @@ return 0;
 	{
 		RECT rect = { 0, 0, (LONG)contentWidth, (LONG)contentHeight };
 
-		if (m_OS->IsWindows10AnniversaryUpdateOrGreater())
-		{
-			AdjustWindowRectExForDpi(&rect, style, FALSE, exStyle, dpi);
-		}
-		else
-			AdjustWindowRectEx(&rect, style, FALSE, exStyle);
+		ClientToWindowRect(&rect, style, FALSE, exStyle);
 
 		*fullWidth = rect.right - rect.left;
 		*fullHeight = rect.bottom - rect.top;
+	}
+
+	std::pair<float, float> WindowsWindow::GetContentScale() const
+	{
+		HMONITOR monitor = MonitorFromWindow(m_Window, MONITOR_DEFAULTTONEAREST);
+		std::pair<float, float> dpi = m_OS->GetDpiForMonitor(monitor);
+
+		return { dpi.first / (float)USER_DEFAULT_SCREEN_DPI, dpi.second / (float)USER_DEFAULT_SCREEN_DPI };
 	}
 
 	void WindowsWindow::ClipSize()
@@ -677,8 +709,6 @@ return 0;
 	{
 		if (m_OS->GetTaskbarList())
 			m_OS->GetTaskbarList()->MarkFullscreenWindow(m_Window, !!fullscreen);
-
-		m_Props.Fullscreen = fullscreen;
 	}
 
 	void WindowsWindow::MarkFullscreen()
@@ -710,21 +740,22 @@ return 0;
 	{
 		DWORD style = 0;
 
-		if (fullscreen || borderless) {
+		if (fullscreen) {
 			style |= WS_POPUP;
 		}
 		else {
-			if (resizeable) {
-				if (maximized) {
-					style = WS_OVERLAPPEDWINDOW | WS_MAXIMIZE;
-				}
-				else {
-					style = WS_OVERLAPPEDWINDOW;
-				}
+
+			style |= WS_SYSMENU | WS_MINIMIZEBOX;
+
+			if (!borderless)
+			{
+				style |= WS_CAPTION;
+
+				if (resizeable)
+					style |= WS_MAXIMIZEBOX | WS_THICKFRAME;
 			}
-			else {
-				style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-			}
+			else
+				style |= WS_POPUP;
 		}
 
 		style |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
@@ -744,9 +775,6 @@ return 0;
 		if (this == s_MainWindow)
 			style_ex |= WS_EX_APPWINDOW;
 
-		if (fullscreen)
-			style_ex |= WS_EX_TOPMOST;
-
 		return style_ex;
 	}
 
@@ -762,7 +790,7 @@ return 0;
 		float ratio = (float) m_Props.Width / (float) m_Props.Height;
 
 		if(m_OS->IsWindows10AnniversaryUpdateOrGreater())
-			GetDpiForWindow(m_Window);
+			dpi = GetDpiForWindow(m_Window);
 
 		GetFullWindowSize(GetWindowStyle(), GetWindowStyleEx(), 0,
 			0, &xoff, &yoff, dpi);
@@ -785,30 +813,40 @@ return 0;
 	    }
 	}
 
-	void WindowsWindow::UpdateWindowStyle(bool repaint)
-	{		
+	void WindowsWindow::UpdateWindowStyle()
+	{
+		MT_CORE_ASSERT(IsWindow(m_Window), "Window handle not valid");
+
+		RECT rect;
+		GetClientRect(m_Window, &rect);
+
 		DWORD style = GetWindowStyle();
 		DWORD style_ex = GetWindowStyleEx();
 
 		SetWindowLong(m_Window, GWL_STYLE, style);
 		SetWindowLong(m_Window, GWL_EXSTYLE, style_ex);
 
-		SetWindowPos(m_Window, HWND_TOP, 0, 0, 0, 0,
-			SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
+		ClientToWindowRect(&rect, style, FALSE, style_ex);
+			
+		ClientToScreen(m_Window, (POINT*)&rect.left);
+		ClientToScreen(m_Window, (POINT*)&rect.right);
 
-		if (repaint)
-		{
-			RECT rect;
-			GetWindowRect(m_Window, &rect);
-			MoveWindow(m_Window, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
-		}
+		SetWindowPos(m_Window, HWND_TOP,
+			rect.left, rect.top,
+			rect.right - rect.left, rect.bottom - rect.top,
+			SWP_FRAMECHANGED | SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
 	}
 
-	void WindowsWindow::UpdateWindowStyle(RECT rect)
+	void WindowsWindow::ClientToWindowRect(RECT* rect, DWORD style, BOOL menu, DWORD exstyle) const
 	{
-		UpdateWindowStyle(false);
-
-		MoveWindow(m_Window, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+		if (m_OS->IsWindows10AnniversaryUpdateOrGreater())
+		{
+			AdjustWindowRectExForDpi(rect, style, menu, exstyle, GetDpiForWindow(m_Window));
+		}
+		else
+		{
+			AdjustWindowRectEx(rect, style, menu, exstyle);
+		}
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

@@ -63,14 +63,15 @@ namespace Mortify
 		DWORD GetWindowStyleEx();
 
 		void ApplyAspectRatio(int edge, RECT* area);
-		void UpdateWindowStyle(bool repaint = true);
-		void UpdateWindowStyle(RECT rect);
+		void UpdateWindowStyle();
+		void ClientToWindowRect(RECT* rect, DWORD style, BOOL iwas, DWORD exstyle) const;
 
 		void FitToMonitor();
 		void GetFullWindowSize(DWORD style, DWORD exStyle,
 			int contentWidth, int contentHeight,
 			int* fullWidth, int* fullHeight,
 			UINT dpi) const;
+		std::pair<float, float> GetContentScale() const;
 
 		void ClipSize();
 

@@ -103,7 +103,7 @@ namespace Mortify
 		return lineSize;
 	}
 
-	float WindowsOS::GetDpiForMonitor(HMONITOR monitor)
+	std::pair<float, float> WindowsOS::GetDpiForMonitor(HMONITOR monitor)
 	{
 		UINT xdpi, ydpi;
 
@@ -120,7 +120,7 @@ namespace Mortify
 		}
 		MT_CORE_ASSERT(xdpi == ydpi, "Wtf happned?");
 
-		return xdpi;
+		return { xdpi, ydpi };
 	}
 
 	BOOL WindowsOS::IsWindowsXPOrGreater()

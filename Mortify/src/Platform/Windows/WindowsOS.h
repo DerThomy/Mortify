@@ -30,7 +30,7 @@ namespace Mortify
 		size_t GetCacheLineSize() const override;
 		const Microsoft::WRL::ComPtr<ITaskbarList2>& GetTaskbarList() const { return m_TaskbarList; }
 		const Libraries& GetLibraries() const { return m_Libraries; };
-		float GetDpiForMonitor(HMONITOR monitor);
+		std::pair<float, float> GetDpiForMonitor(HMONITOR monitor);
 
 		BOOL IsWindowsXPOrGreater();
 		BOOL IsWindowsVistaOrGreater();

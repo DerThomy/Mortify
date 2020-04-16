@@ -60,7 +60,7 @@ namespace Mortify
 					unsigned int width = 1280, 
 					unsigned int height = 720,
 					WindowMode mode = WindowMode::Windowed,
-					bool borderless = true,
+					bool borderless = false,
 					bool vsync = false,
 					bool useImGui = true,
 					bool resizable = true,
