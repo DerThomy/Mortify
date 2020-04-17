@@ -50,7 +50,6 @@ namespace Mortify
 
 	#ifdef MT_PLATFORM_WINDOWS
 		ImGui_ImplWin32_Init(app.GetWindow().GetNativeWindow(), app.GetWindow().GetContext()->GetContextHandler());
-		app.GetWindow().SetUseImGUI(true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 	#endif	
 	}

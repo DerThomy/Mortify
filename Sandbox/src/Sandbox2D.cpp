@@ -106,12 +106,11 @@ void Sandbox2D::OnImGuiRender()
 
 	ImGui::Text(("Width: " + std::to_string(m_Window.GetWindowProps().Width)).c_str());
 	ImGui::Text(("Height :" + std::to_string(m_Window.GetWindowProps().Height)).c_str());
-	ImGui::Text(("Mode: " + Mortify::windowModeToString.at(m_Window.GetWindowProps().Mode)).c_str());
+	ImGui::Text(("Mode: " + Mortify::windowModeToString.at(m_Window.GetWindowMode())).c_str());
 	ImGui::Text(("Limits: " + LimitsToString(m_Window.GetWindowProps().Limits)).c_str());
 	ImGui::Text(("Resizeable: " + std::string(m_Window.GetWindowProps().Resizeable ? "true" : "false")).c_str());
 	ImGui::Text(("KeepAspect: " + std::string(m_Window.GetWindowProps().KeepAspect ? "true" : "false")).c_str());
 	ImGui::Text(("VSync: " + std::string(m_Window.GetWindowProps().VSync ? "true" : "false")).c_str());
-	ImGui::Text(("UseImGUI: " + std::string(m_Window.GetWindowProps().UseImGUI ? "true" : "false")).c_str());
 	ImGui::Text(("Maximized: " + std::string(m_Window.GetWindowProps().Maximized ? "true" : "false")).c_str());
 	ImGui::Text(("Minimized: " + std::string(m_Window.GetWindowProps().Minimized ? "true" : "false")).c_str());
 	ImGui::Text(("Fullscreen: " + std::string(m_Window.GetWindowProps().Fullscreen ? "true" : "false")).c_str());

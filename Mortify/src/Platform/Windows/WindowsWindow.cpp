@@ -25,14 +25,18 @@ namespace Mortify
 
 	WindowsWindow* WindowsWindow::s_MainWindow = nullptr;
 
-	Scope<Window> Window::Create(const WindowProps& props, const EventCallbackFn& callback)
+	Scope<Window> Window::Create(const WindowConfig& config, const EventCallbackFn& callback)
 	{
-		return CreateScope<WindowsWindow>(props, callback);
+		return CreateScope<WindowsWindow>(config, callback);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps& props, const EventCallbackFn& callback)
+	WindowsWindow::WindowsWindow(const WindowConfig& config, const EventCallbackFn& callback)
+		: m_Props(config)
 	{
 		MT_PROFILE_FUNCTION();
+
+		MT_CORE_ASSERT(static_cast<LONG>(config.Width) > 0, "Width out of range!");
+		MT_CORE_ASSERT(static_cast<LONG>(config.Height) > 0, "Height out of range!");
 
 		m_OS = std::dynamic_pointer_cast<WindowsOS>(OS::GetOS());
 
@@ -42,7 +46,7 @@ namespace Mortify
 		if (callback)
 			m_EventCallback = callback;
 
-		Init(props);
+		Init(config);
 	}
 
 	WindowsWindow::~WindowsWindow()
@@ -57,11 +61,8 @@ namespace Mortify
 	{
 		WindowsWindow* window = (WindowsWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
-		if (window != nullptr && window->m_Props.UseImGUI)
-		{
-			if (ImGui_ImplWin32_WndProcHandler(window->m_Window, msg, wparam, lparam))
-				return true;
-		}
+		if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
+			return true;
 
 		if (!window)
 		{
@@ -97,19 +98,16 @@ namespace Mortify
 			{
 				window->m_Props.Maximized = false;
 				window->m_Props.Minimized = true;
-				window->m_Props.Mode = WindowMode::Minimized;
 			}
 			else if (wparam == SIZE_MAXIMIZED)
 			{
 				window->m_Props.Maximized = true;
 				window->m_Props.Minimized = false;
-				window->m_Props.Mode = WindowMode::Maximized;
 			}
 			else if (wparam == SIZE_RESTORED)
 			{
 				window->m_Props.Maximized = false;
 				window->m_Props.Minimized = false;
-				window->m_Props.Mode = WindowMode::Windowed;
 			}
 
 			if (window->m_EventCallback)
@@ -122,7 +120,7 @@ namespace Mortify
 
 		case WM_SIZING:
 		{
-			if (!window->KeepsAspectRatio())
+			if (!window->m_Props.KeepAspect)
 				break;
 				
 			window->ApplyAspectRatio((int) wparam, (RECT*) lparam);
@@ -131,15 +129,14 @@ namespace Mortify
 
 		case WM_GETMINMAXINFO:
         {
-            int xoff, yoff;
             UINT dpi = USER_DEFAULT_SCREEN_DPI;
             MINMAXINFO* mmi = (MINMAXINFO*) lparam;
 
             if (window->m_OS->IsWindows10AnniversaryUpdateOrGreater())
-                dpi = GetDpiForWindow(window->m_Window);
+                dpi = GetDpiForWindow(window->m_WindowHandle);
 
-            window->GetFullWindowSize(window->GetWindowStyle(), window->GetWindowStyleEx(),
-                              0, 0, &xoff, &yoff, dpi);
+            auto[xoff, yoff] = window->GetFullWindowSize(window->GetWindowStyle(),
+				window->GetWindowStyleEx(), 0, 0, dpi);
 
             if (window->m_Limits.MinWidth.has_value() &&
                 window->m_Limits.MinHeight.has_value())
@@ -158,7 +155,7 @@ namespace Mortify
             if (window->m_Props.Fullscreen || window->m_Props.Borderless)
             {
                 MONITORINFO mi;
-                const HMONITOR mh = MonitorFromWindow(window->m_Window,
+                const HMONITOR mh = MonitorFromWindow(window->m_WindowHandle,
                                                       MONITOR_DEFAULTTONEAREST);
 
                 ZeroMemory(&mi, sizeof(mi));
@@ -191,7 +188,7 @@ namespace Mortify
 				MT_CORE_INFO("suggested width: " + std::to_string(suggested->right - suggested->left));
 				MT_CORE_INFO("suggested height: " + std::to_string(suggested->bottom - suggested->top));
 
-                SetWindowPos(window->m_Window, HWND_TOP,
+                SetWindowPos(window->m_WindowHandle, HWND_TOP,
                              suggested->left,
                              suggested->top,
                              suggested->right - suggested->left,
@@ -204,6 +201,9 @@ namespace Mortify
 
 		case WM_GETDPISCALEDSIZE:
         {
+			if (window->m_Props.ScaleToMonitor)
+				break;
+
             // Adjust the window size to keep the content area size constant
             if (window->m_OS->IsWindows10CreatorsUpdateOrGreater())
             {
@@ -212,7 +212,7 @@ namespace Mortify
 
                 AdjustWindowRectExForDpi(&source, window->GetWindowStyle(),
                                          FALSE, window->GetWindowStyleEx(),
-                                         GetDpiForWindow(window->m_Window));
+                                         GetDpiForWindow(window->m_WindowHandle));
                 AdjustWindowRectExForDpi(&target, window->GetWindowStyle(),
                                          FALSE, window->GetWindowStyleEx(),
                                          LOWORD(wparam));
@@ -270,7 +270,7 @@ namespace Mortify
 				case SC_SCREENSAVE:
 				case SC_MONITORPOWER:
 				{
-					if (window->m_Props.Mode == WindowMode::Fullscreen)
+					if (window->m_Props.Fullscreen)
 					{
 						// We are running in full screen mode, so disallow
 						// screen saver and screen blanking
@@ -454,19 +454,44 @@ namespace Mortify
 		return DefWindowProc(hwnd, msg, wparam, lparam);
 	}
 
-	void WindowsWindow::SetBorderless(bool borderless)
+	void WindowsWindow::SetFlags(uint8_t flags, bool state)
 	{
-		m_Props.Borderless = borderless;
-
-		UpdateWindowStyle();
+		
+		if (flags & WindowFlag::Borderless)
+		{
+			m_Props.Borderless = state;
+			UpdateWindowStyle();
+		}
+		if (flags & WindowFlag::KeepAspectRatio)
+		{
+			m_Props.KeepAspect = state;
+		}
+		if (flags & WindowFlag::AlwaysOnTop)
+		{
+			m_Props.AlwaysOnTop = state;
+			UpdateWindowStyle();
+		}
+		if (flags & WindowFlag::AutoIconify)
+		{
+			m_Props.AutoIconify = state;
+		}
+		if (flags & WindowFlag::DisableResize)
+		{
+			m_Props.Resizeable = !state;
+			UpdateWindowStyle();
+		}
+		if (flags & WindowFlag::ScaleToMonitor)
+		{
+			m_Props.ScaleToMonitor = state;
+		}
 	}
 
 	void WindowsWindow::Close()
 	{
-		SendMessage(m_Window, WM_SYSCOMMAND, SC_CLOSE, 0);
+		SendMessage(m_WindowHandle, WM_SYSCOMMAND, SC_CLOSE, 0);
 	}
 
-	void WindowsWindow::Init(const WindowProps& props)
+	void WindowsWindow::Init(const WindowConfig& config)
 	{
 		MT_PROFILE_FUNCTION();
 
@@ -475,8 +500,6 @@ namespace Mortify
 
 		for (const auto& button : MouseCode())
 			m_MouseButtons[button] = false;
-
-		m_Props = props;
 
 		if ((m_Limits.MaxHeight.has_value() && m_Limits.MaxHeight.value() > m_Props.Height)
 			|| (m_Limits.MaxWidth.has_value() && m_Limits.MaxWidth.value() > m_Props.Width)
@@ -488,7 +511,7 @@ namespace Mortify
 		}
 
 		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(windowCount));
-		int xpos, ypos, fullwidth, fullheight;
+		uint32_t xpos, ypos, fullwidth, fullheight;
 		DWORD style = GetWindowStyle();
 		DWORD exstyle = GetWindowStyleEx();
 
@@ -500,44 +523,45 @@ namespace Mortify
 			m_SavedInfo.Width = static_cast<LONG>(m_Props.Width);
 			m_SavedInfo.Height = static_cast<LONG>(m_Props.Height);
 			
+
 			m_SavedInfo.XPos = xpos = 0;
 			m_SavedInfo.YPos = ypos = 0;
 		}
 		else
 		{
-			GetFullWindowSize(style, exstyle, m_Props.Width, m_Props.Height, &fullwidth, &fullheight, USER_DEFAULT_SCREEN_DPI);
-
 			xpos = ypos = CW_USEDEFAULT;
 		}
 
-		// Create Window Class
-		m_Class.cbClsExtra = NULL;
-		m_Class.cbSize = sizeof(m_Class);
-		m_Class.style = CS_HREDRAW | CS_VREDRAW;
-		m_Class.cbWndExtra = sizeof(WindowsWindow*);
-		m_Class.cbClsExtra = NULL;
-		m_Class.hbrBackground = (HBRUSH)COLOR_WINDOW;
-		m_Class.hCursor = LoadCursor(NULL, IDC_ARROW);
-		m_Class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-		m_Class.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-		m_Class.hInstance = NULL;
-		m_Class.lpszClassName = class_name.c_str();
-		m_Class.lpszMenuName = L"MainMenu";
-		m_Class.lpfnWndProc = WindowsWindow::WndProc;
+		std::tie(fullwidth, fullheight) = GetFullWindowSize(style, exstyle, m_Props.Width, m_Props.Height, USER_DEFAULT_SCREEN_DPI);
 
-		MT_ASSERT(RegisterClassEx(&m_Class), "Failed to register class");
+		// Create Window Class
+		m_WindowClass.cbClsExtra = NULL;
+		m_WindowClass.cbSize = sizeof(m_WindowClass);
+		m_WindowClass.style = CS_HREDRAW | CS_VREDRAW;
+		m_WindowClass.cbWndExtra = sizeof(WindowsWindow*);
+		m_WindowClass.cbClsExtra = NULL;
+		m_WindowClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
+		m_WindowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+		m_WindowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+		m_WindowClass.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+		m_WindowClass.hInstance = NULL;
+		m_WindowClass.lpszClassName = class_name.c_str();
+		m_WindowClass.lpszMenuName = L"MainMenu";
+		m_WindowClass.lpfnWndProc = WindowsWindow::WndProc;
+
+		MT_ASSERT(RegisterClassEx(&m_WindowClass), "Failed to register class");
 
 		// Create Window
-		std::wstring title = m_OS->WideCharFromUTF8(props.Title);
-		m_Window = CreateWindowEx(exstyle, class_name.c_str(), title.c_str(),
+		std::wstring title = m_OS->WideCharFromUTF8(config.Title);
+		m_WindowHandle = CreateWindowEx(exstyle, class_name.c_str(), title.c_str(),
 			style, xpos, ypos, fullwidth, fullheight, NULL, NULL, GetModuleHandleW(NULL), NULL);
-		MT_CORE_ASSERT(m_Window, "WindowsWindow creation failed");
+		MT_CORE_ASSERT(m_WindowHandle, "WindowsWindow creation failed");
 
 		// Set Window User Data to this so the Object is available for the WNDProc function
-		SetWindowLongPtr(m_Window, GWLP_USERDATA, (LONG_PTR)this);
+		SetWindowLongPtr(m_WindowHandle, GWLP_USERDATA, (LONG_PTR)this);
 
 		// Set Device Context Handler
-		m_DeviceContextHandler = GetDC(m_Window);
+		m_DeviceContextHandle = GetDC(m_WindowHandle);
 
 		// Init RenderContext
 		// TODO: Outsource this
@@ -547,35 +571,45 @@ namespace Mortify
 		// Scale to DPI. Not possible before knowing on which monitor the window was created
 		if (!m_Props.Fullscreen)
 		{
-			RECT rect = { 0, 0, m_Props.Width, m_Props.Height };
+			RECT rect = { 0, 0, static_cast<LONG>(m_Props.Width), static_cast<LONG>(m_Props.Height) };
 
-			// TODO: Make controllable
-			MT_CORE_INFO("Sacling window {0} ({1}) to monitor", windowCount, m_Props.Title);
-			auto scale = GetContentScale();
-			rect.right = (int)(rect.right * scale.first);
-			rect.bottom = (int)(rect.bottom * scale.second);
+			if (m_Props.ScaleToMonitor)
+			{
+				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", windowCount, m_Props.Title);
+				auto scale = GetContentScale();
+				rect.right = (int)(rect.right * scale.first);
+				rect.bottom = (int)(rect.bottom * scale.second);
+			}
 
-			ClientToScreen(m_Window, (POINT*)&rect.left);
-			ClientToScreen(m_Window, (POINT*)&rect.right);
+			ClientToScreen(m_WindowHandle, (POINT*)&rect.left);
+			ClientToScreen(m_WindowHandle, (POINT*)&rect.right);
 
 			ClientToWindowRect(&rect, style, FALSE, exstyle);
 
-			SetWindowPos(m_Window, NULL,
+			SetWindowPos(m_WindowHandle, NULL,
 				rect.left, rect.top,
 				rect.right - rect.left, rect.bottom - rect.top,
 				SWP_NOACTIVATE | SWP_NOZORDER);
 		}
 		else
 		{
+			if (m_Props.ScaleToMonitor)
+			{
+				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", windowCount, m_Props.Title);
+				auto scale = GetContentScale();
+				m_SavedInfo.Width = (int)(m_SavedInfo.Width * scale.first);
+				m_SavedInfo.Height = (int)(m_SavedInfo.Height * scale.second);
+			}
+
 			FitToMonitor();
 			MarkFullscreen(true);
 		}
 
-		ShowWindow(m_Window, SW_SHOW);
+		ShowWindow(m_WindowHandle, SW_SHOW);
 
 		// TODO: Make controllable
-		SetForegroundWindow(m_Window);
-		SetFocus(m_Window);
+		SetForegroundWindow(m_WindowHandle);
+		SetFocus(m_WindowHandle);
 
 		windowCount++;
 	}
@@ -595,12 +629,24 @@ namespace Mortify
 		m_RenderContext->SwapBuffers();
 	}
 
+	inline WindowMode WindowsWindow::GetWindowMode() const
+	{
+		if (m_Props.Maximized)
+			return WindowMode::Maximized;
+		else if (m_Props.Minimized)
+			return WindowMode::Minimized;
+		else if (m_Props.Fullscreen)
+			return WindowMode::Fullscreen;
+		else
+			return WindowMode::Windowed;
+	}
+
 	void WindowsWindow::SetWindowMode(WindowMode mode)
 	{
-		if (m_Props.Mode == mode)
+		if (GetWindowMode() == mode)
 			return;
 
-		if (mode != WindowMode::Fullscreen && m_Props.Mode == WindowMode::Fullscreen)
+		if (mode != WindowMode::Fullscreen && m_Props.Fullscreen)
 		{
 			m_Props.Fullscreen = false;
 
@@ -611,21 +657,21 @@ namespace Mortify
 
 		if (mode == WindowMode::Maximized)
 		{
-			ShowWindow(m_Window, SW_MAXIMIZE);
+			ShowWindow(m_WindowHandle, SW_MAXIMIZE);
 			m_Props.Maximized = true;
 			m_Props.Minimized = false;
 		}
 
 		if (mode == WindowMode::Minimized)
 		{
-			ShowWindow(m_Window, SW_MINIMIZE);
+			ShowWindow(m_WindowHandle, SW_MINIMIZE);
 			m_Props.Maximized = false;
 			m_Props.Minimized = true;
 		}
 
 		if (mode == WindowMode::Windowed)
 		{
-			ShowWindow(m_Window, SW_RESTORE);
+			ShowWindow(m_WindowHandle, SW_RESTORE);
 			m_Props.Maximized = false;
 			m_Props.Minimized = false;
 		}
@@ -633,13 +679,13 @@ namespace Mortify
 		if (mode == WindowMode::Fullscreen)
 		{
 			if (m_Props.Minimized || m_Props.Maximized)
-				ShowWindow(m_Window, SW_RESTORE);
+				ShowWindow(m_WindowHandle, SW_RESTORE);
 			
 			m_SavedInfo.Width = m_Props.Width;
 			m_SavedInfo.Height = m_Props.Height;
 
 			RECT wndrect;
-			GetWindowRect(m_Window, &wndrect);
+			GetWindowRect(m_WindowHandle, &wndrect);
 			m_SavedInfo.XPos = wndrect.left;
 			m_SavedInfo.YPos = wndrect.top;
 
@@ -648,21 +694,18 @@ namespace Mortify
 			m_Props.Minimized = false;
 
 			MONITORINFO mi = { sizeof(mi) };
-			GetMonitorInfo(MonitorFromWindow(m_Window, MONITOR_DEFAULTTONEAREST), &mi);
+			GetMonitorInfo(MonitorFromWindow(m_WindowHandle, MONITOR_DEFAULTTONEAREST), &mi);
 			UpdateWindowStyle(mi.rcMonitor.right, mi.rcMonitor.bottom);
 
 			MarkFullscreen(true);
 		}
-
-		m_Props.Mode = mode;
 	}
-
 
 	void WindowsWindow::FitToMonitor()
 	{
 	    MONITORINFO mi = { sizeof(mi) };
-	    GetMonitorInfo(MonitorFromWindow(m_Window, MONITOR_DEFAULTTONEAREST), &mi);
-	    SetWindowPos(m_Window, HWND_TOPMOST,
+	    GetMonitorInfo(MonitorFromWindow(m_WindowHandle, MONITOR_DEFAULTTONEAREST), &mi);
+	    SetWindowPos(m_WindowHandle, HWND_TOPMOST,
 	                 mi.rcMonitor.left,
 	                 mi.rcMonitor.top,
 	                 mi.rcMonitor.right - mi.rcMonitor.left,
@@ -670,19 +713,20 @@ namespace Mortify
 	                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOCOPYBITS);
 	}
 
-	void WindowsWindow::GetFullWindowSize(DWORD style, DWORD exStyle, int contentWidth, int contentHeight, int* fullWidth, int* fullHeight, UINT dpi) const
+	std::pair<uint32_t, uint32_t> WindowsWindow::GetFullWindowSize(DWORD style, DWORD exStyle,
+		uint32_t contentWidth, uint32_t contentHeight, UINT dpi) const
 	{
-		RECT rect = { 0, 0, (LONG)contentWidth, (LONG)contentHeight };
+		RECT rect = { 0, 0, static_cast<LONG>(contentWidth), static_cast<LONG>(contentHeight) };
 
 		ClientToWindowRect(&rect, style, FALSE, exStyle);
 
-		*fullWidth = rect.right - rect.left;
-		*fullHeight = rect.bottom - rect.top;
+		return { static_cast<uint32_t>(rect.right - rect.left),
+			static_cast<uint32_t>(rect.bottom - rect.top) };
 	}
 
 	std::pair<float, float> WindowsWindow::GetContentScale() const
 	{
-		HMONITOR monitor = MonitorFromWindow(m_Window, MONITOR_DEFAULTTONEAREST);
+		HMONITOR monitor = MonitorFromWindow(m_WindowHandle, MONITOR_DEFAULTTONEAREST);
 		std::pair<float, float> dpi = m_OS->GetDpiForMonitor(monitor);
 
 		return { dpi.first / (float)USER_DEFAULT_SCREEN_DPI, dpi.second / (float)USER_DEFAULT_SCREEN_DPI };
@@ -704,7 +748,7 @@ namespace Mortify
 	void WindowsWindow::MarkFullscreen(bool fullscreen)
 	{
 		if (m_OS->GetTaskbarList())
-			m_OS->GetTaskbarList()->MarkFullscreenWindow(m_Window, !!fullscreen);
+			m_OS->GetTaskbarList()->MarkFullscreenWindow(m_WindowHandle, !!fullscreen);
 	}
 
 	void WindowsWindow::MarkFullscreen()
@@ -716,8 +760,8 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		if (m_Window && !IsWindow(m_Window))
-			DestroyWindow(m_Window);
+		if (m_WindowHandle && !IsWindow(m_WindowHandle))
+			DestroyWindow(m_WindowHandle);
 
 		--windowCount;
 
@@ -725,8 +769,8 @@ namespace Mortify
 			s_MainWindow = nullptr;
 
 		m_RenderContext->Destroy();
-		ReleaseDC(m_Window, m_DeviceContextHandler);
-		UnregisterClassW(m_Class.lpszClassName, m_Class.hInstance);
+		ReleaseDC(m_WindowHandle, m_DeviceContextHandle);
+		UnregisterClassW(m_WindowClass.lpszClassName, m_WindowClass.hInstance);
 
 		//if (windowCount == 0)
 			//FreeLibrary(openGLModule);
@@ -766,7 +810,7 @@ namespace Mortify
 	{
 		DWORD style_ex = WS_EX_APPWINDOW;
 
-		if (fullscreen)
+		if (fullscreen || m_Props.AlwaysOnTop)
 			style_ex |= WS_EX_TOPMOST;
 
 		return style_ex;
@@ -777,17 +821,15 @@ namespace Mortify
 		return GetWindowStyleEx(m_Props.Fullscreen);
 	}
 
-	void WindowsWindow::ApplyAspectRatio(int edge, RECT* area)
+	void WindowsWindow::ApplyAspectRatio(uint32_t edge, RECT* area)
 	{
-		int xoff, yoff;
 		UINT dpi = USER_DEFAULT_SCREEN_DPI;
 		float ratio = (float) m_Props.Width / (float) m_Props.Height;
 
 		if(m_OS->IsWindows10AnniversaryUpdateOrGreater())
-			dpi = GetDpiForWindow(m_Window);
+			dpi = GetDpiForWindow(m_WindowHandle);
 
-		GetFullWindowSize(GetWindowStyle(), GetWindowStyleEx(), 0,
-			0, &xoff, &yoff, dpi);
+		auto[xoff, yoff] = GetFullWindowSize(GetWindowStyle(), GetWindowStyleEx(), 0, 0, dpi);
 
 		if (edge == WMSZ_LEFT  || edge == WMSZ_BOTTOMLEFT ||
         edge == WMSZ_RIGHT || edge == WMSZ_BOTTOMRIGHT)
@@ -809,40 +851,39 @@ namespace Mortify
 
 	void WindowsWindow::UpdateWindowStyle()
 	{
-		MT_CORE_ASSERT(IsWindow(m_Window), "Window handle not valid");
+		MT_CORE_ASSERT(IsWindow(m_WindowHandle), "Window handle not valid");
 
 		RECT rect;
-		GetClientRect(m_Window, &rect);
+		GetClientRect(m_WindowHandle, &rect);
 
 		DWORD style = GetWindowStyle();
 		DWORD style_ex = GetWindowStyleEx();
 
-		SetWindowLong(m_Window, GWL_STYLE, style);
-		SetWindowLong(m_Window, GWL_EXSTYLE, style_ex);
+		SetWindowLong(m_WindowHandle, GWL_STYLE, style);
+		SetWindowLong(m_WindowHandle, GWL_EXSTYLE, style_ex);
 
 		ClientToWindowRect(&rect, style, FALSE, style_ex);
 			
-		ClientToScreen(m_Window, (POINT*)&rect.left);
-		ClientToScreen(m_Window, (POINT*)&rect.right);
+		ClientToScreen(m_WindowHandle, (POINT*)&rect.left);
+		ClientToScreen(m_WindowHandle, (POINT*)&rect.right);
 
-		SetWindowPos(m_Window, HWND_TOP,
+		SetWindowPos(m_WindowHandle, m_Props.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST,
 			rect.left, rect.top,
 			rect.right - rect.left, rect.bottom - rect.top,
 			SWP_FRAMECHANGED | SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_NOMOVE);
 	}
 
-	void WindowsWindow::UpdateWindowStyle(int width, int height, int xpos, int ypos)
+	void WindowsWindow::UpdateWindowStyle(uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos)
 	{
-		MT_CORE_ASSERT(IsWindow(m_Window), "Window handle not valid");
+		MT_CORE_ASSERT(IsWindow(m_WindowHandle), "Window handle not valid");
 
 		DWORD style = GetWindowStyle();
 		DWORD style_ex = GetWindowStyleEx();
 
-		SetWindowLong(m_Window, GWL_STYLE, style);
-		SetWindowLong(m_Window, GWL_EXSTYLE, style_ex);
+		SetWindowLong(m_WindowHandle, GWL_STYLE, style);
+		SetWindowLong(m_WindowHandle, GWL_EXSTYLE, style_ex);
 
-		int fullwidth, fullheight;
-		GetFullWindowSize(style, style_ex, width, height, &fullwidth, &fullheight, GetDpiForWindow(m_Window));
+		auto[fullwidth, fullheight] = GetFullWindowSize(style, style_ex, width, height, GetDpiForWindow(m_WindowHandle));
 
 		MT_CORE_INFO("xpos: {0}, ypos: {1}", xpos, ypos);
 		MT_CORE_INFO("width: {0}, height: {1}", width, height);
@@ -850,14 +891,15 @@ namespace Mortify
 
 		DWORD flags = SWP_FRAMECHANGED | SWP_NOACTIVATE | (m_Props.Fullscreen ? SWP_SHOWWINDOW : SWP_NOZORDER);
 
-		SetWindowPos(m_Window, HWND_TOP, xpos, ypos, fullwidth, fullheight, flags);
+		SetWindowPos(m_WindowHandle, m_Props.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST,
+			xpos, ypos, fullwidth, fullheight, flags);
 	}
 
 	void WindowsWindow::ClientToWindowRect(RECT* rect, DWORD style, BOOL menu, DWORD exstyle) const
 	{
 		if (m_OS->IsWindows10AnniversaryUpdateOrGreater())
 		{
-			AdjustWindowRectExForDpi(rect, style, menu, exstyle, GetDpiForWindow(m_Window));
+			AdjustWindowRectExForDpi(rect, style, menu, exstyle, GetDpiForWindow(m_WindowHandle));
 		}
 		else
 		{
