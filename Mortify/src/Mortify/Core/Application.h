@@ -6,6 +6,7 @@
 #include "Mortify/Core/LayerStack.h"
 #include "Mortify/Core/Events/Event.h"
 #include "Mortify/Core/Events/ApplicationEvent.h"
+#include "Mortify/Core/Events/WindowEvent.h"
 #include "Mortify/Core/OS.h"
 
 #include "Mortify/ImGui/ImGuiLayer.h"
@@ -25,7 +26,7 @@ namespace Mortify
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 	
-		inline Window& GetWindow() { return *m_Window; }
+		inline const Ref<Window>& GetWindow() { return m_Window; }
 		
 		inline static Application& Get() { return *s_Instance; }
 	private:
@@ -33,12 +34,13 @@ namespace Mortify
 		bool OnWindowResize(WindowResizeEvent& e);
 		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
-		Mortify::Scope<Window> m_Window;
+		Mortify::Ref<Window> m_Window;
 		Mortify::Ref<OS> m_OS;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;
 		double m_TimeFromLastFrame = 0.0;
+		uint8_t windowCount = 2;
 	private:
 		static Application* s_Instance;
 	};

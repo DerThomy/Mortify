@@ -7,16 +7,17 @@ namespace Mortify
 {
 	Scope<Renderer::SceneData> Renderer::s_SceneData = CreateScope<Renderer::SceneData>();
 
-	void Renderer::Init()
+	void Renderer::Init(const Ref<RenderContext>& context)
 	{
 		MT_PROFILE_FUNCTION();
 		
-		RenderCommand::Init();
-		Renderer2D::Init();
+		RenderCommand::Init(context);
+		Renderer2D::Init(context);
 	}
 
-	void Renderer::BeginScene(OrthographicCamera& camera)
+	void Renderer::BeginScene(OrthographicCamera& camera, const Ref<RenderContext> context)
 	{
+		context->MakeContextCurrent();
 		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}
 
@@ -35,9 +36,14 @@ namespace Mortify
 		RenderCommand::DrawIndexed(vertexArray);
 	}
 
-	void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+	void Renderer::OnWindowResize(WindowID id, uint32_t width, uint32_t height)
 	{
-		RenderCommand::SetViewport(0, 0, width, height);
+		auto window = WindowManager::GetWindowByID(id);
+		if (window.has_value())
+		{
+			window.value()->GetContext()->MakeContextCurrent();
+			RenderCommand::SetViewport(0, 0, width, height);
+		}
 	}
 
 	void Renderer::Shutdown()

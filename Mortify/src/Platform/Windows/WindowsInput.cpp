@@ -12,19 +12,19 @@ namespace Mortify
 
 	bool WindowsInput::IsKeyPressedImpl(KeyCode keycode)
 	{
-		return Application::Get().GetWindow().IsKeyPressed(keycode);
+		return Application::Get().GetWindow()->IsKeyPressed(keycode);
 	}
 
 	bool WindowsInput::IsMouseButtonClickedImpl(MouseCode button)
 	{
-		return Application::Get().GetWindow().IsMouseButtonPressed(button);
+		return Application::Get().GetWindow()->IsMouseButtonPressed(button);
 	}
 
 	std::pair<float, float> WindowsInput::GetMousePositionImpl()
 	{
 		POINT p;
 		GetCursorPos(&p);
-		ScreenToClient(*(HWND*)Application::Get().GetWindow().GetNativeWindow(), &p);
+		ScreenToClient(*(HWND*)Application::Get().GetWindow()->GetNativeWindow(), &p);
 
 		return { static_cast<float>(p.x), static_cast<float>(p.y) };
 	}

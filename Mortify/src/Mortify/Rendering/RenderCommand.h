@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mortify/Rendering/RendererAPI.h"
+#include "Mortify/Rendering/RenderContext.h"
 
 #include <glm/glm.hpp>
 
@@ -9,9 +10,9 @@ namespace Mortify
 	class RenderCommand
 	{
 	public:
-		static inline void Init()
+		static inline void Init(const Ref<RenderContext>& context)
 		{
-			s_RenderAPI->Init();
+			s_RenderAPI->Init(context);
 		}
 
 		static inline void SetClearColor(const glm::vec4& color)

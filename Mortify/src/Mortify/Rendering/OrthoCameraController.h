@@ -5,6 +5,7 @@
 
 #include "Mortify/Core/Events/MouseEvent.h"
 #include "Mortify/Core/Events/ApplicationEvent.h"
+#include "Mortify/Core/Events/WindowEvent.h"
 
 namespace Mortify
 {

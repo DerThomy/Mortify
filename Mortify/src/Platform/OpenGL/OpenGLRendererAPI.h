@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Mortify/Rendering/RendererAPI.h"
+#include "Mortify/Rendering/RenderContext.h"
 
 namespace Mortify
 {
 	class OpenGLRendererAPI : public RendererAPI
 	{
-		virtual void Init() override;
+		virtual void Init(const Ref<RenderContext>& context) override;
 
 		virtual void SetClearColor(const glm::vec4& color) override;
 		virtual void Clear() override;

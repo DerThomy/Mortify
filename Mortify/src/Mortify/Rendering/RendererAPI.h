@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mortify/Rendering/VertexArray.h"
+#include "Mortify/Rendering/RenderContext.h"
 
 #include <glm/glm.hpp>
 
@@ -17,7 +18,7 @@ namespace Mortify
 		};
 
 	public:
-		virtual void Init() = 0;
+		virtual void Init(const Ref<RenderContext>& context) = 0;
 
 		virtual void SetClearColor(const glm::vec4& color) = 0;
 		virtual void Clear() = 0;

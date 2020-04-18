@@ -5,6 +5,7 @@
 #include "Mortify/Core/Events/ApplicationEvent.h"
 #include "Mortify/Core/Events/MouseEvent.h"
 #include "Mortify/Core/Events/KeyEvent.h"
+#include "Mortify/Core/Events/WindowEvent.h"
 #include "Mortify/Core/MouseCodes.h"
 #include "Mortify/Core/KeyCodes.h"
 #include "Mortify/Core/OS.h"
@@ -21,17 +22,15 @@
 
 namespace Mortify
 {
-	static uint8_t windowCount = 0;
-
 	WindowsWindow* WindowsWindow::s_MainWindow = nullptr;
 
-	Scope<Window> Window::Create(const WindowConfig& config, const EventCallbackFn& callback)
+	Ref<Window> WindowManager::CreatePlatformWindow(WindowID id, const WindowConfig& config, const EventCallbackFn& callback)
 	{
-		return CreateScope<WindowsWindow>(config, callback);
+		return CreateRef<WindowsWindow>(id, config, callback);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowConfig& config, const EventCallbackFn& callback)
-		: m_Props(config)
+	WindowsWindow::WindowsWindow(WindowID id, const WindowConfig& config, const EventCallbackFn& callback)
+		: m_Props(config), m_ID(id)
 	{
 		MT_PROFILE_FUNCTION();
 
@@ -53,7 +52,7 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		Shutdown();
+		WindowManager::RemoveWindow(m_ID);
 	}
 
 	//extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -112,7 +111,7 @@ namespace Mortify
 
 			if (window->m_EventCallback)
 			{
-				WindowResizeEvent resizeEvent(width, height);
+				WindowResizeEvent resizeEvent(window->m_ID, width, height);
 				window->m_EventCallback(resizeEvent);
 			}
 			return 0;
@@ -256,7 +255,7 @@ namespace Mortify
 		{
 			if (window->m_EventCallback)
 			{
-				WindowCloseEvent closeEvent;
+				WindowCloseEvent closeEvent(window->m_ID);
 				window->m_EventCallback(closeEvent);
 			}
 
@@ -506,11 +505,11 @@ namespace Mortify
 			|| (m_Limits.MinHeight.has_value() && m_Limits.MinHeight.value() < m_Props.Height)
 			|| (m_Limits.MinWidth.has_value() && m_Limits.MinWidth.value() < m_Props.Width))
 		{
-			MT_CORE_WARN("Window {0}: Sizes are outside specified Limits and will thus be clipped to those Limits!", windowCount);
+			MT_CORE_WARN("Window {0}: Sizes are outside specified Limits and will thus be clipped to those Limits!", m_ID);
 			ClipSize();
 		}
 
-		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(windowCount));
+		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(m_ID));
 		uint32_t xpos, ypos, fullwidth, fullheight;
 		DWORD style = GetWindowStyle();
 		DWORD exstyle = GetWindowStyleEx();
@@ -575,7 +574,7 @@ namespace Mortify
 
 			if (m_Props.ScaleToMonitor)
 			{
-				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", windowCount, m_Props.Title);
+				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", m_ID, m_Props.Title);
 				auto scale = GetContentScale();
 				rect.right = (int)(rect.right * scale.first);
 				rect.bottom = (int)(rect.bottom * scale.second);
@@ -595,7 +594,7 @@ namespace Mortify
 		{
 			if (m_Props.ScaleToMonitor)
 			{
-				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", windowCount, m_Props.Title);
+				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", m_ID, m_Props.Title);
 				auto scale = GetContentScale();
 				m_SavedInfo.Width = (int)(m_SavedInfo.Width * scale.first);
 				m_SavedInfo.Height = (int)(m_SavedInfo.Height * scale.second);
@@ -610,8 +609,6 @@ namespace Mortify
 		// TODO: Make controllable
 		SetForegroundWindow(m_WindowHandle);
 		SetFocus(m_WindowHandle);
-
-		windowCount++;
 	}
 
 	void WindowsWindow::OnUpdate()
@@ -763,8 +760,6 @@ namespace Mortify
 		if (m_WindowHandle && !IsWindow(m_WindowHandle))
 			DestroyWindow(m_WindowHandle);
 
-		--windowCount;
-
 		if (s_MainWindow == this)
 			s_MainWindow = nullptr;
 
@@ -915,11 +910,6 @@ namespace Mortify
 			m_Props.VSync = enabled;
 		else
 			MT_CORE_WARN("Failed to set vsync!");
-	}
-
-	bool WindowsWindow::IsVSync() const
-	{
-		return m_Props.VSync;
 	}
 
 	inline bool WindowsWindow::IsKeyPressed(KeyCode code) const

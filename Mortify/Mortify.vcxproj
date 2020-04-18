@@ -152,6 +152,7 @@
     <ClInclude Include="src\Mortify\Core\Events\Event.h" />
     <ClInclude Include="src\Mortify\Core\Events\KeyEvent.h" />
     <ClInclude Include="src\Mortify\Core\Events\MouseEvent.h" />
+    <ClInclude Include="src\Mortify\Core\Events\WindowEvent.h" />
     <ClInclude Include="src\Mortify\Core\Input.h" />
     <ClInclude Include="src\Mortify\Core\KeyCodes.h" />
     <ClInclude Include="src\Mortify\Core\Layer.h" />
@@ -162,6 +163,8 @@
     <ClInclude Include="src\Mortify\Core\Resource.h" />
     <ClInclude Include="src\Mortify\Core\Timestep.h" />
     <ClInclude Include="src\Mortify\Core\Window.h" />
+    <ClInclude Include="src\Mortify\Core\WindowCore.h" />
+    <ClInclude Include="src\Mortify\Core\WindowManager.h" />
     <ClInclude Include="src\Mortify\Debug\Instrumentor.h" />
     <ClInclude Include="src\Mortify\EntryPoint.h" />
     <ClInclude Include="src\Mortify\ImGui\ImGuiLayer.h" />
@@ -568,6 +571,7 @@
     <ClCompile Include="src\Mortify\Core\Log.cpp" />
     <ClCompile Include="src\Mortify\Core\OS.cpp" />
     <ClCompile Include="src\Mortify\Core\Resource.cpp" />
+    <ClCompile Include="src\Mortify\Core\WindowManager.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Mortify\Rendering\Buffer.cpp" />

@@ -14,15 +14,18 @@ namespace Mortify
 		Ref<Shader> TextureShader;
 	};
 
-	static Renderer2DStorage* s_Data;
+	Ref<RenderContext> CurrentContext{};
+	static std::unordered_map<Ref<RenderContext>, Renderer2DStorage*> s_Data;
 	
-	void Renderer2D::Init()
+	void Renderer2D::Init(const Ref<RenderContext>& context)
 	{
 		MT_PROFILE_FUNCTION();
 		
-		s_Data = new Renderer2DStorage();
+		auto data = new Renderer2DStorage();
+
+		context->MakeContextCurrent();
 		
-		s_Data->QuadVertexArray = VertexArray::Create();
+		data->QuadVertexArray = VertexArray::Create();
 
 		float squareVertices[5 * 4] = {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -36,50 +39,65 @@ namespace Mortify
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
 			});
-		s_Data->QuadVertexArray->AddVertexBuffer(squareVB);
+		data->QuadVertexArray->AddVertexBuffer(squareVB);
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 		const auto squareIB = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-		s_Data->QuadVertexArray->SetIndexBuffer(squareIB);
+		data->QuadVertexArray->SetIndexBuffer(squareIB);
 
-		s_Data->WhiteTexture = Texture2D::Create(1, 1);
+		data->WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0xffffffff;
-		s_Data->WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
-		s_Data->TextureShader = Shader::Create("assets/shaders/Texture.glsl");
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetInt("u_Texture", 0);
+		data->WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+		data->TextureShader = Shader::Create("assets/shaders/Texture.glsl");
+		data->TextureShader->Bind();
+		data->TextureShader->SetInt("u_Texture", 0);
+
+		s_Data[context] = data;
 	}
 
 	void Renderer2D::Shutdown()
 	{
-		delete s_Data;
+		for (auto& data : s_Data)
+			delete data.second;
+
+		s_Data.clear();
 	}
 
-	void Renderer2D::BeginScene(OrthographicCamera& camera)
+	void Renderer2D::BeginScene(OrthographicCamera& camera, const Ref<RenderContext>& context)
 	{
 		MT_PROFILE_FUNCTION();
+
+		MT_CORE_ASSERT(s_Data.find(context) != s_Data.end(), "Renderer is not initialized for Context");
+
+		auto& data = s_Data[context];
 		
-		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+		context->MakeContextCurrent();
+		CurrentContext = context;
+
+		data->TextureShader->Bind();
+		data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer2D::EndScene()
 	{
 		MT_PROFILE_FUNCTION();
-		
 	}
 
 	void Renderer2D::DrawQuad(const QuadProperties& quad)
 	{
 		MT_PROFILE_FUNCTION();
-		
-		s_Data->TextureShader->SetFloat4("u_Color", quad.Color);
-		s_Data->TextureShader->SetFloat("u_TilingFactor", quad.Texture == s_Data->WhiteTexture ? 1.0f : quad.TilingFactor);
+
+		MT_CORE_ASSERT(CurrentContext && s_Data.find(CurrentContext) != s_Data.end(),
+			"Renderer is not initialized for Context");
+
+		auto& data = s_Data[CurrentContext];
+		data->TextureShader->SetFloat4("u_Color", quad.Color);
+		data->TextureShader->SetFloat("u_TilingFactor", quad.Texture == data->WhiteTexture ? 1.0f : quad.TilingFactor);
 
 		if (quad.Texture)
 			quad.Texture->Bind();
 		else
-			s_Data->WhiteTexture->Bind();
+			data->WhiteTexture->Bind();
 
 		glm::mat4 transform;
 
@@ -95,9 +113,9 @@ namespace Mortify
 			* glm::scale(glm::mat4(1.0f), { quad.Size.x, quad.Size.y, 1.0f });
 		}
 		
-		s_Data->TextureShader->SetMat4("u_Transform", transform);
+		data->TextureShader->SetMat4("u_Transform", transform);
 
-		s_Data->QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+		data->QuadVertexArray->Bind();
+		RenderCommand::DrawIndexed(data->QuadVertexArray);
 	}
 }

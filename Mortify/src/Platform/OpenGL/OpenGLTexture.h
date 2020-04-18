@@ -16,9 +16,12 @@ namespace Mortify
 		virtual uint32_t GetWidth() const override { return m_Width; }
 		virtual uint32_t GetHeight() const override { return m_Height; }
 
-		virtual void Bind(const uint32_t slot = 0) const override;
+		virtual void Bind() const override;
 
 		virtual void SetData(void* data, uint32_t size) override;
+
+	private:
+		static std::vector<Texture2D*> slots;
 
 	private:
 		uint32_t m_Width, m_Height;

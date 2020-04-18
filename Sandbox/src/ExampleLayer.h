@@ -5,7 +5,7 @@
 class ExampleLayer : public Mortify::Layer
 {
 public:
-	ExampleLayer();
+	ExampleLayer(const Mortify::Ref<Mortify::Window>& window);
 
 	void OnUpdate(Mortify::Timestep ts) override;
 
@@ -14,6 +14,9 @@ public:
 	void OnEvent(Mortify::Event& event) override;
 
 private:
+	
+	Mortify::Ref<Mortify::Window> m_Window;
+
 	Mortify::ShaderLibrary m_ShaderLibrary;
 	Mortify::Ref<Mortify::Shader> m_Shader;
 	Mortify::Ref<Mortify::VertexArray> m_VertexArray;

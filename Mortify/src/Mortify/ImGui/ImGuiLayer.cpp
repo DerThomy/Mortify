@@ -49,7 +49,7 @@ namespace Mortify
 		Application& app = Application::Get();
 
 	#ifdef MT_PLATFORM_WINDOWS
-		ImGui_ImplWin32_Init(app.GetWindow().GetNativeWindow(), app.GetWindow().GetContext()->GetContextHandler());
+		ImGui_ImplWin32_Init(app.GetWindow()->GetNativeWindow(), app.GetWindow()->GetContext()->GetContextHandler());
 		ImGui_ImplOpenGL3_Init("#version 410");
 	#endif	
 	}
@@ -78,7 +78,7 @@ namespace Mortify
 		
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
-		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+		io.DisplaySize = ImVec2((float)app.GetWindow()->GetWidth(), (float)app.GetWindow()->GetHeight());
 
 		// Render
 		ImGui::Render();
@@ -86,11 +86,11 @@ namespace Mortify
 		
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			app.GetWindow().GetContext()->SaveContext();
+			app.GetWindow()->GetContext()->SaveContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			app.GetWindow().GetContext()->RestoreContext();
-			app.GetWindow().GetContext()->MakeContextCurrent();
+			app.GetWindow()->GetContext()->RestoreContext();
+			app.GetWindow()->GetContext()->MakeContextCurrent();
 		}
 	}
 }

@@ -49,6 +49,8 @@ namespace Mortify
 		}
 	};
 
+	using EventCallbackFn = std::function<void(Event&)>;
+
 	class EventDispatcher
 	{
 	public:

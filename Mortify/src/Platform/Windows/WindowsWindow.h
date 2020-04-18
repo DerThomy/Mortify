@@ -16,7 +16,7 @@ namespace Mortify
 		friend LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 	public:
-		WindowsWindow(const WindowConfig& config, const EventCallbackFn& callback = nullptr);
+		WindowsWindow(WindowID id, const WindowConfig& config, const EventCallbackFn& callback = nullptr);
 		virtual ~WindowsWindow();
 
 		void OnUpdate() override;
@@ -24,7 +24,21 @@ namespace Mortify
 		inline unsigned int GetWidth() const override { return m_Props.Width; }
 		inline unsigned int GetHeight() const override { return m_Props.Height; }
 		inline float GetAspectRatio() const override { return static_cast<float>(m_Props.Width) / static_cast<float>(m_Props.Height); }
-		inline const WindowProps& GetWindowProps() const override { return m_Props; }
+		inline WindowID GetID() const override { return m_ID; }
+		inline const WindowLimits& GetLimits() const { return m_Limits; }
+
+		inline bool IsResizeable() const { return m_Props.Resizeable; }
+		inline bool KeepsAspectRatio() const { return m_Props.KeepAspect; }
+		inline bool IsBorderless() const { return m_Props.Borderless; }
+		inline bool IsAlwaysOnTop() const { return m_Props.AlwaysOnTop; }
+		inline bool AutoIconifys() const { return m_Props.AutoIconify; }
+		inline bool ScalesToMonitor() const { return m_Props.ScaleToMonitor; }
+		inline bool IsMaximized() const override { return IsZoomed(m_WindowHandle); }
+		inline bool IsMinimized() const override { return IsIconic(m_WindowHandle); }
+		inline bool IsFullscreen() const override { return m_Props.Fullscreen; }
+		inline bool VSyncEnabled() const override { return m_Props.VSync; }
+		bool IsKeyPressed(KeyCode code) const override;
+		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_MouseButtons.at(button); };
 
 		inline WindowMode GetWindowMode() const override;
 		void SetWindowMode(WindowMode mode) override;
@@ -37,19 +51,14 @@ namespace Mortify
 		// Window attributes
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_EventCallback = callback; }
 		void SetVSync(bool enabled) override;
-		bool IsVSync() const override;
-		bool IsKeyPressed(KeyCode code) const override;
-		inline bool IsMouseButtonPressed(MouseCode button) const override { return m_MouseButtons.at(button); };
 
-		inline bool IsMaximized() const override { return IsZoomed(m_WindowHandle); }
-		inline bool IsMinimized() const override { return IsIconic(m_WindowHandle); }
 		void SetFlags(uint8_t flags, bool state) override;
 		void Close() override;
 		inline void LimitWindowSize(WindowLimits limits) override { m_Props.Limits = limits; };
 
 	private:
-		virtual void Init(const WindowConfig& config);
-		virtual void Shutdown();
+		void Init(const WindowConfig& config);
+		void Shutdown() override;
 
 		DWORD GetWindowStyle(bool fullscreen, bool borderless, bool resizeable, bool maximized);
 		DWORD GetWindowStyle();
@@ -78,6 +87,7 @@ namespace Mortify
 		static WindowsWindow* s_MainWindow;
 
 	private:
+		WindowID m_ID;
 		HWND m_WindowHandle;
 		HDC m_DeviceContextHandle;
 		WNDCLASSEX m_WindowClass;

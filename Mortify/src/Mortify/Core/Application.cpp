@@ -23,7 +23,7 @@ namespace Mortify
 		MT_CORE_INFO("Cache Line size: " + std::to_string(m_OS->GetCacheLineSize()));
 		m_Window = Window::Create(WindowConfig(), MT_BIND_EVENT_FN(Application::OnEvent));
 		m_Window->SetVSync(true);
-		Renderer::Init();
+		Renderer::Init(m_Window->GetContext());
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
@@ -92,7 +92,7 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		Renderer::OnWindowResize(e.GetWindowID(), e.GetWidth(), e.GetHeight());
 		
 		return false;
 	}
@@ -117,8 +117,13 @@ namespace Mortify
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		m_Running = false;
-		return true;
+		if (!WindowManager::GetWindowCount())
+		{
+			m_Running = false;
+			return true;
+		}
+
+		return false;
 	}
 
 	void Application::PushLayer(Layer* layer)

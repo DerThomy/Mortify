@@ -4,6 +4,7 @@
 #include "Mortify/Rendering/Texture.h"
 #include "Mortify/Rendering/Shader.h"
 #include "Mortify/Rendering/VertexArray.h"
+#include "Mortify/Rendering/RenderContext.h"
 
 namespace Mortify
 {	
@@ -20,10 +21,10 @@ namespace Mortify
 	class Renderer2D
 	{
 	public:
-		static void Init();
+		static void Init(const Ref<RenderContext>& context);
 		static void Shutdown();
 
-		static void BeginScene(OrthographicCamera& camera);
+		static void BeginScene(OrthographicCamera& camera, const Ref<RenderContext>& context);
 		static void EndScene();
 
 		static void DrawQuad(const QuadProperties& quad);

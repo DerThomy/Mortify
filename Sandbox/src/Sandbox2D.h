@@ -5,7 +5,7 @@
 class Sandbox2D : public Mortify::Layer
 {
 public:
-	Sandbox2D(Mortify::Window& window);
+	Sandbox2D(const Mortify::Ref<Mortify::Window>& window, Mortify::EventCallbackFn AppCallback);
 	virtual ~Sandbox2D() = default;
 
 	virtual void OnAttach() override;
@@ -25,5 +25,7 @@ private:
 
 	Mortify::Timestep m_TS;
 
-	Mortify::Window& m_Window;
+	Mortify::Ref<Mortify::Window> m_Window;
+
+	Mortify::Ref<Mortify::Window> m_SecondWindow;
 };

@@ -5,6 +5,7 @@
 #include "Mortify/Rendering/Camera.h"
 #include "Mortify/Rendering/Material.h"
 #include "Mortify/Core/Resource.h"
+#include "Mortify/Core/Window.h"
 
 #include <glm/glm.hpp>
 
@@ -13,15 +14,15 @@ namespace Mortify
 	class Renderer
 	{
 	public:
-		static void Init();
+		static void Init(const Ref<RenderContext>& context);
 		static void Shutdown();
 
-		static void BeginScene(OrthographicCamera& camera);
+		static void BeginScene(OrthographicCamera& camera, const Ref<RenderContext> context);
 		static void EndScene();
 
 		static void Submit(const Ref<VertexArray>& vertexArray, const Ref<Shader>& shader, const glm::mat4& transform = glm::mat4(1.0f));
 
-		static void OnWindowResize(uint32_t width, uint32_t height);
+		static void OnWindowResize(WindowID id, uint32_t width, uint32_t height);
 
 		static inline RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	private:

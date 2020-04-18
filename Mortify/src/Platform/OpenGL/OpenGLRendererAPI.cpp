@@ -1,6 +1,7 @@
 #include "mtpch.h"
 
 #include "Platform/OpenGL/OpenGLRendererAPI.h"
+#include "Mortify/Rendering/RenderContext.h"
 
 #include <glad/glad.h>
 
@@ -17,18 +18,20 @@ namespace Mortify
 	{
 		switch (severity)
 		{
-		case GL_DEBUG_SEVERITY_HIGH:         MT_CORE_CRITICAL(message); return;
-		case GL_DEBUG_SEVERITY_MEDIUM:       MT_CORE_ERROR(message); return;
-		case GL_DEBUG_SEVERITY_LOW:          MT_CORE_WARN(message); return;
-		case GL_DEBUG_SEVERITY_NOTIFICATION: MT_CORE_TRACE(message); return;
+			case GL_DEBUG_SEVERITY_HIGH:         MT_CORE_CRITICAL(message); return;
+			case GL_DEBUG_SEVERITY_MEDIUM:       MT_CORE_ERROR(message); return;
+			case GL_DEBUG_SEVERITY_LOW:          MT_CORE_WARN(message); return;
+			case GL_DEBUG_SEVERITY_NOTIFICATION: MT_CORE_TRACE(message); return;
 		}
 
 		MT_CORE_ASSERT(false, "Unknown severity level!");
 	}
 
-	void OpenGLRendererAPI::Init()
+	void OpenGLRendererAPI::Init(const Ref<RenderContext>& context)
 	{
 		MT_PROFILE_FUNCTION();
+
+		context->MakeContextCurrent();
 
 	#if MT_DEBUG
 		glEnable(GL_DEBUG_OUTPUT);

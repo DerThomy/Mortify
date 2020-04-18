@@ -5,8 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-ExampleLayer::ExampleLayer()
-	: Layer("Example"), m_CameraController(1280.0f / 720.0f, true)
+ExampleLayer::ExampleLayer(const Mortify::Ref<Mortify::Window>& window)
+	: Layer("Example"), m_CameraController(window->GetAspectRatio(), true), m_Window(window)
 {
 	m_VertexArray = Mortify::VertexArray::Create();
 
@@ -124,7 +124,7 @@ void ExampleLayer::OnUpdate(Mortify::Timestep ts)
 	Mortify::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 	Mortify::RenderCommand::Clear();
 
-	Mortify::Renderer::BeginScene(m_CameraController.GetCamera());
+	Mortify::Renderer::BeginScene(m_CameraController.GetCamera(), m_Window->GetContext());
 
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 

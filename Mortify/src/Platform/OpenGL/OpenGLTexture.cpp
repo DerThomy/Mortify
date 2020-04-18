@@ -7,6 +7,8 @@
 
 namespace Mortify
 {
+	std::vector<Texture2D*> OpenGLTexture2D::slots{};
+
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
 		: m_Width(width), m_Height(height)
 	{
@@ -23,6 +25,8 @@ namespace Mortify
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		slots.push_back(this);
 	}
 	
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
@@ -80,11 +84,11 @@ namespace Mortify
 		glDeleteTextures(1, &m_RendererID);
 	}
 
-	void OpenGLTexture2D::Bind(const uint32_t slot) const
+	void OpenGLTexture2D::Bind() const
 	{
 		MT_PROFILE_FUNCTION();
 		
-		glBindTextureUnit(slot, m_RendererID);
+		glBindTextureUnit(std::distance(slots.begin(), std::find(slots.begin(), slots.end(), this)), m_RendererID);
 	}
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)

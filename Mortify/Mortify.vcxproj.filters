@@ -1309,6 +1309,9 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WinodowsCore.h" />
+    <ClInclude Include="src\Mortify\Core\Events\WindowEvent.h" />
+    <ClInclude Include="src\Mortify\Core\WindowManager.h" />
+    <ClInclude Include="src\Mortify\Core\WindowCore.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mortify\Core\Application.cpp">
@@ -1407,5 +1410,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mortify\Core\WindowManager.cpp" />
   </ItemGroup>
 </Project>
