@@ -22,11 +22,16 @@ namespace Mortify
 	{
 	public:
 		static void Init(const Ref<RenderContext>& context);
+		static void SetContext(const Ref<RenderContext>& context);
+		static void RemoveContext(const Ref<RenderContext>& context);
 		static void Shutdown();
 
-		static void BeginScene(OrthographicCamera& camera, const Ref<RenderContext>& context);
+		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
 		static void DrawQuad(const QuadProperties& quad);
+
+	private:
+		static Ref<RenderContext> s_CurrentContext;
 	};
 }

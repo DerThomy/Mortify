@@ -1,11 +1,14 @@
 #include "mtpch.h"
-
 #include "WindowManager.h"
-#include "Window.h"
+
+#include "Mortify/Core/Application.h"
+#include "Mortify/Core/Window.h"
+#include "Mortify/Core/Events/WindowEvent.h"
 
 namespace Mortify
 {
 	std::unordered_map<WindowID, Ref<Window>> WindowManager::s_Windows{};
+	Ref<Window> WindowManager::s_FocusedWindow {};
 	uint16_t WindowManager::s_WindowCounter = 0;
 
 	WindowID WindowManager::CreateWindowID()
@@ -18,6 +21,10 @@ namespace Mortify
 		WindowID id = CreateWindowID();
 		auto window = CreatePlatformWindow(id, config, callback);
 		s_Windows[id] = window;
+
+		if (!s_FocusedWindow)
+			s_FocusedWindow = window;
+
 		return window;
 	}
 
@@ -25,10 +32,20 @@ namespace Mortify
 	{
 		if (s_Windows.find(id) != s_Windows.end())
 		{
-			s_Windows[id]->Shutdown();
 			s_Windows.erase(id);
 			s_WindowCounter--;
 		}
+	}
+
+	std::vector<Ref<Window>> WindowManager::GetWindows()
+	{
+		std::vector<Ref<Window>> windows;
+		windows.reserve(s_Windows.size());
+
+		for (auto window : s_Windows)
+			windows.push_back(window.second);
+
+		return windows;
 	}
 
 	std::optional<Ref<Window>> WindowManager::GetWindowByID(WindowID id)
@@ -37,5 +54,17 @@ namespace Mortify
 			return std::nullopt;
 		else
 			return s_Windows[id];
+	}
+
+	bool WindowManager::OnWindowFocusEvent(WindowFocusEvent& e)
+	{
+		s_FocusedWindow = s_Windows[e.GetWindowID()];
+		return false;
+	}
+
+	void WindowManager::OnEvent(Event& e)
+	{
+		auto dispatcher = EventDispatcher(e);
+		dispatcher.Dispatch<WindowFocusEvent>(WindowManager::OnWindowFocusEvent);
 	}
 }

@@ -28,4 +28,5 @@ private:
 	Mortify::Ref<Mortify::Window> m_Window;
 
 	Mortify::Ref<Mortify::Window> m_SecondWindow;
+	Mortify::OrthoCameraController m_CameraController2;
 };

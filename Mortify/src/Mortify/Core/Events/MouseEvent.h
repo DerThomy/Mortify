@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Mortify/Core/Events/Event.h"
+#include "Mortify/Core/Events/WindowEvent.h"
 #include "Mortify/Core/Input.h"
 
 namespace Mortify
 {
-	class MouseMovedEvent : public Event
+	class MouseMovedEvent : public WindowEvent
 	{
 	public:
-		MouseMovedEvent(float x, float y)
-			: m_MouseX(x), m_MouseY(y) {}
+		MouseMovedEvent(WindowID id, float x, float y)
+			: m_MouseX(x), m_MouseY(y), WindowEvent(id) {}
 
 		inline float GetX() const { return m_MouseX; }
 		inline float GetY() const { return m_MouseY; }
@@ -27,11 +28,11 @@ namespace Mortify
 		float m_MouseY;
 	};
 
-	class MouseScrolledEvent : public Event
+	class MouseScrolledEvent : public WindowEvent
 	{
 	public:
-		MouseScrolledEvent(float xOffset, float yOffset)
-			: m_XOffset(xOffset), m_YOffset(yOffset) {}
+		MouseScrolledEvent(WindowID id, float xOffset, float yOffset)
+			: m_XOffset(xOffset), m_YOffset(yOffset), WindowEvent(id) {}
 
 		inline float GetXOffset() const { return m_XOffset; }
 		inline float GetYOffset() const { return m_YOffset; }
@@ -49,15 +50,15 @@ namespace Mortify
 		float m_YOffset;
 	};
 
-	class MouseButtonEvent : public Event
+	class MouseButtonEvent : public WindowEvent
 	{
 	public:
 		inline MouseCode GetButtonCode() const { return m_ButtonCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouseButton | EventCategoryInput)
 	protected:
-		MouseButtonEvent(MouseCode buttonCode)
-			: m_ButtonCode(buttonCode) {}
+		MouseButtonEvent(WindowID id, MouseCode buttonCode)
+			: m_ButtonCode(buttonCode), WindowEvent(id) {}
 
 		MouseCode m_ButtonCode;
 	};
@@ -65,8 +66,8 @@ namespace Mortify
 	class MouseButtonClickedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonClickedEvent(MouseCode buttonCode)
-			: MouseButtonEvent(buttonCode) {}
+		MouseButtonClickedEvent(WindowID id, MouseCode buttonCode)
+			: MouseButtonEvent(id, buttonCode) {}
 
 		std::string ToString() const override {
 			std::stringstream sstream;
@@ -80,8 +81,8 @@ namespace Mortify
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(MouseCode buttonCode)
-			: MouseButtonEvent(buttonCode) {}
+		MouseButtonReleasedEvent(WindowID id, MouseCode buttonCode)
+			: MouseButtonEvent(id, buttonCode) {}
 
 		std::string ToString() const override {
 			std::stringstream sstream;

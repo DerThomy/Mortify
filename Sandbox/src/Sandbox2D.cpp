@@ -10,8 +10,9 @@
 Sandbox2D::Sandbox2D(const Mortify::Ref<Mortify::Window>& window, Mortify::EventCallbackFn AppCallback)
 	: Layer("Sandbox2D"), m_CameraController(window->GetAspectRatio())
 	, m_Window(window), m_SecondWindow(Mortify::Window::Create(Mortify::WindowConfig(), AppCallback))
+	, m_CameraController2(m_SecondWindow->GetAspectRatio())
 {
-	Mortify::Renderer::Init(m_SecondWindow->GetContext());
+
 }
 
 void Sandbox2D::OnAttach()
@@ -32,72 +33,88 @@ void Sandbox2D::OnUpdate(Mortify::Timestep ts)
 	// Update
 
 	m_CameraController.OnUpdate(ts);
-
-	// Render
-	{
-		MT_PROFILE_SCOPE("Renderer Prep");
-		Mortify::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-		Mortify::RenderCommand::Clear();
-	}
+	m_CameraController2.OnUpdate(ts);
 
 	{
+		// Render
 		MT_PROFILE_SCOPE("Renderer Draw");
-		Mortify::Renderer2D::BeginScene(m_CameraController.GetCamera(), m_Window->GetContext());
-		
-		Mortify::Renderer2D::DrawQuad({
-			{-1.0f, 0.0f, 0.0f },
-			{ 0.8f, 0.8f },
-			0.0f,
-			{0.8f, 0.2f, 0.3f, 1.0f}}
-		);
-		
-		Mortify::Renderer2D::DrawQuad({
-			{0.5f, -0.5f, 0.0f },
-			{ 0.5f, 0.75f },
-			1.0f,
-			m_SquareColor}
-		);
-		
-		Mortify::Renderer2D::DrawQuad({
-			{ 0.0f, 0.0f, -0.1f },
-			{ 10.0f, 10.0f },
-			0.0f,
-			glm::vec4(1.0f),
-			m_CheckerboardTexture,
-			10.0f}
-		);
-		
-		Mortify::Renderer2D::EndScene();
 
-		Mortify::Renderer2D::BeginScene(m_CameraController.GetCamera(), m_SecondWindow->GetContext());
+		if (m_Window && m_Window->GetContext()->IsValid())
+		{
+			Mortify::Renderer2D::SetContext(m_Window->GetContext());
 
-		Mortify::Renderer2D::DrawQuad({
-			{-1.0f, 0.0f, 0.0f },
-			{ 0.8f, 0.8f },
-			0.0f,
-			{0.8f, 0.2f, 0.3f, 1.0f} }
-		);
+			{
+				MT_PROFILE_SCOPE("Renderer Prep");
+				Mortify::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+				Mortify::RenderCommand::Clear();
+			}
 
-		Mortify::Renderer2D::DrawQuad({
-			{0.5f, -0.5f, 0.0f },
-			{ 0.5f, 0.75f },
-			1.0f,
-			m_SquareColor }
-		);
+			Mortify::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-		Mortify::Renderer2D::DrawQuad({
-			{ 0.0f, 0.0f, -0.1f },
-			{ 10.0f, 10.0f },
-			0.0f,
-			glm::vec4(1.0f),
-			m_CheckerboardTexture,
-			10.0f }
-		);
+			Mortify::Renderer2D::DrawQuad({
+				{-1.0f, 0.0f, 0.0f },
+				{ 0.8f, 0.8f },
+				0.0f,
+				{0.8f, 0.2f, 0.3f, 1.0f} }
+			);
 
-		Mortify::Renderer2D::EndScene();
+			Mortify::Renderer2D::DrawQuad({
+				{0.5f, -0.5f, 0.0f },
+				{ 0.5f, 0.75f },
+				1.0f,
+				m_SquareColor }
+			);
+
+			Mortify::Renderer2D::DrawQuad({
+				{ 0.0f, 0.0f, -0.1f },
+				{ 10.0f, 10.0f },
+				0.0f,
+				glm::vec4(1.0f),
+				m_CheckerboardTexture,
+				10.0f }
+			);
+
+			Mortify::Renderer2D::EndScene();
+		}
+
+		if (m_SecondWindow && m_SecondWindow->GetContext()->IsValid())
+		{
+			Mortify::Renderer2D::SetContext(m_SecondWindow->GetContext());
+
+			{
+				MT_PROFILE_SCOPE("Renderer Prep");
+				Mortify::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+				Mortify::RenderCommand::Clear();
+			}
+
+			Mortify::Renderer2D::BeginScene(m_CameraController2.GetCamera());
+
+			Mortify::Renderer2D::DrawQuad({
+				{-1.0f, 0.0f, 0.0f },
+				{ 0.8f, 0.8f },
+				0.0f,
+				{0.8f, 0.2f, 0.3f, 1.0f} }
+			);
+
+			Mortify::Renderer2D::DrawQuad({
+				{0.5f, -0.5f, 0.0f },
+				{ 0.5f, 0.75f },
+				1.0f,
+				m_SquareColor }
+			);
+
+			Mortify::Renderer2D::DrawQuad({
+				{ 0.0f, 0.0f, -0.1f },
+				{ 10.0f, 10.0f },
+				0.0f,
+				glm::vec4(1.0f),
+				m_CheckerboardTexture,
+				10.0f }
+			);
+
+			Mortify::Renderer2D::EndScene();
+		}
 	}
-
-	m_SecondWindow->OnUpdate();
 }
 
 std::string Sandbox2D::LimitsToString(const Mortify::WindowLimits& limits)
@@ -151,4 +168,5 @@ void Sandbox2D::OnImGuiRender()
 void Sandbox2D::OnEvent(Mortify::Event& e)
 {
 	m_CameraController.OnEvent(e);
+	m_CameraController2.OnEvent(e);
 }

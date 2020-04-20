@@ -1411,5 +1411,6 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\Mortify\Core\WindowManager.cpp" />
+    <ClCompile Include="src\Mortify\Core\Window.cpp" />
   </ItemGroup>
 </Project>

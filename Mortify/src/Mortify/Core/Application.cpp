@@ -4,6 +4,8 @@
 #include "Mortify/Core/Log.h"
 #include "Mortify/Core/Input.h"
 #include "Mortify/Rendering/Renderer.h"
+#include "Mortify/Rendering/Renderer2D.h"
+#include "Mortify/Core/WindowManager.h"
 
 #include <GLFW/glfw3.h>
 
@@ -51,6 +53,8 @@ namespace Mortify
 			if (e.Handled)
 				break;
 		}
+
+		WindowManager::OnEvent(e);
 	}
 
 	void Application::Run()	
@@ -84,7 +88,8 @@ namespace Mortify
 				m_ImGuiLayer->End();
 			}
 
-			m_Window->OnUpdate();
+			for (auto& window : WindowManager::GetWindows())
+				window->OnUpdate();
 		}
 	}
 	
@@ -117,6 +122,13 @@ namespace Mortify
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
+		WindowManager::RemoveWindow(e.GetWindowID());
+		auto& window = WindowManager::GetWindowByID(e.GetWindowID());
+		if (window.has_value())
+		{
+			Renderer2D::RemoveContext(window.value()->GetContext());
+		}
+
 		if (!WindowManager::GetWindowCount())
 		{
 			m_Running = false;

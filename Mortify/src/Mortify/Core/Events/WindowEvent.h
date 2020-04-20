@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mortify/Core/Events/Event.h"
+#include "Mortify/Core/WindowCore.h"
 #include "Mortify/Core/Window.h"
 
 namespace Mortify
@@ -49,5 +50,25 @@ namespace Mortify
 		{}
 
 		EVENT_CLASS_TYPE(WindowClose)
+	};
+
+	class WindowFocusEvent : public WindowEvent
+	{
+	public:
+		WindowFocusEvent(WindowID id)
+			: WindowEvent(id)
+		{}
+
+		EVENT_CLASS_TYPE(WindowFocus)
+	};
+
+	class WindowLostFocusEvent : public WindowEvent
+	{
+	public:
+		WindowLostFocusEvent(WindowID id)
+			: WindowEvent(id)
+		{}
+
+		EVENT_CLASS_TYPE(WindowLostFocus)
 	};
 }

@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 ExampleLayer::ExampleLayer(const Mortify::Ref<Mortify::Window>& window)
-	: Layer("Example"), m_CameraController(window->GetAspectRatio(), true), m_Window(window)
+	: Layer("Example"), m_CameraController(window, true), m_Window(window)
 {
 	m_VertexArray = Mortify::VertexArray::Create();
 

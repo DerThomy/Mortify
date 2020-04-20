@@ -65,11 +65,23 @@ namespace Mortify
 
 		MT_CORE_ASSERT(versionMajor > 4 || (versionMajor == 4 && versionMinor >= 5), "Mortify requires at least OpenGL version 4.5!");
 #endif
+
+		m_Valid = true;
 	}
 
-	void WindowsGLRenderContext::MakeContextCurrent()
+	void WindowsGLRenderContext::MakeContextCurrent() const
 	{
-		MT_CORE_ASSERT(wglMakeCurrent(m_DeviceContextHandler, m_OpenGLRenderContextHandler), "Failed to make context current");
+		if (m_Valid)
+		{
+			MT_CORE_ASSERT(wglMakeCurrent(m_DeviceContextHandler, m_OpenGLRenderContextHandler),
+				"Failed to make context current");
+		}
+	}
+
+	void WindowsGLRenderContext::ReleaseContext() const
+	{
+		MT_CORE_ASSERT(wglMakeCurrent(m_DeviceContextHandler, nullptr),
+			"Failed to release context");
 	}
 
 	RenderContext::procAdr WindowsGLRenderContext::getGLProcAddress(const char* procname)
@@ -101,6 +113,7 @@ namespace Mortify
 
 	void WindowsGLRenderContext::Destroy()
 	{
+		m_Valid = false;
 		wglMakeCurrent(m_DeviceContextHandler, NULL);
 		wglDeleteContext(m_OpenGLRenderContextHandler);
 	}

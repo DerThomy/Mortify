@@ -571,6 +571,7 @@
     <ClCompile Include="src\Mortify\Core\Log.cpp" />
     <ClCompile Include="src\Mortify\Core\OS.cpp" />
     <ClCompile Include="src\Mortify\Core\Resource.cpp" />
+    <ClCompile Include="src\Mortify\Core\Window.cpp" />
     <ClCompile Include="src\Mortify\Core\WindowManager.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Mortify\ImGui\ImGuiLayer.cpp" />

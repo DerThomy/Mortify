@@ -84,11 +84,13 @@ namespace Mortify
 		glDeleteTextures(1, &m_RendererID);
 	}
 
-	void OpenGLTexture2D::Bind() const
+	void OpenGLTexture2D::Bind()
 	{
 		MT_PROFILE_FUNCTION();
+
+		m_Location = static_cast<uint16_t>(std::distance(slots.begin(), std::find(slots.begin(), slots.end(), this)));
 		
-		glBindTextureUnit(std::distance(slots.begin(), std::find(slots.begin(), slots.end(), this)), m_RendererID);
+		glBindTextureUnit(m_Location, m_RendererID);
 	}
 
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)

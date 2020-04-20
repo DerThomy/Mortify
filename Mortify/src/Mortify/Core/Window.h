@@ -6,7 +6,6 @@
 #include "Mortify/Core/Events/Event.h"
 #include "Mortify/Core/Input.h"
 #include "Mortify/Rendering/RenderContext.h"
-#include "Mortify/Core/WindowManager.h"
 #include "Mortify/Core/WindowCore.h"
 
 namespace Mortify
@@ -41,7 +40,6 @@ namespace Mortify
 		virtual bool IsKeyPressed(KeyCode code) const = 0;
 		virtual bool IsMouseButtonPressed(MouseCode button) const = 0;
 
-
 		virtual WindowMode GetWindowMode() const = 0;
 		virtual void SetWindowMode(WindowMode mode) = 0;
 		
@@ -57,9 +55,6 @@ namespace Mortify
 		virtual void Close() = 0;
 		virtual void LimitWindowSize(WindowLimits limits = WindowLimits()) = 0;
 		
-		static Ref<Window> Create(const WindowConfig& config = WindowConfig(), const EventCallbackFn& callback = nullptr)
-		{
-			return WindowManager::AddWindow(config, callback);
-		}
+		static Ref<Window> Create(const WindowConfig& config = WindowConfig(), const EventCallbackFn& callback = nullptr);
 	};
 }

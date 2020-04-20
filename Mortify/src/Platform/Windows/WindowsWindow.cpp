@@ -2,6 +2,7 @@
 
 #include "Platform/Windows/WindowsWindow.h"
 
+#include "Mortify/Core/WindowManager.h"
 #include "Mortify/Core/Events/ApplicationEvent.h"
 #include "Mortify/Core/Events/MouseEvent.h"
 #include "Mortify/Core/Events/KeyEvent.h"
@@ -52,7 +53,7 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		WindowManager::RemoveWindow(m_ID);
+		Shutdown();
 	}
 
 	//extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -232,12 +233,24 @@ namespace Mortify
 
 		case WM_SETFOCUS:
 		{
+			if (window->m_EventCallback)
+			{
+				WindowFocusEvent focusEvent(window->m_ID);
+				window->m_EventCallback(focusEvent);
+			}
+
 			break;
 		}
 			
 		case WM_KILLFOCUS:
 		{
 			ReleaseCapture();
+
+			if (window->m_EventCallback)
+			{
+				WindowLostFocusEvent lostFocusEvent(window->m_ID);
+				window->m_EventCallback(lostFocusEvent);
+			}
 
 			break;
 		}
@@ -258,6 +271,8 @@ namespace Mortify
 				WindowCloseEvent closeEvent(window->m_ID);
 				window->m_EventCallback(closeEvent);
 			}
+
+			window->Shutdown();
 
 			PostQuitMessage(0);
 			return 0;
@@ -393,13 +408,13 @@ namespace Mortify
 					msg == WM_MBUTTONDOWN || msg == WM_XBUTTONDOWN)
 				{
 					window->m_MouseButtons[button] = true;
-					MouseButtonClickedEvent mouseClickedEvent(button);
+					MouseButtonClickedEvent mouseClickedEvent(window->m_ID, button);
 					window->m_EventCallback(mouseClickedEvent);
 				}
 				else
 				{
 					window->m_MouseButtons[button] = false;
-					MouseButtonReleasedEvent mouseReleasedEvent(button);
+					MouseButtonReleasedEvent mouseReleasedEvent(window->m_ID, button);
 					window->m_EventCallback(mouseReleasedEvent);
 				}
 			}
@@ -414,7 +429,7 @@ namespace Mortify
 		{
 			if (window->m_EventCallback)
 			{
-				MouseScrolledEvent mouseVScrolledEvent(0.0f, (SHORT)HIWORD(wparam) / (float)WHEEL_DELTA);
+				MouseScrolledEvent mouseVScrolledEvent(window->m_ID, 0.0f, (SHORT)HIWORD(wparam) / (float)WHEEL_DELTA);
 				window->m_EventCallback(mouseVScrolledEvent);
 			}
 			return 0;
@@ -424,7 +439,7 @@ namespace Mortify
 		{
 			if (window->m_EventCallback)
 			{
-				MouseScrolledEvent mouseHScrolledEvent((SHORT)HIWORD(wparam) / (float)WHEEL_DELTA, 0.0f);
+				MouseScrolledEvent mouseHScrolledEvent(window->m_ID, (SHORT)HIWORD(wparam) / (float)WHEEL_DELTA, 0.0f);
 				window->m_EventCallback(mouseHScrolledEvent);
 			}
 			return 0;
@@ -437,7 +452,7 @@ namespace Mortify
 
 			if (window->m_EventCallback)
 			{
-				MouseMovedEvent mouseMovedEvent(x, y);
+				MouseMovedEvent mouseMovedEvent(window->m_ID, x, y);
 				window->m_EventCallback(mouseMovedEvent);
 			}
 
@@ -757,15 +772,21 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 		
-		if (m_WindowHandle && !IsWindow(m_WindowHandle))
+		if (m_WindowHandle && IsWindow(m_WindowHandle))
+		{
+			ReleaseDC(m_WindowHandle, m_DeviceContextHandle);
 			DestroyWindow(m_WindowHandle);
+
+		}
 
 		if (s_MainWindow == this)
 			s_MainWindow = nullptr;
 
-		m_RenderContext->Destroy();
-		ReleaseDC(m_WindowHandle, m_DeviceContextHandle);
-		UnregisterClassW(m_WindowClass.lpszClassName, m_WindowClass.hInstance);
+		if (m_RenderContext->IsValid())
+			m_RenderContext->Destroy();
+
+		if(GetClassInfoEx(m_WindowClass.hInstance, m_WindowClass.lpszClassName, NULL))
+			UnregisterClassW(m_WindowClass.lpszClassName, m_WindowClass.hInstance);
 
 		//if (windowCount == 0)
 			//FreeLibrary(openGLModule);

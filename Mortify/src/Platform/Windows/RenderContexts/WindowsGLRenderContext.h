@@ -1,6 +1,9 @@
 #pragma once
 
+#include <Windows.h>
+
 #include "Mortify/Rendering/RenderContext.h"
+
 
 namespace Mortify
 {
@@ -11,16 +14,18 @@ namespace Mortify
 	public:
 		WindowsGLRenderContext(Window* window);
 
-		virtual void Init() override;
-		virtual void MakeContextCurrent() override;
-		virtual procFunc GetProcFunc() override;
-		virtual void SwapBuffers() override;
-		virtual bool SetVsync(bool on) override;
-		virtual void Destroy() override;
-		virtual void* GetContextHandler() override { return (void*)m_OpenGLRenderContextHandler; };
-		virtual void SetContextHandler(void* handler) override { m_OpenGLRenderContextHandler = (HGLRC)handler; };
-		virtual void SaveContext() override { m_BackupHDC = m_DeviceContextHandler; };
-		virtual void RestoreContext() override { m_DeviceContextHandler = m_BackupHDC; };
+		void Init() override;
+		void MakeContextCurrent() const override;
+		void ReleaseContext() const override;
+		procFunc GetProcFunc() override;
+		void SwapBuffers() override;
+		bool SetVsync(bool on) override;
+		void Destroy() override;
+		void* GetContextHandler() override { return (void*)m_OpenGLRenderContextHandler; };
+		void SetContextHandler(void* handler) override { m_OpenGLRenderContextHandler = (HGLRC)handler; };
+		void SaveContext() override { m_BackupHDC = m_DeviceContextHandler; };
+		void RestoreContext() override { m_DeviceContextHandler = m_BackupHDC; };
+		bool IsValid() override { return m_Valid; };
 
 		static RenderContext::procAdr getGLProcAddress(const char* procname);
 
@@ -34,5 +39,6 @@ namespace Mortify
 
 	private:
 		HDC m_BackupHDC;
+		bool m_Valid;
 	};
 }

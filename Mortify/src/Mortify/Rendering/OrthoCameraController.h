@@ -12,7 +12,8 @@ namespace Mortify
 	class OrthoCameraController
 	{
 	public:
-		OrthoCameraController(float aspectRatio, bool rotation = false);
+		OrthoCameraController(bool rotation = false);
+		OrthoCameraController(const Ref<Window>& window, bool rotation = false);
 
 		inline OrthographicCamera& GetCamera() { return m_Camera; }
 		inline const OrthographicCamera& GetCamera() const { return m_Camera; }
@@ -29,6 +30,7 @@ namespace Mortify
 		float m_ZoomLevel = 1.0f;
 
 		OrthographicCamera m_Camera;
+		Ref<Window> m_Window;
 		
 		bool m_Rotation;
 

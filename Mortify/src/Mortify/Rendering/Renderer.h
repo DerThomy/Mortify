@@ -17,6 +17,10 @@ namespace Mortify
 		static void Init(const Ref<RenderContext>& context);
 		static void Shutdown();
 
+		static const Ref<RenderContext>& GetCurrentContext();
+		static void SetContext(const Ref<RenderContext>& context);
+		static void RemoveContext(const Ref<RenderContext>& context);
+
 		static void BeginScene(OrthographicCamera& camera, const Ref<RenderContext> context);
 		static void EndScene();
 
@@ -33,6 +37,7 @@ namespace Mortify
 		};
 
 		static Scope<SceneData> s_SceneData;
-		static uint32_t m_SceneCounter;
+		
+		static Ref<RenderContext> s_CurrentContext;
 	};
 }
