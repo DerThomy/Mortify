@@ -10,7 +10,7 @@ namespace Mortify
 	static HMODULE openGLModule = LoadLibraryA("opengl32.dll");
 
 	WindowsGLRenderContext::WindowsGLRenderContext(Window* window)
-		: m_WindowHandler((HWND)window->GetNativeWindow()), m_BackupHDC(NULL)
+		: m_WindowHandler((HWND)window->GetNativeWindow())
 	{
 		m_DeviceContextHandler = GetDC(m_WindowHandler);
 		m_PFD = {

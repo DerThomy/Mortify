@@ -1,11 +1,14 @@
-# Directories
-.vs/
-/bin/
+# Binaries
+**/bin/
+!vendor/bin/premake/
 bin-int/
 
-# Hazel files
+# Mortify files
 *.log
 
-# Files
-*.user
-*.json
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user

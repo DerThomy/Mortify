@@ -9,8 +9,9 @@
 
 Sandbox2D::Sandbox2D(const Mortify::Ref<Mortify::Window>& window, Mortify::EventCallbackFn AppCallback)
 	: Layer("Sandbox2D"), m_CameraController(window->GetAspectRatio())
-	, m_Window(window), m_SecondWindow(Mortify::Window::Create(Mortify::WindowConfig(), AppCallback))
-	, m_CameraController2(m_SecondWindow->GetAspectRatio())
+	, m_Window(window)
+	//, m_SecondWindow(Mortify::Window::Create(Mortify::WindowConfig(), AppCallback))
+	//, m_CameraController2(m_SecondWindow->GetAspectRatio())
 {
 
 }
@@ -33,7 +34,7 @@ void Sandbox2D::OnUpdate(Mortify::Timestep ts)
 	// Update
 
 	m_CameraController.OnUpdate(ts);
-	m_CameraController2.OnUpdate(ts);
+	//m_CameraController2.OnUpdate(ts);
 
 	{
 		// Render
@@ -77,7 +78,7 @@ void Sandbox2D::OnUpdate(Mortify::Timestep ts)
 			Mortify::Renderer2D::EndScene();
 		}
 
-		if (m_SecondWindow && m_SecondWindow->GetContext()->IsValid())
+		/*if (m_SecondWindow && m_SecondWindow->GetContext()->IsValid())
 		{
 			Mortify::Renderer2D::SetContext(m_SecondWindow->GetContext());
 
@@ -113,7 +114,7 @@ void Sandbox2D::OnUpdate(Mortify::Timestep ts)
 			);
 
 			Mortify::Renderer2D::EndScene();
-		}
+		}*/
 	}
 }
 
@@ -168,5 +169,5 @@ void Sandbox2D::OnImGuiRender()
 void Sandbox2D::OnEvent(Mortify::Event& e)
 {
 	m_CameraController.OnEvent(e);
-	m_CameraController2.OnEvent(e);
+	//m_CameraController2.OnEvent(e);
 }

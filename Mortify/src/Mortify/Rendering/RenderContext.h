@@ -21,8 +21,6 @@ namespace Mortify
 		virtual void Destroy() = 0;
 		virtual void* GetContextHandler() = 0;
 		virtual void SetContextHandler(void* handler) = 0;
-		virtual void SaveContext() = 0;
-		virtual void RestoreContext() = 0;
 		virtual bool IsValid() = 0;
 
 		static Ref<RenderContext> Create(Window* window);

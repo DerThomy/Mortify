@@ -1,17 +1,17 @@
 workspace "Mortify"
-    architecture "x86_64"
-    startproject "Sandbox"
+architecture "x86_64"
+startproject "Sandbox"
 
-    configurations { 
-		"Debug",
-		"Release",
-		"Dist" 
-    }
-    
-    flags
-    {
-        "MultiProcessorCompile"
-    }
+configurations { 
+    "Debug",
+    "Release",
+    "Dist" 
+}
+
+flags
+{
+    "MultiProcessorCompile"
+}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -51,7 +51,8 @@ project "Mortify"
     }
 
     defines {
-        "_CRT_SECURE_NO_WARNINGS"
+        "_CRT_SECURE_NO_WARNINGS",
+        "GLFW_INCLUDE_NONE"
     }
 
     includedirs {
@@ -77,9 +78,6 @@ project "Mortify"
         systemversion "latest"
 
         defines {
-            "MT_PLATFORM_WINDOWS",
-            "MT_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
         }
 
     filter "configurations:Debug"
@@ -125,10 +123,6 @@ project "Sandbox"
 
     filter "system:windows"
         systemversion "latest"
-    
-        defines {
-            "MT_PLATFORM_WINDOWS",
-        }
 
     filter "configurations:Debug"
         defines "MT_DEBUG"

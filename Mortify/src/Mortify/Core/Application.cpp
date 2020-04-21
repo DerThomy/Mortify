@@ -22,7 +22,6 @@ namespace Mortify
 		s_Instance = this;
 
 		m_OS = OS::GetOS();
-		MT_CORE_INFO("Cache Line size: " + std::to_string(m_OS->GetCacheLineSize()));
 		m_Window = Window::Create(WindowConfig(), MT_BIND_EVENT_FN(Application::OnEvent));
 		m_Window->SetVSync(true);
 		Renderer::Init(m_Window->GetContext());

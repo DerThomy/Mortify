@@ -86,10 +86,8 @@ namespace Mortify
 		
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			app.GetWindow()->GetContext()->SaveContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			app.GetWindow()->GetContext()->RestoreContext();
 			app.GetWindow()->GetContext()->MakeContextCurrent();
 		}
 	}
