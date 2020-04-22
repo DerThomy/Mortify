@@ -1,6 +1,8 @@
 # Binaries
 bin/
 bin-int/
+**/bin/
+**/bin-int/
 !vendor/*
 
 # Mortify files
