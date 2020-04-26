@@ -26,7 +26,7 @@ IncludeDir["assimp"] = "Mortify/vendor/assimp/include"
 
 include "Mortify/vendor/GLFW"
 include "Mortify/vendor/Glad"
-include "Mortify/vendor/ImGui"
+include "Mortify/vendor/ImGUI"
 
 project "Mortify"
     location "Mortify"
