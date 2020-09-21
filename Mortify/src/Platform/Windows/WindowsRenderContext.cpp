@@ -12,7 +12,7 @@ namespace Mortify
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None:    MT_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+			case RendererAPI::API::Nil:    MT_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 			case RendererAPI::API::OpenGL:  return CreateRef<WindowsGLRenderContext>(window);
 		}
 

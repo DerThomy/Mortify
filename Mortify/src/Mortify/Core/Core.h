@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Mortify/Debug/DebugBreak.h"
+
 #include <memory>
 
 #ifdef _WIN32
@@ -32,7 +34,8 @@
 #elif defined(__ANDROID__)
 	#error "Android is not supported!"
 #elif defined(__linux__)
-	#define HZ_PLATFORM_LINUX
+	#define MT_PLATFORM_LINUX
+    #define GLFW_EXPOSE_NATIVE_GLX
 #else
 	/* Unknown compiler/platform */
 	#error "Unknown platform!"
@@ -43,8 +46,8 @@
 #endif
 
 #ifdef MT_ENABLE_ASSERTS
-	#define MT_ASSERT(x, ...)		{ if(!(x)) { MT_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-	#define MT_CORE_ASSERT(x, ...)	{ if(!(x)) { MT_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define MT_ASSERT(x, ...)		{ if(!(x)) { MT_ERROR("Assertion Failed: {0}", __VA_ARGS__); debugbreak(); } }
+	#define MT_CORE_ASSERT(x, ...)	{ if(!(x)) { MT_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); debugbreak(); } }
 #else
 	#define MT_ASSERT(x, ...)
 	#define MT_CORE_ASSERT(x, ...)

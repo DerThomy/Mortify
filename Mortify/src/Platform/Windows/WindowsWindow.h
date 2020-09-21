@@ -26,6 +26,7 @@ namespace Mortify
 		inline float GetAspectRatio() const override { return static_cast<float>(m_Props.Width) / static_cast<float>(m_Props.Height); }
 		inline WindowID GetID() const override { return m_ID; }
 		inline const WindowLimits& GetLimits() const { return m_Limits; }
+		inline const std::string& GetTitle() const override { return m_Props.Title; }
 
 		inline bool IsResizeable() const { return m_Props.Resizeable; }
 		inline bool KeepsAspectRatio() const { return m_Props.KeepAspect; }
@@ -57,7 +58,7 @@ namespace Mortify
 		inline void LimitWindowSize(WindowLimits limits) override { m_Props.Limits = limits; };
 
 	private:
-		void Init(const WindowConfig& config);
+		void Init();
 		void Shutdown() override;
 
 		DWORD GetWindowStyle(bool fullscreen, bool borderless, bool resizeable, bool maximized);

@@ -20,7 +20,6 @@ namespace Mortify
 		virtual bool SetVsync(bool on) = 0;
 		virtual void Destroy() = 0;
 		virtual void* GetContextHandler() = 0;
-		virtual void SetContextHandler(void* handler) = 0;
 		virtual bool IsValid() = 0;
 
 		static Ref<RenderContext> Create(Window* window);

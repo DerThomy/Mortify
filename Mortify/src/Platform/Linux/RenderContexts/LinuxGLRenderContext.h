@@ -23,8 +23,6 @@ namespace Mortify
 		void Destroy() override;
 		void* GetContextHandler() override { return (void*)glfwGetGLXContext(m_WindowHandle); };
 		bool IsValid() override { return m_Valid; };
-
-		static RenderContext::procAdr getGLProcAddress(const char* procname);
         
     private:
         GLFWwindow* m_WindowHandle;

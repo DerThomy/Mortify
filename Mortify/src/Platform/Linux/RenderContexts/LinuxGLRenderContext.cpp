@@ -8,6 +8,11 @@ namespace Mortify
 	LinuxGLRenderContext::LinuxGLRenderContext(Window* window)
         : m_WindowHandle(static_cast<GLFWwindow*>(window->GetNativeWindow()))
 	{
+        Init();
+	}
+    
+    void LinuxGLRenderContext::Init() 
+    {
         glfwMakeContextCurrent(m_WindowHandle);
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		MT_CORE_ASSERT(status, "Failed to initialize Glad!");
@@ -19,7 +24,7 @@ namespace Mortify
 
 		MT_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Hazel requires at least OpenGL version 4.5!");
 		m_Valid = true;
-	}
+    }
 
 	void LinuxGLRenderContext::MakeContextCurrent() const
 	{
@@ -34,19 +39,9 @@ namespace Mortify
 		
 	}
 
-	RenderContext::procAdr LinuxGLRenderContext::getGLProcAddress(const char* procname)
-	{
-		const RenderContext::procAdr proc = (RenderContext::procAdr)glfwGetProcAddress(procname);
-
-		if (proc)
-			return proc;
-        else
-            MT_CORE_ASSERT(false, "Can't find procaddress for " + std::string(procname))
-	}
-
 	RenderContext::procFunc LinuxGLRenderContext::GetProcFunc()
 	{
-		return getGLProcAddress;
+		return glfwGetProcAddress;
 	}
 
 	void LinuxGLRenderContext::SwapBuffers()

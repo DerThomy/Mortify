@@ -26,6 +26,7 @@ namespace Mortify
 		virtual float GetAspectRatio() const = 0;
 		virtual WindowID GetID() const = 0;
 		virtual const WindowLimits& GetLimits() const = 0;
+        virtual const std::string& GetTitle() const = 0;
 
 		virtual bool IsResizeable() const = 0;
 		virtual bool KeepsAspectRatio() const = 0;

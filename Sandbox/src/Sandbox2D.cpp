@@ -1,7 +1,6 @@
 #include "Sandbox2D.h"
-#include "imgui.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 #include <string>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -144,10 +143,11 @@ void Sandbox2D::OnImGuiRender()
 {
 	MT_PROFILE_FUNCTION();
 	
-	//ImGui::Begin("Demo");
+	ImGui::Begin("Demo");
 
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 
+    /*
 	ImGui::Begin("Settings");
 	ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 
@@ -162,7 +162,8 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Text(("Minimized: " + std::string(m_Window->IsMinimized() ? "true" : "false")).c_str());
 	ImGui::Text(("Fullscreen: " + std::string(m_Window->IsFullscreen() ? "true" : "false")).c_str());
 	ImGui::Text(("Borderless: " + std::string(m_Window->IsBorderless() ? "true" : "false")).c_str());
-	
+    */
+    
 	ImGui::End();
 }
 

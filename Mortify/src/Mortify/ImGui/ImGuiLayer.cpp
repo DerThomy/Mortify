@@ -1,10 +1,17 @@
 #include "mtpch.h"
 
 #include "Mortify/ImGui/ImGuiLayer.h"
+#include "Mortify/Rendering/RendererAPI.h"
 
 #include <imgui.h>
-#include <examples/imgui_impl_opengl3.h>
-#include <examples/imgui_impl_win32.h>
+
+#ifdef MT_PLATFORM_WINDOWS
+    #include <examples/imgui_impl_opengl3.h>
+    #include <examples/imgui_impl_win32.h>
+#elif defined(MT_PLATFORM_LINUX)
+    #include <examples/imgui_impl_opengl3.h>
+    #include <examples/imgui_impl_glfw.h>
+#endif
 
 #include "Mortify/Core/Application.h"
 
@@ -48,27 +55,52 @@ namespace Mortify
 
 		Application& app = Application::Get();
 
-	#ifdef MT_PLATFORM_WINDOWS
-		ImGui_ImplWin32_Init(app.GetWindow()->GetNativeWindow(), app.GetWindow()->GetContext()->GetContextHandler());
-		ImGui_ImplOpenGL3_Init("#version 410");
-	#endif	
+        #ifdef MT_PLATFORM_WINDOWS
+            ImGui_ImplWin32_Init(app.GetWindow()->GetNativeWindow(), app.GetWindow()->GetContext()->GetContextHandler());
+        #elif defined(MT_PLATFORM_LINUX)
+            ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(app.GetWindow()->GetNativeWindow()), true);
+        #endif	
+        
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::OpenGL: ImGui_ImplOpenGL3_Init("#version 410"); break;
+        }
 	}
 
 	void ImGuiLayer::OnDetach()
 	{
 		MT_PROFILE_FUNCTION();
-		
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplWin32_Shutdown();
+        
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::OpenGL: ImGui_ImplOpenGL3_Shutdown(); break;
+        }
+        
+        #ifdef MT_PLATFORM_WINDOWS
+            ImGui_ImplWin32_Shutdown();
+        #elif defined(MT_PLATFORM_LINUX)
+            
+        #endif	
+    
 		ImGui::DestroyContext();
 	}
 	
 	void ImGuiLayer::Begin()
 	{
 		MT_PROFILE_FUNCTION();
+        
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::OpenGL: ImGui_ImplOpenGL3_NewFrame(); break;
+        }
 		
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplWin32_NewFrame();
+        #ifdef MT_PLATFORM_WINDOWS
+            ImGui_ImplWin32_NewFrame();
+        #elif defined(MT_PLATFORM_LINUX)
+            glfwPollEvents();
+            ImGui_ImplGlfw_NewFrame();
+        #endif	
+        
 		ImGui::NewFrame();
 	}
 
@@ -82,7 +114,11 @@ namespace Mortify
 
 		// Render
 		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::OpenGL: ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); break;
+        }
 		
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{

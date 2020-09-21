@@ -15,8 +15,8 @@ namespace Mortify
 
 		virtual size_t GetCacheLineSize() const = 0;
 
-		static Ref<OS>& GetOS() { return s_Instance; }
+		static Ref<OS> GetOS() { return s_Instance; }
 	private:
-		static Ref<OS>& s_Instance;
+		static Ref<OS> s_Instance;
 	};
 }

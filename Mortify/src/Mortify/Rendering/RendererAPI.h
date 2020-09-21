@@ -14,7 +14,7 @@ namespace Mortify
 	public:
 		enum class API
 		{
-			None = 0, OpenGL
+			Nil = 0, OpenGL
 		};
 
 	public:

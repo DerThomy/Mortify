@@ -6,7 +6,7 @@ namespace Mortify
 {
 	enum class ShaderDomain
 	{
-		None = 0, Vertex = 0, Pixel = 1
+		Nil = 0, Vertex = 0, Pixel = 1
 	};
 
 	class ShaderUniformDeclaration

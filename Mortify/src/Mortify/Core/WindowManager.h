@@ -17,12 +17,12 @@ namespace Mortify
 
 		static Ref<Window> AddWindow(const WindowConfig& config = WindowConfig(), const EventCallbackFn& callback = nullptr);
 
-		static void RemoveWindow(WindowID id);
+		static void RemoveWindow(WindowID id, bool destroy = true);
 
 		static std::vector<Ref<Window>> GetWindows();
 		static std::optional<Ref<Window>> GetWindowByID(WindowID id);
 		static const Ref<Window>& GetFocusedWindow() { return s_FocusedWindow; };
-		static uint16_t GetWindowCount() { return s_WindowCounter; }
+		static uint16_t GetWindowCount();
 
 		static void OnEvent(Event& e);
 

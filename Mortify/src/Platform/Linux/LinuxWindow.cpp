@@ -56,7 +56,7 @@ namespace Mortify
         
 		glfwDestroyWindow(m_WindowHandle);
         
-        if (WindowManager::GetWindowCount() == 0)
+        if (WindowManager::GetWindowCount() == 1)
             glfwTerminate();
 	}
     
@@ -84,7 +84,9 @@ namespace Mortify
 			ClipSize();
 		}
         
-        if (WindowManager::GetWindowCount() == 0)
+        uint16_t windowCount = WindowManager::GetWindowCount();
+        
+        if (windowCount == 0)
 		{
 			MT_PROFILE_SCOPE("glfwInit");
             
@@ -240,6 +242,41 @@ namespace Mortify
 			return WindowMode::Fullscreen;
 		else
 			return WindowMode::Windowed;
+	}
+    
+    void LinuxWindow::SetFlags(uint8_t flags, bool state)
+	{
+		
+		if (flags & WindowFlag::Borderless)
+		{
+			m_Props.Borderless = state;
+			glfwWindowHint(GLFW_DECORATED, state ? GLFW_TRUE : GLFW_FALSE);
+		}
+		if (flags & WindowFlag::KeepAspectRatio)
+		{
+			m_Props.KeepAspect = state;
+            glfwSetWindowAspectRatio(m_WindowHandle, state ? m_Props.Width : GLFW_DONT_CARE, state ? m_Props.Height : GLFW_DONT_CARE);
+		}
+		if (flags & WindowFlag::AlwaysOnTop)
+		{
+			m_Props.AlwaysOnTop = state;
+			glfwWindowHint(GLFW_FLOATING, state ? GLFW_TRUE : GLFW_FALSE);
+		}
+		if (flags & WindowFlag::AutoIconify)
+		{
+			m_Props.AutoIconify = state;
+            glfwWindowHint(GLFW_AUTO_ICONIFY, state ? GLFW_TRUE : GLFW_FALSE);
+		}
+		if (flags & WindowFlag::DisableResize)
+		{
+			m_Props.Resizeable = !state;
+			glfwWindowHint(GLFW_RESIZABLE, state ? GLFW_FALSE : GLFW_TRUE);
+		}
+		if (flags & WindowFlag::ScaleToMonitor)
+		{
+			m_Props.ScaleToMonitor = state;
+            glfwWindowHint(GLFW_SCALE_TO_MONITOR, state ? GLFW_TRUE : GLFW_FALSE);
+		}
 	}
 
 	void LinuxWindow::SetWindowMode(WindowMode mode)

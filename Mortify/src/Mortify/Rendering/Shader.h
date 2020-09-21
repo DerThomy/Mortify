@@ -22,7 +22,7 @@ namespace Mortify
 
 	enum class UniformType
 	{
-		None = 0,
+		Nil = 0,
 		Float, Float2, Float3, Float4,
 		Mat3x3, Mat4x4,
 		Int32, Uint32
@@ -63,38 +63,6 @@ namespace Mortify
 
 		template <typename T>
 		void Push(const std::string& name, const T& data) {}
-
-		template <>
-		void Push(const std::string& name, const float& data)
-		{
-			Uniforms[Index++] = { UniformType::Float, Cursor, name };
-			memcpy(Buffer + Cursor, &data, sizeof(float));
-			Cursor += sizeof(float);
-		}
-
-		template <>
-		void Push(const std::string& name, const glm::vec3& data)
-		{
-			Uniforms[Index++] = { UniformType::Float3, Cursor, name };
-			memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::vec3));
-			Cursor += sizeof(glm::vec3);
-		}
-
-		template <>
-		void Push(const std::string& name, const glm::vec4& data)
-		{
-			Uniforms[Index++] = { UniformType::Float4, Cursor, name };
-			memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::vec4));
-			Cursor += sizeof(glm::vec4);
-		}
-
-		template <>
-		void Push(const std::string& name, const glm::mat4& data)
-		{
-			Uniforms[Index++] = { UniformType::Mat4x4, Cursor, name };
-			memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::mat4));
-			Cursor += sizeof(glm::mat4);
-		}
 	};
 
 	class Shader

@@ -7,7 +7,7 @@ namespace Mortify
 {
 	enum class EventType
 	{
-		None = 0,
+		Nil = 0,
 		WindowClose, WindowResize, WindowMove, WindowFocus, WindowLostFocus,
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,
@@ -16,7 +16,7 @@ namespace Mortify
 
 	enum EventCategory
 	{
-		None = 0,
+		Nil = 0,
 		EventCategoryApplication	= BIT(0),
 		EventCategoryInput			= BIT(1),
 		EventCategoryKeyboard		= BIT(2),
@@ -24,7 +24,7 @@ namespace Mortify
 		EventCategoryMouseButton	= BIT(4)
 	};
 
-	#define EVENT_CLASS_TYPE(type)	static EventType GetStaticType() { return EventType::##type; }\
+	#define EVENT_CLASS_TYPE(type)	static EventType GetStaticType() { return EventType::type; }\
 									virtual EventType GetEventType() const override { return GetStaticType(); }\
 									virtual const char* GetName() const override { return #type; }
 

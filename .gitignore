@@ -10,7 +10,33 @@ bin-int/
 
 # Visual Studio files and folder
 .vs/
-**.sln
-**.vcxproj
-**.vcxproj.filters
-**.vcxproj.user
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Codelite
+Debug
+Release
+Release_gcc_unicode
+DebugUnicode
+*.project
+*.session
+*.tags
+*.d
+*.o
+*.pyc
+bin
+bin/ofMaker
+lib
+*.mk
+*.workspace.session
+*.workspace
+compile_flags.txt
+Makefile
+.codelite/
+.build-debug/
+
+Mortify.txt
+Glad.txt
+Sandbox.txt

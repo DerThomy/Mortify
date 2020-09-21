@@ -7,8 +7,6 @@
 #include "Mortify/Rendering/Renderer2D.h"
 #include "Mortify/Core/WindowManager.h"
 
-#include <GLFW/glfw3.h>
-
 
 namespace Mortify
 {
@@ -122,7 +120,7 @@ namespace Mortify
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		WindowManager::RemoveWindow(e.GetWindowID());
-		auto& window = WindowManager::GetWindowByID(e.GetWindowID());
+		auto window = WindowManager::GetWindowByID(e.GetWindowID());
 		if (window.has_value())
 		{
 			Renderer2D::RemoveContext(window.value()->GetContext());

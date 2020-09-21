@@ -40,7 +40,7 @@ namespace Mortify
 
 	void Renderer::OnWindowResize(WindowID id, uint32_t width, uint32_t height)
 	{
-		auto& window = WindowManager::GetWindowByID(id);
+		auto window = WindowManager::GetWindowByID(id);
 
 		if (!window.has_value() || !window.value())
 			return;

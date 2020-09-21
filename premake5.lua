@@ -35,8 +35,8 @@ project "Mortify"
     cppdialect "C++17"
     staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "mtpch.h"
 	pchsource "Mortify/src/mtpch.cpp"
@@ -48,6 +48,11 @@ project "Mortify"
         "%{prj.name}/vendor/glm/glm/**.inl",
         "%{prj.name}/vendor/stb_image/**.h",
         "%{prj.name}/vendor/stb_image/**.cpp"
+    }
+
+    removefiles {
+        "%{prj.name}/src/Platform/**.h",
+        "%{prj.name}/src/Platform/**.cpp"
     }
 
     defines {
@@ -69,15 +74,28 @@ project "Mortify"
 	links {
 		"GLFW",
 		"Glad",
-		"ImGui",
-        "opengl32.lib",
-        "Winmm.lib"
+        "ImGui"
 	}
 
     filter "system:windows"
         systemversion "latest"
 
-        defines {
+        files { 
+            "%{prj.name}/src/Platform/Windows/**.h",
+            "%{prj.name}/src/Platform/Windows/**.cpp",
+            "%{prj.name}/src/Platform/OpenGL/**.h",
+            "%{prj.name}/src/Platform/OpenGL/**.cpp"
+        }
+
+    filter "system:linux"
+        pic "on"
+        systemversion "latest"
+
+        files { 
+            "%{prj.name}/src/Platform/Linux/**.h",
+            "%{prj.name}/src/Platform/Linux/**.cpp",
+            "%{prj.name}/src/Platform/OpenGL/**.h",
+            "%{prj.name}/src/Platform/OpenGL/**.cpp"
         }
 
     filter "configurations:Debug"
@@ -102,8 +120,8 @@ project "Sandbox"
     cppdialect "C++17"
 	staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
     files {
         "%{prj.name}/src/**.h",
@@ -111,18 +129,30 @@ project "Sandbox"
     }
 
     includedirs {
-        "Mortify/src",
-        "Mortify/vendor/spdlog/include",
-        "Mortify/vendor/ImGui",
+        "%{wks.location}/Mortify/vendor/spdlog/include",
+		"%{wks.location}/Mortify/src",
+		"%{wks.location}/Mortify/vendor",
 		"%{IncludeDir.glm}"
     }
 
 	links {
-		"Mortify"
-	}
+        "Mortify",
+        "GLFW",
+		"Glad",
+        "ImGui"
+    }
+    
+    filter "system:linux"
+        pic "on"
 
-    filter "system:windows"
-        systemversion "latest"
+        links {
+            "Xrandr",
+            "Xi",
+            "X11",
+            "dl",
+            "pthread",
+            "stdc++fs"
+        }
 
     filter "configurations:Debug"
         defines "MT_DEBUG"

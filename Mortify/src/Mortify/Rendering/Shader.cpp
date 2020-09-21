@@ -11,7 +11,7 @@ namespace Mortify
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
+			case RendererAPI::API::Nil: MT_CORE_ASSERT(false, "RenderAPI::Nil is currently not supported!"); return nullptr;
 			case RendererAPI::API::OpenGL: return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
 		}
 
@@ -23,7 +23,7 @@ namespace Mortify
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None: MT_CORE_ASSERT(false, "RenderAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::Nil: MT_CORE_ASSERT(false, "RenderAPI::Nil is currently not supported!"); return nullptr;
 		case RendererAPI::API::OpenGL: return CreateRef<OpenGLShader>(filePath);
 		}
 
@@ -68,4 +68,32 @@ namespace Mortify
 	{
 		return m_Shaders.find(name) != m_Shaders.end();
 	}
+    
+    template<> template<> void UniformBufferDeclaration<U, N>::Push(const std::string& name, const float& data)
+    {
+        Uniforms[Index++] = { UniformType::Float, Cursor, name };
+        memcpy(Buffer + Cursor, &data, sizeof(float));
+        Cursor += sizeof(float);
+    }
+    
+    template<> template<> void UniformBufferDeclaration<U, N>::Push(const std::string& name, const glm::vec3& data)
+    {
+        Uniforms[Index++] = { UniformType::Float3, Cursor, name };
+        memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::vec3));
+        Cursor += sizeof(glm::vec3);
+    }
+
+    template<> template<> void UniformBufferDeclaration<U, N>::Push(const std::string& name, const glm::vec4& data)
+    {
+        Uniforms[Index++] = { UniformType::Float4, Cursor, name };
+        memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::vec4));
+        Cursor += sizeof(glm::vec4);
+    }
+
+    template<> template<> void UniformBufferDeclaration<U, N>::Push(const std::string& name, const glm::mat4& data)
+    {
+        Uniforms[Index++] = { UniformType::Mat4x4, Cursor, name };
+        memcpy(Buffer + Cursor, glm::value_ptr(data), sizeof(glm::mat4));
+        Cursor += sizeof(glm::mat4);
+    }
 }

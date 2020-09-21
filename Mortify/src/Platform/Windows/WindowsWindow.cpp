@@ -31,7 +31,7 @@ namespace Mortify
 	}
 
 	WindowsWindow::WindowsWindow(WindowID id, const WindowConfig& config, const EventCallbackFn& callback)
-		: m_Props(config), m_ID(id)
+		: m_Props(id, config, callback)
 	{
 		MT_PROFILE_FUNCTION();
 
@@ -42,11 +42,8 @@ namespace Mortify
 
 		if (!s_MainWindow)
 			s_MainWindow = this;
-		
-		if (callback)
-			m_EventCallback = callback;
 
-		Init(config);
+		Init();
 	}
 
 	WindowsWindow::~WindowsWindow()
@@ -110,10 +107,10 @@ namespace Mortify
 				window->m_Props.Minimized = false;
 			}
 
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
-				WindowResizeEvent resizeEvent(window->m_ID, width, height);
-				window->m_EventCallback(resizeEvent);
+				WindowResizeEvent resizeEvent(window->m_Props.ID, width, height);
+				window->m_Props.EventCallback(resizeEvent);
 			}
 			return 0;
 		}
@@ -233,10 +230,10 @@ namespace Mortify
 
 		case WM_SETFOCUS:
 		{
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
-				WindowFocusEvent focusEvent(window->m_ID);
-				window->m_EventCallback(focusEvent);
+				WindowFocusEvent focusEvent(window->m_Props.ID);
+				window->m_Props.EventCallback(focusEvent);
 			}
 
 			break;
@@ -246,10 +243,10 @@ namespace Mortify
 		{
 			ReleaseCapture();
 
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
-				WindowLostFocusEvent lostFocusEvent(window->m_ID);
-				window->m_EventCallback(lostFocusEvent);
+				WindowLostFocusEvent lostFocusEvent(window->m_Props.ID);
+				window->m_Props.EventCallback(lostFocusEvent);
 			}
 
 			break;
@@ -266,10 +263,10 @@ namespace Mortify
 
 		case WM_DESTROY:
 		{
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
-				WindowCloseEvent closeEvent(window->m_ID);
-				window->m_EventCallback(closeEvent);
+				WindowCloseEvent closeEvent(window->m_Props.ID);
+				window->m_Props.EventCallback(closeEvent);
 			}
 
 			window->Shutdown();
@@ -313,12 +310,12 @@ namespace Mortify
 			{
 				window->m_Keys[key] = false;
 				
-				if (window->m_EventCallback)
+				if (window->m_Props.EventCallback)
 				{
 					KeyPressedEvent snapPressed(key, LOWORD(lparam));
-					window->m_EventCallback(snapPressed);
+					window->m_Props.EventCallback(snapPressed);
 					KeyReleasedEvent snapReleased(key);
-					window->m_EventCallback(snapReleased);
+					window->m_Props.EventCallback(snapReleased);
 				}
 
 				window->m_Keys[key] = true;
@@ -327,10 +324,10 @@ namespace Mortify
 			}
 				
 			window->m_Keys[key] = true;
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
 				KeyPressedEvent keyPressedEvent(key, LOWORD(lparam));
-				window->m_EventCallback(keyPressedEvent);
+				window->m_Props.EventCallback(keyPressedEvent);
 			}
 				
 			break;
@@ -349,22 +346,22 @@ namespace Mortify
 				window->m_Keys[MT_KEY_LEFT_SHIFT] = false;
 				window->m_Keys[MT_KEY_RIGHT_SHIFT] = false;
 				
-				if (window->m_EventCallback)
+				if (window->m_Props.EventCallback)
 				{
 					KeyReleasedEvent keyLeftShift(MT_KEY_LEFT_SHIFT);
-					window->m_EventCallback(keyLeftShift);
+					window->m_Props.EventCallback(keyLeftShift);
 					KeyReleasedEvent keyRightShift(MT_KEY_RIGHT_SHIFT);
-					window->m_EventCallback(keyRightShift);
+					window->m_Props.EventCallback(keyRightShift);
 				}
 				
 				break;
 			}
 				
 			window->m_Keys[key] = false;
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
 				KeyReleasedEvent keyReleasedEvent(key);
-				window->m_EventCallback(keyReleasedEvent);
+				window->m_Props.EventCallback(keyReleasedEvent);
 			}
 				
 			break;
@@ -372,10 +369,10 @@ namespace Mortify
 
 		case WM_CHAR:
 		{
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
 				KeyTypedEvent KeyTypedEvent(win32_keycodes[(unsigned int)wparam]);
-				window->m_EventCallback(KeyTypedEvent);
+				window->m_Props.EventCallback(KeyTypedEvent);
 			}
 			return 0;
 		}
@@ -389,7 +386,7 @@ namespace Mortify
 		case WM_MBUTTONUP:
 		case WM_XBUTTONUP:
 		{
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
 				MouseCode button;
 
@@ -408,14 +405,14 @@ namespace Mortify
 					msg == WM_MBUTTONDOWN || msg == WM_XBUTTONDOWN)
 				{
 					window->m_MouseButtons[button] = true;
-					MouseButtonClickedEvent mouseClickedEvent(window->m_ID, button);
-					window->m_EventCallback(mouseClickedEvent);
+					MouseButtonClickedEvent mouseClickedEvent(window->m_Props.ID, button);
+					window->m_Props.EventCallback(mouseClickedEvent);
 				}
 				else
 				{
 					window->m_MouseButtons[button] = false;
-					MouseButtonReleasedEvent mouseReleasedEvent(window->m_ID, button);
-					window->m_EventCallback(mouseReleasedEvent);
+					MouseButtonReleasedEvent mouseReleasedEvent(window->m_Props.ID, button);
+					window->m_Props.EventCallback(mouseReleasedEvent);
 				}
 			}
 
@@ -427,20 +424,20 @@ namespace Mortify
 
 		case WM_MOUSEWHEEL:
 		{
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
-				MouseScrolledEvent mouseVScrolledEvent(window->m_ID, 0.0f, (SHORT)HIWORD(wparam) / (float)WHEEL_DELTA);
-				window->m_EventCallback(mouseVScrolledEvent);
+				MouseScrolledEvent mouseVScrolledEvent(window->m_Props.ID, 0.0f, (SHORT)HIWORD(wparam) / (float)WHEEL_DELTA);
+				window->m_Props.EventCallback(mouseVScrolledEvent);
 			}
 			return 0;
 		}
 
 		case WM_MOUSEHWHEEL:
 		{
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
-				MouseScrolledEvent mouseHScrolledEvent(window->m_ID, (SHORT)HIWORD(wparam) / (float)WHEEL_DELTA, 0.0f);
-				window->m_EventCallback(mouseHScrolledEvent);
+				MouseScrolledEvent mouseHScrolledEvent(window->m_Props.ID, (SHORT)HIWORD(wparam) / (float)WHEEL_DELTA, 0.0f);
+				window->m_Props.EventCallback(mouseHScrolledEvent);
 			}
 			return 0;
 		}
@@ -450,10 +447,10 @@ namespace Mortify
 			const float x = (float)(short)LOWORD(lparam);
 			const float y = (float)(short)HIWORD(lparam);
 
-			if (window->m_EventCallback)
+			if (window->m_Props.EventCallback)
 			{
-				MouseMovedEvent mouseMovedEvent(window->m_ID, x, y);
-				window->m_EventCallback(mouseMovedEvent);
+				MouseMovedEvent mouseMovedEvent(window->m_Props.ID, x, y);
+				window->m_Props.EventCallback(mouseMovedEvent);
 			}
 
 			return 0;
@@ -505,7 +502,7 @@ namespace Mortify
 		SendMessage(m_WindowHandle, WM_SYSCOMMAND, SC_CLOSE, 0);
 	}
 
-	void WindowsWindow::Init(const WindowConfig& config)
+	void WindowsWindow::Init()
 	{
 		MT_PROFILE_FUNCTION();
 
@@ -515,16 +512,16 @@ namespace Mortify
 		for (const auto& button : MouseCode())
 			m_MouseButtons[button] = false;
 
-		if ((m_Limits.MaxHeight.has_value() && m_Limits.MaxHeight.value() > m_Props.Height)
-			|| (m_Limits.MaxWidth.has_value() && m_Limits.MaxWidth.value() > m_Props.Width)
-			|| (m_Limits.MinHeight.has_value() && m_Limits.MinHeight.value() < m_Props.Height)
-			|| (m_Limits.MinWidth.has_value() && m_Limits.MinWidth.value() < m_Props.Width))
+		if ((m_Limits.MaxHeight.has_value() && m_Limits.MaxHeight.value() < m_Props.Height)
+			|| (m_Limits.MaxWidth.has_value() && m_Limits.MaxWidth.value() < m_Props.Width)
+			|| (m_Limits.MinHeight.has_value() && m_Limits.MinHeight.value() > m_Props.Height)
+			|| (m_Limits.MinWidth.has_value() && m_Limits.MinWidth.value() > m_Props.Width))
 		{
-			MT_CORE_WARN("Window {0}: Sizes are outside specified Limits and will thus be clipped to those Limits!", m_ID);
+			MT_CORE_WARN("Window {0}: Sizes are outside specified Limits and will thus be clipped to those Limits!", m_Props.ID);
 			ClipSize();
 		}
 
-		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(m_ID));
+		std::wstring class_name(L"WindowsWindowClass" + std::to_wstring(m_Props.ID));
 		uint32_t xpos, ypos, fullwidth, fullheight;
 		DWORD style = GetWindowStyle();
 		DWORD exstyle = GetWindowStyleEx();
@@ -566,7 +563,7 @@ namespace Mortify
 		MT_ASSERT(RegisterClassEx(&m_WindowClass), "Failed to register class");
 
 		// Create Window
-		std::wstring title = m_OS->WideCharFromUTF8(config.Title);
+		std::wstring title = m_OS->WideCharFromUTF8(m_Props.Title);
 		m_WindowHandle = CreateWindowEx(exstyle, class_name.c_str(), title.c_str(),
 			style, xpos, ypos, fullwidth, fullheight, NULL, NULL, GetModuleHandleW(NULL), NULL);
 		MT_CORE_ASSERT(m_WindowHandle, "WindowsWindow creation failed");
@@ -589,7 +586,7 @@ namespace Mortify
 
 			if (m_Props.ScaleToMonitor)
 			{
-				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", m_ID, m_Props.Title);
+				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", m_Props.ID, m_Props.Title);
 				auto scale = GetContentScale();
 				rect.right = (int)(rect.right * scale.first);
 				rect.bottom = (int)(rect.bottom * scale.second);
@@ -609,7 +606,7 @@ namespace Mortify
 		{
 			if (m_Props.ScaleToMonitor)
 			{
-				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", m_ID, m_Props.Title);
+				MT_CORE_INFO("Sacling window {0} ({1}) to monitor", m_Props.ID, m_Props.Title);
 				auto scale = GetContentScale();
 				m_SavedInfo.Width = (int)(m_SavedInfo.Width * scale.first);
 				m_SavedInfo.Height = (int)(m_SavedInfo.Height * scale.second);

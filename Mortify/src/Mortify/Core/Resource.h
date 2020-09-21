@@ -23,6 +23,7 @@ namespace Mortify
 			auto lastDot = filePath.rfind('.');
 			auto count = lastDot == std::string::npos ? filePath.size() - lastSlash : lastDot - lastSlash;
 			m_Name = filePath.substr(lastSlash, count);
+            return m_Name;
 		}
 
 	protected:

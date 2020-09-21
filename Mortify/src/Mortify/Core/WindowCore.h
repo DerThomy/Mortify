@@ -67,6 +67,7 @@ namespace Mortify
 
 	struct WindowProps
 	{
+        WindowID ID;
 		std::string Title;
 		uint32_t Width;
 		uint32_t Height;
@@ -83,14 +84,16 @@ namespace Mortify
 		bool Maximized;
 		bool Minimized;
 		bool Fullscreen;
+        
+        EventCallbackFn EventCallback;
 
-		WindowProps(const WindowConfig& config)
-			: Title(config.Title), Width(config.Width), Height(config.Height), Limits(config.Limits), VSync(config.VSync),
+		WindowProps(WindowID id, const WindowConfig& config, const EventCallbackFn& event_callback)
+			: ID(id), Title(config.Title), Width(config.Width), Height(config.Height), Limits(config.Limits), VSync(config.VSync),
 			Resizeable(!(config.Flags& WindowFlag::DisableResize)), KeepAspect(config.Flags& WindowFlag::KeepAspectRatio),
 			Borderless(config.Flags& WindowFlag::Borderless), AlwaysOnTop(config.Flags& WindowFlag::AlwaysOnTop),
 			AutoIconify(config.Flags& WindowFlag::AutoIconify), ScaleToMonitor(config.Flags& WindowFlag::ScaleToMonitor),
 			Fullscreen(config.Mode == WindowMode::Fullscreen), Maximized(config.Mode == WindowMode::Maximized),
-			Minimized(config.Mode == WindowMode::Minimized)
+			Minimized(config.Mode == WindowMode::Minimized), EventCallback(event_callback)
 		{}
 	};
 }

@@ -3,8 +3,6 @@
 #include "Mortify/Core/Core.h"
 #include "Debug/Instrumentor.h"
 
-#ifdef MT_PLATFORM_WINDOWS
-
 int main(int argc, char** argv)
 {
 	Mortify::Log::Init();
@@ -21,5 +19,3 @@ int main(int argc, char** argv)
 	delete app;
 	MT_PROFILE_END_SESSION();
 }
-
-#endif

@@ -22,7 +22,6 @@ namespace Mortify
 		bool SetVsync(bool on) override;
 		void Destroy() override;
 		void* GetContextHandler() override { return (void*)m_OpenGLRenderContextHandler; };
-		void SetContextHandler(void* handler) override { m_OpenGLRenderContextHandler = (HGLRC)handler; };
 		bool IsValid() override { return m_Valid; };
 
 		static RenderContext::procAdr getGLProcAddress(const char* procname);

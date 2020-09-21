@@ -7,7 +7,7 @@ namespace Mortify
 {
 	enum class ShaderDataType
 	{
-		None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
+		Nil = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
 	};
 
 	static uint32_t ShaderDataTypeSize(ShaderDataType type)
@@ -40,7 +40,7 @@ namespace Mortify
 		bool Normalized;
 
 		BufferElement()
-			: Type(ShaderDataType::None), Name(), Size(0), Offset(0), Normalized(false)
+			: Type(ShaderDataType::Nil), Name(), Size(0), Offset(0), Normalized(false)
 		{}
 
 		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)

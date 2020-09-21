@@ -13,8 +13,13 @@ namespace Mortify
 
 	WindowID WindowManager::CreateWindowID()
 	{
-		return s_WindowCounter++;
+        static uint16_t seed = 0;
+		return seed++;
 	}
+    
+    uint16_t WindowManager::GetWindowCount() { 
+            return s_WindowCounter; 
+    }
 
 	Ref<Window> WindowManager::AddWindow(const WindowConfig& config, const EventCallbackFn& callback)
 	{
@@ -24,14 +29,18 @@ namespace Mortify
 
 		if (!s_FocusedWindow)
 			s_FocusedWindow = window;
+            
+        s_WindowCounter++;
 
 		return window;
 	}
 
-	void WindowManager::RemoveWindow(WindowID id)
+	void WindowManager::RemoveWindow(WindowID id, bool destroy)
 	{
 		if (s_Windows.find(id) != s_Windows.end())
 		{
+            if (destroy) 
+                s_Windows.at(id)->Close();
 			s_Windows.erase(id);
 			s_WindowCounter--;
 		}

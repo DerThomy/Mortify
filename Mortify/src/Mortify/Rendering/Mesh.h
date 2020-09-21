@@ -34,9 +34,9 @@ namespace Mortify
 	
 		const Ref<Mesh>& GetSubMeshByID(std::string path) const;
 
-		inline const float const* GetVertices() const { return m_Vertices; }
+		inline const float* const GetVertices() const { return m_Vertices; }
 
-		inline const uint32_t const* GetIndices() const { return m_Indices; }
+		inline const uint32_t* const GetIndices() const { return m_Indices; }
 
 	private:
 		float* m_Vertices;

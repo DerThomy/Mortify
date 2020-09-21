@@ -4,7 +4,7 @@
 
 namespace Mortify
 {
-	typedef enum class KeyCode : uint16_t
+	typedef enum KeyCode : uint16_t
 	{
 		Invalid = 0,
 		// From glfw3.h
@@ -468,4 +468,4 @@ static ::Mortify::KeyCode translateWin32Keys(WPARAM wparam, LPARAM lparam)
 
 	return win32_keycodes[HIWORD(lparam) & 0x1FF];
 }
-#endif MT_PLATFORM_WINDOWS
+#endif
