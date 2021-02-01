@@ -3,6 +3,7 @@
 #include "WindowsOS.h"
 
 #include <timeapi.h>
+#include <Windows.h>
 
 namespace Mortify
 {

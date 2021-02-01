@@ -80,6 +80,11 @@ project "Mortify"
     filter "system:windows"
         systemversion "latest"
 
+        links {
+            "opengl32.lib",
+            "Winmm.lib"
+        }
+
         files { 
             "%{prj.name}/src/Platform/Windows/**.h",
             "%{prj.name}/src/Platform/Windows/**.cpp",

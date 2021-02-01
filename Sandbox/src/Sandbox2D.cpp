@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 Sandbox2D::Sandbox2D(const Mortify::Ref<Mortify::Window>& window, Mortify::EventCallbackFn AppCallback)
-	: Layer("Sandbox2D"), m_CameraController(window->GetAspectRatio())
+	: Layer("Sandbox2D"), m_CameraController()
 	, m_Window(window)
 	//, m_SecondWindow(Mortify::Window::Create(Mortify::WindowConfig(), AppCallback))
 	//, m_CameraController2(m_SecondWindow->GetAspectRatio())

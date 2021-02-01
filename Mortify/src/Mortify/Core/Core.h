@@ -9,6 +9,9 @@
 #ifdef _WIN64
 	/* Windows x64  */
 	#define MT_PLATFORM_WINDOWS
+	// Prevent windows min/max macro collision with std::max/std::min
+	#define NOMINMAX
+	#include <Windows.h>
 #else
 	/* Windows x86 */
 	#error "x86 Builds aren't supported"

@@ -4,13 +4,14 @@
 #include "Mortify/Core/KeyCodes.h"
 #include "Mortify/Core/Input.h"
 #include "Mortify/Core/WindowManager.h"
+#include "Mortify/Core/Application.h"
 
 namespace Mortify
 {
 	OrthoCameraController::OrthoCameraController(bool rotation)
-		: m_AspectRatio(WindowManager::GetFocusedWindow() ? WindowManager::GetFocusedWindow()->GetAspectRatio() : 16.0f / 9.0f),
+		: m_AspectRatio(Application::Get().GetWindow()->GetAspectRatio()),
 		  m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
-		  m_Rotation(rotation), m_Window(WindowManager::GetFocusedWindow())
+		  m_Rotation(rotation), m_Window(Application::Get().GetWindow())
 	{
 	}
 
@@ -79,14 +80,11 @@ namespace Mortify
 	bool OrthoCameraController::OnMouseScrolledEvent(MouseScrolledEvent& e)
 	{
 		MT_PROFILE_FUNCTION();
-		
-		if (m_Window->GetID() == e.GetWindowID())
-		{
-			m_ZoomLevel += e.GetYOffset() * 0.15f;
-			m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 
-			m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
-		}
+		m_ZoomLevel += e.GetYOffset() * 0.15f;
+		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
+
+		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		
 		return false;
 	}
@@ -95,12 +93,11 @@ namespace Mortify
 	{
 		MT_PROFILE_FUNCTION();
 
-		if (m_Window->GetID() == e.GetWindowID())
-		{
-			m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 
-			m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
-		}
+		MT_CORE_INFO("Update Aspect ratio");
+		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+
+		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		
 		return false;
 	}

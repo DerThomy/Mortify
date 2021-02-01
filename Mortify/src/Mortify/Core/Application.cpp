@@ -7,7 +7,6 @@
 #include "Mortify/Rendering/Renderer2D.h"
 #include "Mortify/Core/WindowManager.h"
 
-
 namespace Mortify
 {
 	Application* Application::s_Instance = nullptr;
@@ -93,6 +92,8 @@ namespace Mortify
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
 		MT_PROFILE_FUNCTION();
+
+		MT_CORE_INFO("Window resize");
 		
 		Renderer::OnWindowResize(e.GetWindowID(), e.GetWidth(), e.GetHeight());
 		

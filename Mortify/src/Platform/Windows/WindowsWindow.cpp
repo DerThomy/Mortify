@@ -18,6 +18,8 @@
 #include <memory>
 #include <algorithm>
 
+#include <Windows.h>
+
 #include <imgui.h>
 #include <examples/imgui_impl_win32.h>
 

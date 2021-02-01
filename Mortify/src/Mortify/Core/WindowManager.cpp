@@ -10,10 +10,10 @@ namespace Mortify
 	std::unordered_map<WindowID, Ref<Window>> WindowManager::s_Windows{};
 	Ref<Window> WindowManager::s_FocusedWindow {};
 	uint16_t WindowManager::s_WindowCounter = 0;
+	static uint16_t seed = 0;
 
 	WindowID WindowManager::CreateWindowID()
 	{
-        static uint16_t seed = 0;
 		return seed++;
 	}
     

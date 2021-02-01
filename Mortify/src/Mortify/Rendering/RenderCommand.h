@@ -27,6 +27,7 @@ namespace Mortify
 
 		static inline void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 		{
+			MT_CORE_INFO("Set Viewport to {0}, {1}", width, height);
 			s_RenderAPI->SetViewport(x, y, width, height);
 		}
 

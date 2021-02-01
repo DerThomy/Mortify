@@ -3,6 +3,7 @@
 #include "WindowsGLRenderContext.h"
 #include "Mortify/Core/Window.h"
 
+#include <Windows.h>
 #include <glad/glad.h>
 
 namespace Mortify
